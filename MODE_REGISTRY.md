@@ -53,6 +53,8 @@ Last updated: v3.7.0 (2026-05-05)
 | (pipeline) | Balanced | 10-stage orchestrated workflow | Very High | "academic pipeline", "research to paper", "full paper workflow" |
 | `resume_from_passport=<hash>` | Fidelity | Resume a prior pipeline run from a Material Passport reset boundary. Opt-in (`ARS_PASSPORT_RESET=1`). See `academic-pipeline/references/passport_as_reset_boundary.md`. | High | "resume from passport", "continue pipeline from reset boundary" |
 | `(pipeline) + utd24 preset` | Balanced | Full pipeline with Privacy Computing × Finance domain preset (UTD24 IS-track / MS-track). Loads `shared/references/privacy_finance_glossary.md` + `privacy_finance_methodology_presets.md` + Section 7.5 of `top_journals_by_field.md`. zh-CN drafting → en finalization. See `commands/ars-utd24-full.md`. | Very High | `/ars-utd24-full`, "UTD24 paper", "MISQ paper", "privacy computing finance UTD24" |
+| `/ars-style-extract` | Fidelity | Markdown writing-thinking guide extracted from N venue exemplar PDFs, conformant to `shared/contracts/style_thinking_guide.schema.md`. Stored at `style_guides/<journal>_<topic>_<date>.md`. Dual-mode (standalone or pipeline-invoked from intake Phase 0 Step 10.5). | Low | `/ars-style-extract`, "extract style from these papers", "learn MS writing style" |
+| `/ars-restyle` | Fidelity | Per-paragraph diff + rationale citing guide rule IDs. User accepts paragraph-by-paragraph. Dual-mode (standalone or pipeline-invoked from Stage 4.3). | Medium | `/ars-restyle`, "restyle my draft", "polish for MS", "apply style guide to draft" |
 
 ---
 

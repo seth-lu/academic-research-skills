@@ -201,6 +201,40 @@ Ask the user:
 - Co-authored samples: ask which sections the user wrote; analyze only those
 - Different language from target paper: extract transferable dimensions only (paragraph structure, citation style, modifier density)
 
+### Step 10.5: Venue Style Exemplars (Optional, recommended for top-tier venues)
+
+This step fills **Priority 2** of `shared/style_calibration_protocol.md` (target journal conventions). It is distinct from Step 10 (which fills Priority 3, the user's personal style).
+
+**Gating conditions** — only fire when ALL hold:
+1. `target_journal` was set in Step 3 (not "Optional / undecided")
+2. `passport.style_profile.priority_2_source` is empty (no existing venue guide for this journal)
+3. The session is NOT a `resume_from_passport` re-entry (resumes inherit the prior guide)
+
+**Prompt the user**:
+> "Do you have 1–3 papers published in <target_journal> on a similar topic that you'd like me to learn the writing style from? Providing exemplars produces a 'thinking guide' (markdown reasoning model you can edit) that informs both initial drafting and a final stylistic polish pass. This is optional but **strongly recommended** for top-tier venues like MISQ / ISR / Management Science / INFORMS JoC where house style differs sharply from generic academic writing — and even more so for the UTD24 IS-track / MS-track if you're using the `/ars-utd24-full` preset."
+
+**If user provides exemplars:**
+1. Collect PDF file paths (1–3 typical, ≥3 for HIGH confidence).
+2. Optionally collect a `topic_scope` one-liner (default: derive from exemplar abstracts).
+3. Invoke `/ars-style-extract <pdfs> <target_journal> [<topic_scope>]` in **pipeline-mode** (`mode=pipeline`).
+4. The produced guide is auto-saved at `style_guides/<journal-slug>_<topic-slug>_<date>.md` and its path is written to `passport.style_profile.priority_2_source`.
+5. Confirm to user: "Guide saved at `style_guides/<file>`. You can edit it directly before drafting if you want to override any rule. The guide will inform `draft_writer_agent` in Stage 2 and is reusable across future papers targeting this venue."
+
+**If user declines:**
+- Set `passport.style_profile.priority_2_source = null`
+- Proceed normally; `/ars-restyle` remains available standalone post-draft if the user later changes their mind and produces a guide.
+
+**Edge cases:**
+- Exemplar PDF unreadable: skip with warning; if 0 readable, treat as decline.
+- Exemplar paper not actually published in target_journal: warn user, ask whether to proceed.
+- Anti-mimicry audit FAILS during extract (>30% surface-only rules): abort guide creation, recommend re-running with different exemplars or refined topic_scope.
+- User has a guide for the journal but on a different topic: offer to reuse the existing guide (cheaper) or extract a new topic-scoped one (more accurate).
+
+**Why this is a separate step from Step 10**:
+- Step 10 captures YOUR style (Priority 3, soft guide).
+- Step 10.5 captures the VENUE's style (Priority 2, stronger constraint).
+- They are orthogonal and can both be present. Conflicts resolve via the priority hierarchy in `shared/style_calibration_protocol.md` § Conflict Resolution and § Priority 2 Implementation.
+
 ### Step 11: Funding Sources
 Reference: `references/funding_statement_guide.md`
 

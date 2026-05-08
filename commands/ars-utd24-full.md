@@ -29,6 +29,7 @@ Pre-load the following into agent context (treated as authoritative for all writ
 3. `academic-paper-reviewer/references/top_journals_by_field.md` Section 7.5 — UTD24 IS-track / MS-track journal preferences and the Finance-track adjacency note.
 4. `academic-paper-reviewer/agents/field_analyst_agent.md` Example 3 — default reviewer panel for this domain (EIC=MISQ SE, R1=cryptography, R2=FinTech, R3=privacy-regulation).
 5. `academic-paper/references/citation_format_switcher.md` UTD24 section — MISQ Author-Date and INFORMS Author-Date styles.
+6. `style_guides/<target-journal>_*.md` (when present) — venue-specific writing-thinking guide produced by `/ars-style-extract`. The UTD24 preset benefits especially from the style pipeline because UTD24 venues (especially MISQ vs MS vs JoC) have sharply different house styles. See `intake_agent` Phase 0 Step 10.5 for the exemplar-collection prompt that produces this guide.
 
 ## Phase 0 — Configuration Interview defaults
 

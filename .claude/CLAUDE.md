@@ -174,6 +174,34 @@ Targets MIS Quarterly, Information Systems Research, Management Science, INFORMS
 
 **Pattern**: pure additive references + one slash command + one MODE_REGISTRY row. No schema changes, no agent rewrites. Removing any of the above files restores upstream behavior.
 
+### Style Reasoning Pipeline (venue-aware writing-style extraction + restyle)
+
+Two-stage pipeline that lets the user produce a **venue-specific writing-thinking guide** from chosen exemplar papers, then apply that guide to a draft paragraph-by-paragraph. Designed to fix the gap that `shared/style_calibration_protocol.md` Priority 2 ("Target journal conventions") was a placeholder. Journal-agnostic infrastructure — the first user is Management Science, but the same skill works for MISQ / ISR / INFORMS JoC / Nature / ICML / any venue with sufficient exemplars.
+
+**Two slash commands**:
+- `/ars-style-extract <pdfs> <journal>` — Stage 1: PDFs → reasoning guide. Iron rule against surface mimicry: every rule must state a *why*. Anti-mimicry audit pass before writing the guide.
+- `/ars-restyle <draft> <guide>` — Stage 2: draft + guide → per-paragraph diff with rationale citing guide rule IDs. User accepts paragraph-by-paragraph. 60% rewrite-threshold guard prevents argument loss.
+
+**Reference files** (consumed by both commands):
+- `shared/references/rhetorical_move_taxonomy.md` — closed list of 34 section-level moves (M1–M34) + 4 cross-cutting moves (X1–X4), based on Swales CARS + Hyland metadiscourse, extended for IS / OR / DSR / crypto-protocol papers.
+- `shared/contracts/style_thinking_guide.schema.md` — markdown schema every guide must conform to. Enforced at restyle time via 11-item checklist.
+- `style_guides/README.md` — storage convention `<journal-slug>_<topic-slug>_<date>.md`; user-editable, reusable across drafts, refresh yearly.
+
+**Pipeline integration — two insertion points**:
+1. **Phase 0 Step 10.5** (`academic-paper/agents/intake_agent.md`): when target_journal is set and no guide exists yet, `intake_agent` asks if user has venue exemplars and invokes `/ars-style-extract` in pipeline-mode. Produced guide path written to `passport.style_profile.priority_2_source` and consumed by `draft_writer_agent` in Stage 2.
+2. **Stage 4.3 STYLE ALIGNMENT** (`academic-pipeline/SKILL.md`): optional opt-in stage between Stage 4' (re-revision) and Stage 4.5 (final integrity). Auto-suggests `/ars-restyle` when (a) a guide exists in passport AND (b) reviewer comments mention clarity/style/exposition. Stage 4.5 final integrity re-runs after restyle to catch any rewrite-induced citation drift.
+
+**Standalone use** is always available — neither command requires a passport context. The user with an existing draft can run:
+```
+/ars-style-extract paper1.pdf paper2.pdf "Management Science"
+/ars-restyle draft.md style_guides/management-science_*_2026-05-08.md
+```
+without invoking the full pipeline.
+
+**Priority hierarchy hook** at `shared/style_calibration_protocol.md` § Priority 2 Implementation: venue guide (Priority 2) > personal style profile (Priority 3). Conflicts logged in Draft Metadata.
+
+**Pattern**: 6 new files + 5 edits, all additive. No schema changes, no agent code rewrites. Removing the new files and reverting the edits restores upstream behavior.
+
 ## Version Info
 - **Suite version**: 3.7.0 (per CHANGELOG.md)
 - **Last Updated**: 2026-05-05

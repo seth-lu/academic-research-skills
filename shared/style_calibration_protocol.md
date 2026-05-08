@@ -149,3 +149,52 @@ If user indicates samples are co-authored: ask which sections they wrote. Analyz
 
 ### Style Evolution
 If samples span many years: weight recent samples more heavily (2x weight for samples within 2 years).
+
+---
+
+## Priority 2 Implementation — Venue Style Thinking Guides
+
+The Priority hierarchy above (Discipline > Target journal > Personal style) leaves Priority 2 ("Target journal conventions") unfilled in the base protocol — it is enforced only by handwritten domain references like `journal_submission_guide.md`, which carry submission mechanics but not WRITING reasoning.
+
+Priority 2 is now sourced from **style thinking guides** produced by `/ars-style-extract`. These guides are markdown reasoning models extracted from user-supplied venue exemplars; see `commands/ars-style-extract.md` and `shared/contracts/style_thinking_guide.schema.md`.
+
+### Activation
+
+When ALL of the following are true, `draft_writer_agent` MUST load a venue guide as the Priority 2 source for the entire drafting phase:
+
+1. `intake_agent` Phase 0 has recorded a `target_journal`
+2. `passport.style_profile.priority_2_source` points at an existing `style_guides/<journal>_*.md`
+3. The pointed file passes the schema check (`shared/contracts/style_thinking_guide.schema.md` § Schema enforcement checklist)
+
+If condition 1 holds but conditions 2–3 do not, `intake_agent` Phase 0 Step 9.5 surfaces the option to run `/ars-style-extract`. User decline is logged; pipeline proceeds with no Priority 2 source.
+
+### Conflict resolution (extends existing rules)
+
+The base hierarchy stays: Priority 1 (discipline) > Priority 2 (venue guide) > Priority 3 (personal style).
+
+Within Priority 2:
+- If multiple guides exist for the journal, prefer the one whose `topic_scope` field matches the current paper's topic.
+- Tie-break by recency (newer guide wins).
+- Tie-break by exemplar count (higher confidence wins).
+
+When a venue guide rule conflicts with a Priority 3 personal style preference:
+- Venue guide wins (Priority 2 > Priority 3).
+- Log the conflict in Draft Metadata with the format already specified in § Conflict Resolution above, citing both the personal-style trait AND the venue-guide rule ID (e.g., G-MR-3).
+- Notify user once per draft per conflict type.
+
+### Loaded-guide attribution
+
+`draft_writer_agent` writes which guide it loaded into `passport.style_profile.priority_2_source` so downstream stages know which reasoning model shaped the draft. Stage 4.3 restyle (if invoked) uses the SAME guide by default — consistency between drafting and polish.
+
+### Restyle as Priority 2 enforcement
+
+If a guide informs initial drafting and `/ars-restyle` later (Stage 4.3 or standalone) suggests changes, the restyle is **a continuation of Priority 2 enforcement**, not a separate concern. The `style_alignment_artifact` written by restyle records which rules were applied as evidence of the priority hierarchy in action.
+
+### Cross-references
+
+- Producer of guides: `commands/ars-style-extract.md`
+- Consumer of guides (drafting): `academic-paper/agents/draft_writer_agent.md` (loads via this protocol)
+- Consumer of guides (polish): `commands/ars-restyle.md`
+- Pipeline insertion points: `academic-paper/agents/intake_agent.md` Step 9.5 + `academic-pipeline/SKILL.md` § Stage 4.3
+- Storage convention: `style_guides/README.md`
+- Schema: `shared/contracts/style_thinking_guide.schema.md`
