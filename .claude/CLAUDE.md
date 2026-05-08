@@ -154,6 +154,26 @@ Materials: Complete paper text. field_analyst_agent auto-detects domain and conf
 ### academic-paper-reviewer → academic-paper (revision)
 Materials: Editorial Decision Letter, Revision Roadmap, Per-reviewer detailed comments
 
+## Domain Customizations
+
+Project-local additive customization layer (not upstream ARS). Activates only when explicitly invoked; default behavior is unchanged.
+
+### Privacy Computing × Finance (UTD24 IS-track / MS-track)
+
+Targets MIS Quarterly, Information Systems Research, Management Science, INFORMS Journal on Computing. Method-driven research (new MPC/FHE/ZKP/DP/FL/TEE protocol + financial-scenario validation). Drafting in 简体中文 → finalization in English.
+
+**Entry point**: `/ars-utd24-full` slash command (`commands/ars-utd24-full.md`).
+
+**Reference files** (consumed by the agents listed in each file's header):
+- `shared/references/privacy_finance_glossary.md` — bilingual privacy-tech + finance terminology with Anti-Pattern Phrasings table. Iron rule: every privacy/security claim resolves to a glossary row before output.
+- `shared/references/privacy_finance_methodology_presets.md` — three method-driven recipes (DSR-MISQ / Crypto-Protocol / Econ-IS Analytical) with required structure, anti-patterns, and quality gates per UTD24 venue.
+- `academic-paper-reviewer/references/top_journals_by_field.md` § Section 7.5 — UTD24 IS-track / MS-track targeting map + reviewer expectation notes.
+- `academic-paper-reviewer/agents/field_analyst_agent.md` § Example 3 — default reviewer panel for the joint domain (EIC=MISQ SE / R1=cryptography / R2=FinTech / R3=privacy-regulation) plus the routing rule.
+- `academic-paper/references/citation_format_switcher.md` § UTD24 IS-track and MS-track Styles — MISQ Author-Date and INFORMS Author-Date formats with the journal→style routing table.
+- `examples/privacy_finance_seed_corpus/manifest.yaml` — ~25-entry seed `literature_corpus[]` (FL fraud / MPC settlement / DP financial micro-data / ZKP audit / TEE trading) consumable via the v3.6.4 corpus adapter contract.
+
+**Pattern**: pure additive references + one slash command + one MODE_REGISTRY row. No schema changes, no agent rewrites. Removing any of the above files restores upstream behavior.
+
 ## Version Info
 - **Suite version**: 3.7.0 (per CHANGELOG.md)
 - **Last Updated**: 2026-05-05

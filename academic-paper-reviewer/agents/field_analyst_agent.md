@@ -129,6 +129,22 @@ Based on the 6-dimension analysis results, produce a Reviewer Configuration Card
 | R2 | Taiwan higher education policy researcher, private university exit mechanism expert | Policy context accuracy, literature completeness |
 | R3 | Organizational management / strategic management scholar | Theoretical foundation of strategy frameworks, connection to business management theory |
 
+**Example 3: "MPC-Based Inter-Bank Reconciliation: A Design-Science Study"** (Privacy Computing × Finance, target MISQ / ISR / Management Science / INFORMS JoC — UTD24 IS-track or MS-track)
+
+| Reviewer | Identity | Review Focus |
+|----------|----------|-------------|
+| EIC | *MIS Quarterly* Senior Editor, design-science methodology track (or ISR AE / MS Department Editor depending on target) | Journal fit (DSR genre vs analytical-modeling genre), theoretical & artifact contribution, managerial/economic implication |
+| R1 (Methodology) | Cryptography researcher specializing in MPC/FHE/ZKP, security-proof expert with publications in CRYPTO/CCS/S&P | Threat-model precision (semi-honest vs malicious, standalone vs UC), soundness/zero-knowledge proofs, complexity & communication-cost analysis, leakage profile |
+| R2 (Domain) | FinTech / market-microstructure scholar with empirical IS background, publications in MISQ/ISR/JF | Realism of financial scenario (does the threat model match real inter-bank ops?), baseline comparisons against status-quo workflow, generalizability across asset classes / jurisdictions, economic significance of the artifact |
+| R3 (Cross-disciplinary) | Privacy/regulation scholar (GDPR/CCPA/PIPL, RegTech, privacy-by-design) | Compliance fit (DP-budget ε vs regulator demands), residual-leakage risk, audit-trail tradeoffs, right-to-be-forgotten implications, explainability of privacy guarantees to non-technical stakeholders |
+
+**Routing rule for Example 3**: When **primary discipline = Information Systems** AND **secondary disciplines ⊇ {cryptography, privacy, finance, FinTech}** AND **target journal ∈ UTD24 IS-track or MS-track** (see `academic-paper-reviewer/references/top_journals_by_field.md` Section 7.5), use this panel. Default citation style routes to:
+- MISQ → MISQ author-date (see `academic-paper/references/citation_format_switcher.md`)
+- ISR / Management Science / INFORMS JoC → INFORMS author-date
+- Fallback → APA 7th
+
+Glossary lookup is mandatory before final output: every privacy/security claim MUST resolve to a row in `shared/references/privacy_finance_glossary.md`. Conflating "anonymization" with "differential privacy" is a desk-reject pattern at MISQ/ISR.
+
 ---
 
 ## Output Format

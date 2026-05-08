@@ -136,6 +136,56 @@ This document is used by `field_analyst_agent` and `eic_agent` as a reference fo
 
 ---
 
+## 7.5 UTD24 — Privacy Computing × Finance Targeting Map
+
+Used by `field_analyst_agent` and `eic_agent` when the paper's primary discipline is **Information Systems** AND secondary disciplines include cryptography / privacy / finance / FinTech. Activated by `/ars-utd24-full` slash command or when `intake_agent` records target_journal ∈ UTD24.
+
+### IS-track UTD24 (primary targets)
+
+| Journal | UTD24 | Privacy-Computing × Finance fit | Review preferences | Submission ceiling |
+|---|:-:|---|---|---|
+| *MIS Quarterly* (MISQ) | ✓ | Design-science artifact + economic/managerial implication | Theoretical contribution + IT artifact + rigorous evaluation; DSR genre well-supported (Hevner et al. 2004 baseline) | Senior Editors prefer ≤ 12,000 words main text |
+| *Information Systems Research* (ISR) | ✓ | Analytical modeling + econometric IS + design science | Strong methodological standards; values formal proofs; reduced-form identification expected for empirical | ≤ 50 manuscript pages double-spaced |
+| *INFORMS Journal on Computing* (JoC) | ✓ | Algorithm + computational experiment | Algorithmic novelty, complexity proofs, reproducibility (code + data); favors method-driven CS contribution with scenario validation | Software section accepts artifact-only submissions |
+
+### MS-track UTD24 (primary targets)
+
+| Journal | UTD24 | Privacy-Computing × Finance fit | Review preferences | Submission ceiling |
+|---|:-:|---|---|---|
+| *Management Science* (IS dept.) | ✓ | Method + decision-science framing; analytical modeling | Strong theory, identification strategy, generality across contexts | ≤ 35 main-text pages |
+| *Management Science* (Finance dept.) | ✓ | Empirical asset pricing / market microstructure with PETs angle | Causal identification (DiD / IV / RDD), economic significance > statistical significance | Same |
+
+### Finance-track UTD24 (NEIGHBORING — likely cited, not targeted by this user)
+
+| Journal | UTD24 | Note |
+|---|:-:|---|
+| *Journal of Finance* (JF) | ✓ | Empirical/theoretical finance flagship. Cite for market-microstructure motivation; not a target for method-driven privacy-tech papers. |
+| *Journal of Financial Economics* (JFE) | ✓ | Empirical bias. Cite for identification methodology references. |
+| *Review of Financial Studies* (RFS) | ✓ | Mixed empirical/theoretical. Cite for analytical-model precedent. |
+
+### IS adjacency (NEIGHBORING — backup options)
+
+| Journal | UTD24 | Note |
+|---|:-:|---|
+| *Journal of Management Information Systems* (JMIS) | ✗ | AIS Basket-8; strong FinTech/blockchain track; backup if MISQ rejects. |
+| *Decision Support Systems* (DSS) | ✗ | Applied analytics, fast turnaround; suitable for incremental method+case papers. |
+| *Production and Operations Management* (POM) | (varies) | OM-finance interface; some lists include POM in UTD24, others don't. |
+| *INFORMS Journal on Optimization* | ✗ | Pure optimization; targeted if the privacy-tech contribution is the optimization formulation itself. |
+
+### Reviewer expectation notes for this joint domain
+
+1. **MISQ Senior Editors expect a managerial/economic implication section even for design-science papers**. A pure cryptography construction without "so what for IS / business / regulator" is a desk-reject signal.
+2. **ISR analytical track requires either a closed-form result or a tight numerical comparative-static**. Empirical illustration alone is insufficient at ISR but acceptable at MISQ.
+3. **INFORMS JoC expects reproducibility artifacts** — code + data + dockerfile. The `repro_lock` block in Material Passport (`shared/contracts/passport/`) maps cleanly to JoC's Software section requirements.
+4. **Management Science (IS dept.) tolerates pure analytical theory papers** that do not produce an IT artifact — distinct from MISQ's design-science orientation.
+5. **All four primary targets reject papers conflating "anonymization" with "differential privacy"** (see `shared/references/privacy_finance_glossary.md` Anti-Pattern Phrasings table).
+
+### Default panel for this track
+
+When configuring reviewers via `field_analyst_agent`, use Example 3 in `academic-paper-reviewer/agents/field_analyst_agent.md` (EIC = MISQ Senior Editor / ISR AE / MS DE depending on target; R1 = cryptography; R2 = FinTech / market microstructure; R3 = privacy regulation).
+
+---
+
 ## 8. Interdisciplinary
 
 | Journal | Publisher | Impact Factor Range | Typical Review Preferences |

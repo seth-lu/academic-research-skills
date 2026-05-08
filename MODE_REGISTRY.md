@@ -52,6 +52,7 @@ Last updated: v3.7.0 (2026-05-05)
 |------|----------|--------|-----------|----------|
 | (pipeline) | Balanced | 10-stage orchestrated workflow | Very High | "academic pipeline", "research to paper", "full paper workflow" |
 | `resume_from_passport=<hash>` | Fidelity | Resume a prior pipeline run from a Material Passport reset boundary. Opt-in (`ARS_PASSPORT_RESET=1`). See `academic-pipeline/references/passport_as_reset_boundary.md`. | High | "resume from passport", "continue pipeline from reset boundary" |
+| `(pipeline) + utd24 preset` | Balanced | Full pipeline with Privacy Computing × Finance domain preset (UTD24 IS-track / MS-track). Loads `shared/references/privacy_finance_glossary.md` + `privacy_finance_methodology_presets.md` + Section 7.5 of `top_journals_by_field.md`. zh-CN drafting → en finalization. See `commands/ars-utd24-full.md`. | Very High | `/ars-utd24-full`, "UTD24 paper", "MISQ paper", "privacy computing finance UTD24" |
 
 ---
 

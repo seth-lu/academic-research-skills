@@ -1,0 +1,495 @@
+# Privacy Computing × Finance Seed Corpus
+#
+# Conforms to shared/contracts/passport/literature_corpus_entry.schema.json (v3.7.1).
+# All entries: source_acquired=false → description_last_audit MUST be the literal "none"
+# (firm rule #2). Acquire originals into your KB before relying on these for claims.
+#
+# Tag taxonomy:
+#   privacy-tech sub-topic: mpc, fhe, dp, fl, zkp, tee, pet-survey
+#   finance sub-topic:      credit, aml, settlement, microstructure, regulation, audit, fraud
+#   role:                   utd24-seed, foundational, benchmark, application
+#
+# Last updated: 2026-05-08
+
+origin_skill: manual-curation
+origin_mode: seed-corpus
+origin_date: "2026-05-08T00:00:00Z"
+verification_status: SEED_UNVERIFIED
+version_label: "v0.1.0"
+
+literature_corpus:
+
+  # ============================================================
+  # Foundational anchors (4) — kernel-theory citations
+  # ============================================================
+
+  - citation_key: hevner2004design
+    title: "Design Science in Information Systems Research"
+    authors:
+      - {family: Hevner, given: Alan R.}
+      - {family: March, given: Salvatore T.}
+      - {family: Park, given: Jinsoo}
+      - {family: Ram, given: Sudha}
+    year: 2004
+    venue: "MIS Quarterly"
+    doi: "10.2307/25148625"
+    source_pointer: "https://doi.org/10.2307/25148625"
+    tags: [foundational, dsr, utd24-seed]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  - citation_key: gregor2013positioning
+    title: "Positioning and Presenting Design Science Research for Maximum Impact"
+    authors:
+      - {family: Gregor, given: Shirley}
+      - {family: Hevner, given: Alan R.}
+    year: 2013
+    venue: "MIS Quarterly"
+    doi: "10.25300/MISQ/2013/37.2.01"
+    source_pointer: "https://doi.org/10.25300/MISQ/2013/37.2.01"
+    tags: [foundational, dsr, utd24-seed]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  - citation_key: dwork2006calibrating
+    title: "Calibrating Noise to Sensitivity in Private Data Analysis"
+    authors:
+      - {family: Dwork, given: Cynthia}
+      - {family: McSherry, given: Frank}
+      - {family: Nissim, given: Kobbi}
+      - {family: Smith, given: Adam}
+    year: 2006
+    venue: "Theory of Cryptography Conference (TCC)"
+    doi: "10.1007/11681878_14"
+    source_pointer: "https://doi.org/10.1007/11681878_14"
+    tags: [foundational, dp, pet-survey]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  - citation_key: yao1982protocols
+    title: "Protocols for Secure Computations"
+    authors:
+      - {family: Yao, given: Andrew C.}
+    year: 1982
+    venue: "23rd Annual Symposium on Foundations of Computer Science (FOCS)"
+    doi: "10.1109/SFCS.1982.38"
+    source_pointer: "https://doi.org/10.1109/SFCS.1982.38"
+    tags: [foundational, mpc, pet-survey]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  # ============================================================
+  # 1. Federated Learning in fraud / credit / banking (5)
+  # ============================================================
+
+  - citation_key: yang2019federated
+    title: "Federated Machine Learning: Concept and Applications"
+    authors:
+      - {family: Yang, given: Qiang}
+      - {family: Liu, given: Yang}
+      - {family: Chen, given: Tianjian}
+      - {family: Tong, given: Yongxin}
+    year: 2019
+    venue: "ACM Transactions on Intelligent Systems and Technology"
+    doi: "10.1145/3298981"
+    source_pointer: "https://doi.org/10.1145/3298981"
+    tags: [fl, credit, foundational, utd24-seed]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  - citation_key: bonawitz2017practical
+    title: "Practical Secure Aggregation for Privacy-Preserving Machine Learning"
+    authors:
+      - {family: Bonawitz, given: Keith}
+      - {family: Ivanov, given: Vladimir}
+      - {family: Kreuter, given: Ben}
+      - {family: Marcedone, given: Antonio}
+      - {family: McMahan, given: H. Brendan}
+      - {family: Patel, given: Sarvar}
+      - {family: Ramage, given: Daniel}
+      - {family: Segal, given: Aaron}
+      - {family: Seth, given: Karn}
+    year: 2017
+    venue: "ACM CCS"
+    doi: "10.1145/3133956.3133982"
+    source_pointer: "https://doi.org/10.1145/3133956.3133982"
+    tags: [fl, mpc, foundational, fraud]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  - citation_key: kairouz2021advances
+    title: "Advances and Open Problems in Federated Learning"
+    authors:
+      - {family: Kairouz, given: Peter}
+      - {family: McMahan, given: H. Brendan}
+      - {literal: "et al. (Federated Learning Workshop authors)"}
+    year: 2021
+    venue: "Foundations and Trends in Machine Learning"
+    doi: "10.1561/2200000083"
+    source_pointer: "https://doi.org/10.1561/2200000083"
+    tags: [fl, pet-survey, utd24-seed]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  - citation_key: long2020federated
+    title: "Federated Learning for Open Banking"
+    authors:
+      - {family: Long, given: Guodong}
+      - {family: Tan, given: Yue}
+      - {family: Jiang, given: Jing}
+      - {family: Zhang, given: Chengqi}
+    year: 2020
+    venue: "Federated Learning - Privacy and Incentive (Springer LNCS 12500)"
+    doi: "10.1007/978-3-030-63076-8_17"
+    source_pointer: "https://doi.org/10.1007/978-3-030-63076-8_17"
+    tags: [fl, credit, application]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  - citation_key: byrd2021differentially
+    title: "Differentially Private Secure Multi-Party Computation for Federated Learning in Financial Applications"
+    authors:
+      - {family: Byrd, given: David}
+      - {family: Polychroniadou, given: Antigoni}
+    year: 2021
+    venue: "ACM International Conference on AI in Finance (ICAIF)"
+    doi: "10.1145/3383455.3422562"
+    source_pointer: "https://doi.org/10.1145/3383455.3422562"
+    tags: [fl, mpc, dp, fraud, application]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  # ============================================================
+  # 2. MPC for inter-bank settlement / reconciliation (5)
+  # ============================================================
+
+  - citation_key: damgard2017confidential
+    title: "Confidential Benchmarking based on Multiparty Computation"
+    authors:
+      - {family: Damgård, given: Ivan}
+      - {family: Damgård, given: Kasper}
+      - {family: Nielsen, given: Kurt}
+      - {family: Nordholt, given: Peter Sebastian}
+      - {family: Toft, given: Tomas}
+    year: 2017
+    venue: "Financial Cryptography (FC)"
+    doi: "10.1007/978-3-662-54970-4_10"
+    source_pointer: "https://doi.org/10.1007/978-3-662-54970-4_10"
+    tags: [mpc, settlement, application, utd24-seed]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  - citation_key: archer2018from
+    title: "From Keys to Databases — Real-World Applications of Secure Multi-Party Computation"
+    authors:
+      - {family: Archer, given: David W.}
+      - {family: Bogdanov, given: Dan}
+      - {family: Lindell, given: Yehuda}
+      - {family: Kamm, given: Liina}
+      - {family: Nielsen, given: Kurt}
+      - {family: Pagter, given: Jakob Illeborg}
+      - {family: Smart, given: Nigel P.}
+      - {family: Wright, given: Rebecca N.}
+    year: 2018
+    venue: "The Computer Journal"
+    doi: "10.1093/comjnl/bxy090"
+    source_pointer: "https://doi.org/10.1093/comjnl/bxy090"
+    tags: [mpc, pet-survey, application, settlement]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  - citation_key: keller2020mpspdz
+    title: "MP-SPDZ: A Versatile Framework for Multi-Party Computation"
+    authors:
+      - {family: Keller, given: Marcel}
+    year: 2020
+    venue: "ACM CCS"
+    doi: "10.1145/3372297.3417872"
+    source_pointer: "https://doi.org/10.1145/3372297.3417872"
+    tags: [mpc, benchmark, foundational]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  - citation_key: dauterman2022waldo
+    title: "Waldo: A Private Time-Series Database from Function Secret Sharing"
+    authors:
+      - {family: Dauterman, given: Emma}
+      - {family: Rathee, given: Mayank}
+      - {family: Popa, given: Raluca Ada}
+      - {family: Stoica, given: Ion}
+    year: 2022
+    venue: "IEEE S&P"
+    doi: "10.1109/SP46214.2022.9833611"
+    source_pointer: "https://doi.org/10.1109/SP46214.2022.9833611"
+    tags: [mpc, settlement, application]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  - citation_key: pinkas2018efficient
+    title: "Efficient Circuit-Based PSI with Linear Communication"
+    authors:
+      - {family: Pinkas, given: Benny}
+      - {family: Schneider, given: Thomas}
+      - {family: Tkachenko, given: Oleksandr}
+      - {family: Yanai, given: Avishay}
+    year: 2019
+    venue: "EUROCRYPT"
+    doi: "10.1007/978-3-030-17659-4_5"
+    source_pointer: "https://doi.org/10.1007/978-3-030-17659-4_5"
+    tags: [mpc, settlement, foundational]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  # ============================================================
+  # 3. Differential Privacy for financial micro-data (5)
+  # ============================================================
+
+  - citation_key: abadi2016deep
+    title: "Deep Learning with Differential Privacy"
+    authors:
+      - {family: Abadi, given: Martín}
+      - {family: Chu, given: Andy}
+      - {family: Goodfellow, given: Ian}
+      - {family: McMahan, given: H. Brendan}
+      - {family: Mironov, given: Ilya}
+      - {family: Talwar, given: Kunal}
+      - {family: Zhang, given: Li}
+    year: 2016
+    venue: "ACM CCS"
+    doi: "10.1145/2976749.2978318"
+    source_pointer: "https://doi.org/10.1145/2976749.2978318"
+    tags: [dp, foundational, fl]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  - citation_key: abowd2018us
+    title: "The U.S. Census Bureau Adopts Differential Privacy"
+    authors:
+      - {family: Abowd, given: John M.}
+    year: 2018
+    venue: "ACM SIGKDD"
+    doi: "10.1145/3219819.3226070"
+    source_pointer: "https://doi.org/10.1145/3219819.3226070"
+    tags: [dp, regulation, application, utd24-seed]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  - citation_key: dwork2014algorithmic
+    title: "The Algorithmic Foundations of Differential Privacy"
+    authors:
+      - {family: Dwork, given: Cynthia}
+      - {family: Roth, given: Aaron}
+    year: 2014
+    venue: "Foundations and Trends in Theoretical Computer Science"
+    doi: "10.1561/0400000042"
+    source_pointer: "https://doi.org/10.1561/0400000042"
+    tags: [dp, foundational, pet-survey]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  - citation_key: cummings2024centering
+    title: "Centering Policy and Practice: Research Gaps Around Usable Differential Privacy"
+    authors:
+      - {family: Cummings, given: Rachel}
+      - {family: Hod, given: Shlomi}
+      - {family: Sarathy, given: Jayshree}
+      - {family: Swanberg, given: Marika}
+    year: 2024
+    venue: "IEEE Conference on Secure and Trustworthy Machine Learning (SaTML)"
+    doi: "10.1109/SaTML59370.2024.00011"
+    source_pointer: "https://doi.org/10.1109/SaTML59370.2024.00011"
+    tags: [dp, regulation, application]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  - citation_key: bun2018composable
+    title: "Composable and Versatile Privacy via Truncated CDP"
+    authors:
+      - {family: Bun, given: Mark}
+      - {family: Dwork, given: Cynthia}
+      - {family: Rothblum, given: Guy N.}
+      - {family: Steinke, given: Thomas}
+    year: 2018
+    venue: "ACM Symposium on Theory of Computing (STOC)"
+    doi: "10.1145/3188745.3188946"
+    source_pointer: "https://doi.org/10.1145/3188745.3188946"
+    tags: [dp, foundational]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  # ============================================================
+  # 4. ZKP for audit / regulatory compliance (4)
+  # ============================================================
+
+  - citation_key: narula2018zkledger
+    title: "zkLedger: Privacy-Preserving Auditing for Distributed Ledgers"
+    authors:
+      - {family: Narula, given: Neha}
+      - {family: Vasquez, given: Willy}
+      - {family: Virza, given: Madars}
+    year: 2018
+    venue: "USENIX NSDI"
+    doi: "10.5555/3307441.3307449"
+    source_pointer: "https://www.usenix.org/conference/nsdi18/presentation/narula"
+    tags: [zkp, audit, application, utd24-seed]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  - citation_key: bunz2018bulletproofs
+    title: "Bulletproofs: Short Proofs for Confidential Transactions and More"
+    authors:
+      - {family: Bünz, given: Benedikt}
+      - {family: Bootle, given: Jonathan}
+      - {family: Boneh, given: Dan}
+      - {family: Poelstra, given: Andrew}
+      - {family: Wuille, given: Pieter}
+      - {family: Maxwell, given: Greg}
+    year: 2018
+    venue: "IEEE S&P"
+    doi: "10.1109/SP.2018.00020"
+    source_pointer: "https://doi.org/10.1109/SP.2018.00020"
+    tags: [zkp, foundational, audit]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  - citation_key: ben-sasson2014succinct
+    title: "Succinct Non-Interactive Zero Knowledge for a von Neumann Architecture"
+    authors:
+      - {family: Ben-Sasson, given: Eli}
+      - {family: Chiesa, given: Alessandro}
+      - {family: Tromer, given: Eran}
+      - {family: Virza, given: Madars}
+    year: 2014
+    venue: "USENIX Security"
+    doi: "10.5555/2671225.2671275"
+    source_pointer: "https://www.usenix.org/conference/usenixsecurity14/technical-sessions/presentation/ben-sasson"
+    tags: [zkp, foundational]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  - citation_key: chatzigiannis2022sok
+    title: "SoK: Auditability and Accountability in Distributed Payment Systems"
+    authors:
+      - {family: Chatzigiannis, given: Panagiotis}
+      - {family: Baldimtsi, given: Foteini}
+      - {family: Chalkias, given: Konstantinos}
+    year: 2022
+    venue: "ACM CCS"
+    doi: "10.1145/3548606.3559342"
+    source_pointer: "https://doi.org/10.1145/3548606.3559342"
+    tags: [zkp, audit, regulation, pet-survey]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  # ============================================================
+  # 5. TEE in trading / payment systems (3)
+  # ============================================================
+
+  - citation_key: zhang2016town
+    title: "Town Crier: An Authenticated Data Feed for Smart Contracts"
+    authors:
+      - {family: Zhang, given: Fan}
+      - {family: Cecchetti, given: Ethan}
+      - {family: Croman, given: Kyle}
+      - {family: Juels, given: Ari}
+      - {family: Shi, given: Elaine}
+    year: 2016
+    venue: "ACM CCS"
+    doi: "10.1145/2976749.2978326"
+    source_pointer: "https://doi.org/10.1145/2976749.2978326"
+    tags: [tee, microstructure, application]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  - citation_key: cheng2019ekiden
+    title: "Ekiden: A Platform for Confidentiality-Preserving, Trustworthy, and Performant Smart Contracts"
+    authors:
+      - {family: Cheng, given: Raymond}
+      - {family: Zhang, given: Fan}
+      - {family: Kos, given: Jernej}
+      - {family: He, given: Warren}
+      - {family: Hynes, given: Nicholas}
+      - {family: Johnson, given: Noah}
+      - {family: Juels, given: Ari}
+      - {family: Miller, given: Andrew}
+      - {family: Song, given: Dawn}
+    year: 2019
+    venue: "IEEE EuroS&P"
+    doi: "10.1109/EuroSP.2019.00023"
+    source_pointer: "https://doi.org/10.1109/EuroSP.2019.00023"
+    tags: [tee, microstructure, application, utd24-seed]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
+
+  - citation_key: vanbulck2018foreshadow
+    title: "Foreshadow: Extracting the Keys to the Intel SGX Kingdom with Transient Out-of-Order Execution"
+    authors:
+      - {family: Van Bulck, given: Jo}
+      - {family: Minkin, given: Marina}
+      - {family: Weisse, given: Ofir}
+      - {family: Genkin, given: Daniel}
+      - {family: Kasikci, given: Baris}
+      - {family: Piessens, given: Frank}
+      - {family: Silberstein, given: Mark}
+      - {family: Wenisch, given: Thomas F.}
+      - {family: Yarom, given: Yuval}
+      - {family: Strackx, given: Raoul}
+    year: 2018
+    venue: "USENIX Security"
+    doi: "10.5555/3277203.3277277"
+    source_pointer: "https://www.usenix.org/conference/usenixsecurity18/presentation/bulck"
+    tags: [tee, foundational]
+    obtained_via: manual
+    source_acquired: false
+    description_source: "bibliography_v0"
+    description_last_audit: "none"
