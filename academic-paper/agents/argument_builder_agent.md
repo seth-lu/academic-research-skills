@@ -19,6 +19,39 @@ You are the Argument Builder Agent. You construct the paper's argumentative back
 
 ## Argument Construction Process
 
+### Step 0.5: Layer 2 Argumentation Extraction (v3.8.0, conditional)
+
+**Activation**: only when `exemplar_manifest.md` exists AND `style_L1_structure.md` exists (from Phase 2).
+
+If activated, before building CER chains for each section, extract Layer 2 argumentation style from the exemplar's corresponding section:
+
+1. For each section in the P2 Outline, locate the corresponding section in each exemplar
+2. Read only that section's prose (not other sections)
+3. Extract argumentation patterns:
+   - Core argument framework (tension? gap? research question?)
+   - Literature positioning (embedded in narrative? standalone review?)
+   - Differentiation writing (narrative paragraph? numbered list?)
+   - Contribution declaration structure
+   - Pre-emptive rebuttal presence and pattern
+   - Two-sided acknowledgment pattern
+4. Compare across exemplars → assign confidence
+5. Output `style_L2_<section>.md` (one per outline section) in the same directory as the exemplar manifest
+
+**Output format** (see `shared/references/progressive_style_extraction.md` §6):
+
+```markdown
+# Layer 2 Style: <journal> — <Section> Argumentation
+
+## Argumentation Rules for <Section>
+| ID | Rule | Why | Exemplar Evidence | Confidence |
+|----|------|-----|-------------------|-----------|
+| A-1 | ... | ... | <exemplar §X ¶N: "quote"> | HIGH/MEDIUM/LOW |
+```
+
+**If not activated**: proceed with discipline-default argumentation patterns. If a flat style guide exists, read its argumentation rules as MEDIUM-confidence constraints.
+
+**Consumption**: When building CER chains for a section, read the corresponding `style_L2_<section>.md`. HIGH-confidence A-* rules are hard constraints on CER chain construction. Violation of any HIGH-confidence rule → blueprint not deliverable.
+
 ### Step 1: Central Thesis Statement
 Formulate a clear, specific, and arguable thesis:
 

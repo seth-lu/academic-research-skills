@@ -103,14 +103,16 @@ resume_from_passport=<hash> [stage=<n>] [mode=<m>]
 | 4 | REVISE | `academic-paper` | revision | Revised Draft, Response to Reviewers |
 | **3'** | **RE-REVIEW** | **`academic-paper-reviewer`** | **re-review** | **Verification review report: revision response checklist + residual issues** |
 | **4'** | **RE-REVISE** | **`academic-paper`** | **revision** | **Second revised draft (if needed)** |
-| **4.3** | **STYLE ALIGNMENT** (optional) | **`/ars-restyle` via orchestrator** | **interactive / roadmap-only / apply-all** | **Per-paragraph diff + rationale citing guide rule IDs; `passport.style_alignment_artifact` updated** |
+| **4.3** | **STYLE ALIGNMENT** (optional, v3.8.0: final polish only) | **`/ars-restyle` via orchestrator** | **interactive / roadmap-only / apply-all** | **Per-paragraph micro-adjustments only; structural style problems should have been resolved at Phase 2/3/3.5** |
 | **4.5** | **FINAL INTEGRITY** | **`integrity_verification_agent`** | **final-check** | **Final verification report (must achieve 100% pass to proceed; re-runs after Stage 4.3 to catch any restyle-induced citation/claim drift)** |
 | 5 | FINALIZE | `academic-paper` | format-convert | Final Paper (default MD; DOCX via Pandoc when available, otherwise conversion instructions; ask about LaTeX; confirm correctness; PDF) |
 | **6** | **PROCESS SUMMARY** | **orchestrator** | **auto** | **Paper creation process record MD + LaTeX to PDF (bilingual)** |
 
 ### Stage 4.3 — Auto-trigger conditions
 
-Stage 4.3 is **optional and opt-in**. The orchestrator surfaces it only when both of the following hold; otherwise it is silently skipped (no prompt to user, no log entry).
+Stage 4.3 is **optional and opt-in**. v3.8.0 downgrade: Stage 4.3 is now a **final polish pass** that handles only micro-adjustments (word choice, transition phrasing) that slipped through the progressive style extraction at P2/P3/P3.5. Structural style problems (section architecture, argumentation patterns, paragraph-level move sequences) should already be resolved before drafting.
+
+The orchestrator surfaces it only when both of the following hold; otherwise it is silently skipped (no prompt to user, no log entry).
 
 - **Condition 1 (guide available)**: `passport.style_profile.priority_2_source` exists AND points at a `style_guides/<journal>_*.md` that passes the schema check at `shared/contracts/style_thinking_guide.schema.md` § Schema enforcement checklist.
 - **Condition 2 (style concerns surfaced in review)**: at least one Stage 3 / Stage 3' reviewer comment matches the case-insensitive regex `\b(clarity|style|exposition|writing|prose|readability|tone|register|flow)\b`.
@@ -135,11 +137,16 @@ Stage 4.3 NEVER auto-runs without user confirmation — even with both condition
 
 ### Phase 0 connection to Stage 4.3
 
-The companion to Stage 4.3 is `intake_agent` Phase 0 **Step 10.5** ("Venue Style Exemplars"). Step 10.5 is where the guide that Stage 4.3 consumes is *produced* — by inviting the user to supply venue exemplars at pipeline start. If Step 10.5 yields a guide:
-- `draft_writer_agent` in Stage 2 loads the guide via `shared/style_calibration_protocol.md` § Priority 2 Implementation, so initial drafting is already venue-aligned.
-- Stage 4.3 then becomes a polish pass against the same guide, addressing what slipped through.
+The companion to Stage 4.3 is `intake_agent` Phase 0 **Step 10.5** ("Venue Style Exemplars"). Step 10.5 is where the exemplar manifest is *produced* — by inviting the user to supply venue exemplars at pipeline start. The manifest then drives progressive style extraction at P2 (Layer 1 structure) → P3 (Layer 2 argumentation) → P3.5 (Layer 3+4 paragraph+framework) → P4 (per-section drafting). See `shared/references/progressive_style_extraction.md`.
 
-If Step 10.5 was declined (no guide), Stage 4.3 will only fire under "Only Condition 2" — a process-summary note recommending the user produce a guide post-pipeline.
+If Step 10.5 yields a manifest:
+- `structure_architect_agent` in Phase 2 extracts Layer 1 structure → outline is venue-shaped
+- `argument_builder_agent` in Phase 3 extracts Layer 2 per-section → CER chains use venue argumentation patterns
+- `draft_writer_agent` in Phase 3.5 extracts Layer 3+4 per-paragraph → writing frameworks as hard constraints
+- Phase 4 drafts per-section with framework hard constraints → draft is venue-styled from the start
+- Stage 4.3 then becomes a polish pass only, addressing minor issues that slipped through
+
+If Step 10.5 was declined (no manifest), Stage 4.3 will only fire under "Only Condition 2" — a process-summary note recommending the user produce a guide post-pipeline.
 
 **Parallelization opportunity (v3.3)**: Within Stage 2, the `academic-paper` skill's Phase 1 (literature_strategist_agent) and the `visualization_agent` can operate in parallel after Phase 2 (structure_architect_agent) completes the outline. Specifically:
 - Once the outline includes a visualization plan, `visualization_agent` can begin figure generation

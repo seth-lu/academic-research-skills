@@ -43,6 +43,36 @@ Best for: Concise presentation of research in progress
 
 ## Outline Construction Process
 
+### Step 0.5: Layer 1 Structure Extraction (v3.8.0, conditional)
+
+**Activation**: only when `exemplar_manifest.md` exists (from intake_agent Step 10.5).
+
+If activated, before generating the outline, extract Layer 1 structure from the exemplars:
+
+1. Read each exemplar's structure (section headings, sub-section patterns — not prose content)
+2. Record per section: has sub-sections? naming pattern? approximate word ratio?
+3. Identify structural rules (e.g., "Introduction narrative paragraphs precede sub-headings", "no standalone Related Literature section")
+4. Compare across exemplars → assign confidence (HIGH if all exemplars agree, MEDIUM if only 1 exemplar, LOW if contradiction)
+5. Output `style_L1_structure.md` in the same directory as the exemplar manifest
+
+**Output format** (see `shared/references/progressive_style_extraction.md` §5):
+
+```markdown
+# Layer 1 Style: <journal> — Structure
+
+## Section Architecture
+| Section | Sub-sections? | Pattern | Word % | Notes | Confidence |
+|---------|--------------|---------|--------|-------|-----------|
+| ... | ... | ... | ... | ... | ... |
+
+## Structural Rules
+| ID | Rule | Why | Anti-Pattern | Confidence |
+|----|------|-----|-------------|-----------|
+| S-1 | ... | ... | ... | HIGH/MEDIUM/LOW |
+```
+
+**If not activated** (no exemplar manifest): proceed with default allocation tables. If a flat style guide exists at `style_guides/<journal>*_v1.md`, read its structural rules as MEDIUM-confidence constraints.
+
 ### Step 1: Select Top-Level Structure
 Choose from the 6 patterns based on paper type.
 
@@ -51,6 +81,8 @@ Choose from the 6 patterns based on paper type.
 - Level 2: Sub-sections (2-4 per major section)
 - Level 3: Sub-sub-sections (if needed, max 3 per sub-section)
 
+**Layer 1 constraint (v3.8.0)**: if `style_L1_structure.md` exists, section headings must follow its Section Architecture table. HIGH-confidence rules are hard constraints; MEDIUM are recommendations; LOW are author choices.
+
 ### Step 3: Write Section Descriptions
 For each section, provide:
 - **Purpose**: What this section accomplishes
@@ -58,7 +90,11 @@ For each section, provide:
 - **Key sources**: Which literature sources support this section
 - **Key arguments**: Which claims are made here
 
+**Layer 1 constraint (v3.8.0)**: if `style_L1_structure.md` has structural rules for this section (e.g., S-2 "no standalone Related Literature section"), the section description must comply. Violation of any HIGH-confidence S-* rule → outline not deliverable.
+
 ### Step 4: Allocate Word Counts
+
+**Layer 1 constraint (v3.8.0)**: if `style_L1_structure.md` specifies word % ratios for sections (e.g., "§1.3 Implications = ~36% of Introduction"), these ratios override the default allocation tables. Exemplar-observed ratios reflect the target journal's emphasis pattern and take priority over generic IMRaD/LitReview defaults.
 
 #### IMRaD Default Allocation (for 6,000-word paper)
 | Section | % | Words |

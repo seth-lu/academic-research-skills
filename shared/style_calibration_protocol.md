@@ -152,49 +152,68 @@ If samples span many years: weight recent samples more heavily (2x weight for sa
 
 ---
 
-## Priority 2 Implementation — Venue Style Thinking Guides
+## Priority 2 Implementation — Progressive Style Extraction (v3.8.0)
 
 The Priority hierarchy above (Discipline > Target journal > Personal style) leaves Priority 2 ("Target journal conventions") unfilled in the base protocol — it is enforced only by handwritten domain references like `journal_submission_guide.md`, which carry submission mechanics but not WRITING reasoning.
 
-Priority 2 is now sourced from **style thinking guides** produced by `/ars-style-extract`. These guides are markdown reasoning models extracted from user-supplied venue exemplars; see `commands/ars-style-extract.md` and `shared/contracts/style_thinking_guide.schema.md`.
+### v3.8.0 change: Progressive extraction replaces flat guide loading
+
+Priority 2 is now sourced from **progressive style extraction** across Phases 2→3→3.5→4, not from a single flat guide loaded at Phase 4. See `shared/references/progressive_style_extraction.md` for the authoritative reference.
+
+**Old path (pre-v3.8.0)**:
+1. Phase 0: `/ars-style-extract` produces flat guide
+2. Phase 4: `draft_writer_agent` loads flat guide as soft guide
+3. Stage 4.3: `/ars-restyle` fixes what soft-guiding missed
+
+**New path (v3.8.0)**:
+1. Phase 0 Step 10.5: User selects exemplars → `exemplar_manifest.md`
+2. Phase 2: `structure_architect_agent` extracts Layer 1 structure → `style_L1_structure.md` → outline is venue-shaped
+3. Phase 3: `argument_builder_agent` extracts Layer 2 per-section → `style_L2_<section>.md` → CER chains use venue argumentation
+4. Phase 3.5: `draft_writer_agent` extracts Layer 3+4 per-paragraph → `style_L3L4_<section>.md` + `framework_<section>.md` → hard constraints for drafting
+5. Phase 4: `draft_writer_agent` drafts per-section with framework hard constraints
+6. Stage 4.3: downgraded to final polish pass only
 
 ### Activation
 
-When ALL of the following are true, `draft_writer_agent` MUST load a venue guide as the Priority 2 source for the entire drafting phase:
+When ALL of the following are true, progressive style extraction activates:
 
-1. `intake_agent` Phase 0 has recorded a `target_journal`
-2. `passport.style_profile.priority_2_source` points at an existing `style_guides/<journal>_*.md`
-3. The pointed file passes the schema check (`shared/contracts/style_thinking_guide.schema.md` § Schema enforcement checklist)
+1. `intake_agent` Phase 0 Step 10.5 produced `exemplar_manifest.md` (user supplied venue exemplars)
+2. `passport.style_profile.priority_2_source` points at the exemplar manifest directory
+3. The exemplar files referenced in the manifest are readable
 
-If condition 1 holds but conditions 2–3 do not, `intake_agent` Phase 0 Step 9.5 surfaces the option to run `/ars-style-extract`. User decline is logged; pipeline proceeds with no Priority 2 source.
+If condition 1 holds but exemplars are unreadable, fall back to any existing flat guide at `style_guides/<journal>*_v1.md` (MEDIUM confidence). If no flat guide exists either, proceed with no Priority 2 source.
+
+### Degradation path
+
+| Phase | Progressive path | Degraded path (no exemplar manifest) |
+|-------|------------------|-------------------------------------|
+| P2 | Extract L1 from exemplar → venue-shaped outline | Default allocation tables |
+| P3 | Extract L2 per section from exemplar → venue CER chains | Discipline-default argumentation patterns |
+| P3.5 | Extract L3+4 per paragraph → framework hard constraints | Skip Phase 3.5 entirely |
+| P4 | Per-section calls with framework | Original single-call method |
+| Stage 4.3 | Final polish only | Same as before (primary style fix) |
+
+Degraded path = pre-v3.8.0 behavior. Fully backwards compatible.
 
 ### Conflict resolution (extends existing rules)
 
-The base hierarchy stays: Priority 1 (discipline) > Priority 2 (venue guide) > Priority 3 (personal style).
+The base hierarchy stays: Priority 1 (discipline) > Priority 2 (venue style) > Priority 3 (personal style).
 
-Within Priority 2:
-- If multiple guides exist for the journal, prefer the one whose `topic_scope` field matches the current paper's topic.
-- Tie-break by recency (newer guide wins).
-- Tie-break by exemplar count (higher confidence wins).
+Within Priority 2, the progressive extraction files take precedence over any flat guide:
+- `style_L1_structure.md` > flat guide structural rules
+- `style_L2_<section>.md` > flat guide argumentation rules
+- `style_L3L4_<section>.md` + `framework_<section>.md` > flat guide paragraph/narrative rules
 
-When a venue guide rule conflicts with a Priority 3 personal style preference:
-- Venue guide wins (Priority 2 > Priority 3).
-- Log the conflict in Draft Metadata with the format already specified in § Conflict Resolution above, citing both the personal-style trait AND the venue-guide rule ID (e.g., G-MR-3).
-- Notify user once per draft per conflict type.
-
-### Loaded-guide attribution
-
-`draft_writer_agent` writes which guide it loaded into `passport.style_profile.priority_2_source` so downstream stages know which reasoning model shaped the draft. Stage 4.3 restyle (if invoked) uses the SAME guide by default — consistency between drafting and polish.
-
-### Restyle as Priority 2 enforcement
-
-If a guide informs initial drafting and `/ars-restyle` later (Stage 4.3 or standalone) suggests changes, the restyle is **a continuation of Priority 2 enforcement**, not a separate concern. The `style_alignment_artifact` written by restyle records which rules were applied as evidence of the priority hierarchy in action.
+When a progressive extraction rule conflicts with a Priority 3 personal style preference:
+- Progressive extraction wins (Priority 2 > Priority 3)
+- Log the conflict in Draft Metadata, citing both the personal-style trait AND the extraction rule ID (e.g., S-2, A-1)
+- Notify user once per draft per conflict type
 
 ### Cross-references
 
-- Producer of guides: `commands/ars-style-extract.md`
-- Consumer of guides (drafting): `academic-paper/agents/draft_writer_agent.md` (loads via this protocol)
-- Consumer of guides (polish): `commands/ars-restyle.md`
-- Pipeline insertion points: `academic-paper/agents/intake_agent.md` Step 9.5 + `academic-pipeline/SKILL.md` § Stage 4.3
+- Producer of exemplar manifest: `academic-paper/agents/intake_agent.md` Step 10.5
+- Progressive extraction reference: `shared/references/progressive_style_extraction.md`
+- Consumers: `structure_architect_agent.md` (P2), `argument_builder_agent.md` (P3), `draft_writer_agent.md` (P3.5, P4)
+- Pipeline insertion points: `academic-pipeline/SKILL.md` § Stage 4.3 (downgraded)
 - Storage convention: `style_guides/README.md`
-- Schema: `shared/contracts/style_thinking_guide.schema.md`
+- Legacy flat guide schema: `shared/contracts/style_thinking_guide.schema.md` (still valid for degraded path)

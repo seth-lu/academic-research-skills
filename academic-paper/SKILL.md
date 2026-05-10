@@ -112,14 +112,15 @@ APA 7.0 (default), Chicago (Author-Date or Notes-Bibliography), MLA 9, IEEE, Van
 
 ---
 
-## Orchestration Workflow (8 Phases)
+## Orchestration Workflow (9 Phases)
 
 ```
-Phase 0: CONFIG        -> [intake_agent]              -> Paper Configuration Record
+Phase 0: CONFIG        -> [intake_agent]              -> Paper Configuration Record + Exemplar Manifest
 Phase 1: RESEARCH      -> [literature_strategist]      -> Search Strategy + Source Corpus
-Phase 2: ARCHITECTURE  -> [structure_architect]        -> Paper Outline + Evidence Map
-Phase 3: ARGUMENTATION -> [argument_builder]           -> Argument Blueprint
-Phase 4: DRAFTING      -> [draft_writer]               -> Complete Draft
+Phase 2: ARCHITECTURE  -> [structure_architect]        -> Paper Outline + Evidence Map + style_L1_structure.md
+Phase 3: ARGUMENTATION -> [argument_builder]           -> Argument Blueprint + style_L2_<section>.md files
+Phase 3.5: FRAMEWORK   -> [draft_writer]               -> style_L3L4_<section>.md + framework_<section>.md per section
+Phase 4: DRAFTING      -> [draft_writer]               -> Complete Draft (per-section calls when framework exists)
 Phase 5a: CITATIONS    -> [citation_compliance] ──┐    -> Citation Audit Report
 Phase 5b: ABSTRACT     -> [abstract_bilingual]   ─┘    -> Bilingual Abstract + Keywords  (parallel)
 Phase 6: PEER REVIEW   -> [peer_reviewer]              -> Review Report (max 2 revision loops)
@@ -127,14 +128,18 @@ Phase 7: FORMAT        -> [formatter]                  -> Final Output Package
 ```
 
 > See `references/workflow_phase_details.md` for detailed per-phase agent behavior and output descriptions.
+> See `shared/references/progressive_style_extraction.md` for the v3.8.0 progressive style extraction mechanism.
+
+**v3.8.0 Phase 3.5**: When `exemplar_manifest.md` exists (from Phase 0 Step 10.5), Phase 3.5 activates before Phase 4. The draft_writer_agent extracts Layer 3+4 style from exemplar paragraphs and produces per-section writing frameworks. These frameworks become hard constraints for Phase 4 drafting. When no exemplar manifest exists, Phase 3.5 is silently skipped and Phase 4 uses the original single-call method.
 
 ### Checkpoint Rules
 
 1. ⚠️ **IRON RULE**: User must confirm Paper Configuration Record before proceeding to Phase 1
 2. **Phase 2 -> 3**: User must approve outline (can request restructuring)
-3. ⚠️ **IRON RULE**: Max 2 revision loops; unresolved items -> "Acknowledged Limitations"
-4. **Peer Review** Critical-severity issues block progression to Phase 7
-5. User can skip Phase 1 (literature) if providing own sources
+3. **Phase 3.5** (v3.8.0): User must approve each section's writing framework before Phase 4 drafts that section
+4. ⚠️ **IRON RULE**: Max 2 revision loops; unresolved items -> "Acknowledged Limitations"
+5. **Peer Review** Critical-severity issues block progression to Phase 7
+6. User can skip Phase 1 (literature) if providing own sources
 
 ---
 
