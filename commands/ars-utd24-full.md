@@ -29,7 +29,15 @@ Pre-load the following into agent context (treated as authoritative for all writ
 3. `academic-paper-reviewer/references/top_journals_by_field.md` Section 7.5 — UTD24 IS-track / MS-track journal preferences and the Finance-track adjacency note.
 4. `academic-paper-reviewer/agents/field_analyst_agent.md` Example 3 — default reviewer panel for this domain (EIC=MISQ SE, R1=cryptography, R2=FinTech, R3=privacy-regulation).
 5. `academic-paper/references/citation_format_switcher.md` UTD24 section — MISQ Author-Date and INFORMS Author-Date styles.
-6. `style_guides/<target-journal>_*.md` (when present) — venue-specific writing-thinking guide produced by `/ars-style-extract`. The UTD24 preset benefits especially from the style pipeline because UTD24 venues (especially MISQ vs MS vs JoC) have sharply different house styles. See `intake_agent` Phase 0 Step 10.5 for the exemplar-collection prompt that produces this guide.
+6. `style_guides/<target-journal>_*/` — progressive extraction artifacts (exemplar manifest + L1/L2/L3L4 + framework files) produced during `academic-paper`'s writing flow when `intake_agent` Step 3.5 yields exemplar PDFs. UTD24 venues have sharply different house styles; generic academic writing is a known desk-reject risk.
+
+## Pre-flight check (before Phase 0)
+
+Before starting the configuration interview, check `style_guides/` for an existing progressive extraction directory matching the user's target journal. If none exists:
+
+> "This preset targets UTD24 journals where house style is a key quality gate. No style extraction artifacts for `<journal>` were found. You'll need 2–3 exemplar PDFs from this journal. The intake interview (Step 3.5) will ask for them — if you don't have them ready, the draft will use generic academic conventions, which is a known desk-reject risk. Continue anyway?"
+
+User confirms → proceed. User wants to prepare first → let them gather PDFs and restart.
 
 ## Phase 0 — Configuration Interview defaults
 

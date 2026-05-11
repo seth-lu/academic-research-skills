@@ -103,50 +103,27 @@ resume_from_passport=<hash> [stage=<n>] [mode=<m>]
 | 4 | REVISE | `academic-paper` | revision | Revised Draft, Response to Reviewers |
 | **3'** | **RE-REVIEW** | **`academic-paper-reviewer`** | **re-review** | **Verification review report: revision response checklist + residual issues** |
 | **4'** | **RE-REVISE** | **`academic-paper`** | **revision** | **Second revised draft (if needed)** |
-| **4.3** | **STYLE ALIGNMENT** (optional, v3.8.0: final polish only) | **`/ars-restyle` via orchestrator** | **interactive / roadmap-only / apply-all** | **Per-paragraph micro-adjustments only; structural style problems should have been resolved at Phase 2/3/3.5** |
-| **4.5** | **FINAL INTEGRITY** | **`integrity_verification_agent`** | **final-check** | **Final verification report (must achieve 100% pass to proceed; re-runs after Stage 4.3 to catch any restyle-induced citation/claim drift)** |
+| **4.5** | **FINAL INTEGRITY** | **`integrity_verification_agent`** | **final-check** | **Final verification report (must achieve 100% pass to proceed)** |
 | 5 | FINALIZE | `academic-paper` | format-convert | Final Paper (default MD; DOCX via Pandoc when available, otherwise conversion instructions; ask about LaTeX; confirm correctness; PDF) |
 | **6** | **PROCESS SUMMARY** | **orchestrator** | **auto** | **Paper creation process record MD + LaTeX to PDF (bilingual)** |
 
-### Stage 4.3 — Auto-trigger conditions
+### Style in the pipeline
 
-Stage 4.3 is **optional and opt-in**. v3.8.0 downgrade: Stage 4.3 is now a **final polish pass** that handles only micro-adjustments (word choice, transition phrasing) that slipped through the progressive style extraction at P2/P3/P3.5. Structural style problems (section architecture, argumentation patterns, paragraph-level move sequences) should already be resolved before drafting.
+Venue-specific writing style is handled **during drafting**, not as a post-review step. If `intake_agent` Step 3.5 yielded an exemplar manifest, progressive extraction shapes the outline, argumentation, and prose at each phase of `academic-paper`. See `shared/references/progressive_style_extraction.md`.
 
-The orchestrator surfaces it only when both of the following hold; otherwise it is silently skipped (no prompt to user, no log entry).
+If Step 3.5 was declined (no exemplar manifest), the draft uses generic academic conventions. Reviewer comments mentioning style or clarity should be addressed in the revision round (Stage 4/4') by the user directing the writer agent to specific sections — there is no separate style-alignment stage.
 
-- **Condition 1 (guide available)**: `passport.style_profile.priority_2_source` exists AND points at a `style_guides/<journal>_*.md` that passes the schema check at `shared/contracts/style_thinking_guide.schema.md` § Schema enforcement checklist.
-- **Condition 2 (style concerns surfaced in review)**: at least one Stage 3 / Stage 3' reviewer comment matches the case-insensitive regex `\b(clarity|style|exposition|writing|prose|readability|tone|register|flow)\b`.
+### Phase 0 connection to drafting
 
-Behavior:
+The companion to drafting quality is `intake_agent` Phase 0 **Step 3.5** ("Venue Style Exemplars"). Step 3.5 is where the exemplar manifest is *produced* — by inviting the user to supply venue exemplars at configuration time. The manifest then drives progressive style extraction.
 
-| Conditions met | Orchestrator behavior |
-|---|---|
-| Both 1 AND 2 | Surface a one-line opt-in prompt: *"Reviewer comments mention style/clarity issues. A venue style guide is available at `<path>`. Run `/ars-restyle` now? (recommended)"*. User accepts → invoke restyle interactively. User declines → log Stage 4.3 as `SKIPPED_BY_USER` and proceed. |
-| Only Condition 1 | Surface as soft suggestion, default no: *"Optional: a venue style guide is available. Run `/ars-restyle` for a final stylistic polish? (default: skip)"*. |
-| Only Condition 2 | Note in process summary: "Reviewer mentioned style concerns but no venue guide is loaded. Consider running `/ars-style-extract` and then `/ars-restyle` after this pipeline completes." |
-| Neither | Skip silently, no prompt. |
-
-When Stage 4.3 fires and the user accepts:
-
-1. Orchestrator invokes `/ars-restyle <draft_path> <guide_path>` in pipeline-mode.
-2. User accepts/rejects/modifies suggestions paragraph-by-paragraph.
-3. Restyle writes `passport.style_alignment_artifact` with accepted/rejected/modified counts and the diff path.
-4. Orchestrator signals **Stage 4.5 to RE-RUN** because per-paragraph rewrites can introduce subtle citation re-attribution or claim weakening that the prior Stage 2.5 integrity check did not see.
-
-Stage 4.3 NEVER auto-runs without user confirmation — even with both conditions met. Stylistic rewriting is a content-touching operation; user opt-in is mandatory.
-
-### Phase 0 connection to Stage 4.3
-
-The companion to Stage 4.3 is `intake_agent` Phase 0 **Step 10.5** ("Venue Style Exemplars"). Step 10.5 is where the exemplar manifest is *produced* — by inviting the user to supply venue exemplars at pipeline start. The manifest then drives progressive style extraction at P2 (Layer 1 structure) → P3 (Layer 2 argumentation) → P3.5 (Layer 3+4 paragraph+framework) → P4 (per-section drafting). See `shared/references/progressive_style_extraction.md`.
-
-If Step 10.5 yields a manifest:
+If Step 3.5 yields a manifest:
 - `structure_architect_agent` in Phase 2 extracts Layer 1 structure → outline is venue-shaped
 - `argument_builder_agent` in Phase 3 extracts Layer 2 per-section → CER chains use venue argumentation patterns
 - `draft_writer_agent` in Phase 3.5 extracts Layer 3+4 per-paragraph → writing frameworks as hard constraints
 - Phase 4 drafts per-section with framework hard constraints → draft is venue-styled from the start
-- Stage 4.3 then becomes a polish pass only, addressing minor issues that slipped through
 
-If Step 10.5 was declined (no manifest), Stage 4.3 will only fire under "Only Condition 2" — a process-summary note recommending the user produce a guide post-pipeline.
+If Step 3.5 was declined (no manifest), the config record shows `venue_style_status = "missing"` and the draft metadata flags this as a known risk.
 
 **Parallelization opportunity (v3.3)**: Within Stage 2, the `academic-paper` skill's Phase 1 (literature_strategist_agent) and the `visualization_agent` can operate in parallel after Phase 2 (structure_architect_agent) completes the outline. Specifically:
 - Once the outline includes a visualization plan, `visualization_agent` can begin figure generation

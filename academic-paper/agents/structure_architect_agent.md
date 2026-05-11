@@ -45,7 +45,7 @@ Best for: Concise presentation of research in progress
 
 ### Step 0.5: Layer 1 Structure Extraction (v3.8.0, conditional)
 
-**Activation**: only when `exemplar_manifest.md` exists (from intake_agent Step 10.5).
+**Activation**: only when `exemplar_manifest.md` exists (from intake_agent Step 3.5).
 
 If activated, before generating the outline, extract Layer 1 structure from the exemplars:
 

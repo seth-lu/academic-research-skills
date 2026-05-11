@@ -7,10 +7,10 @@ This fork adds two project-local customization layers on top of `Imbad0202/acade
 1. **Privacy Computing × Finance UTD24 layer** (commit `feat(domain): ...`)
    Targets MISQ / ISR / Management Science / INFORMS JoC. Entry point: `/ars-utd24-full`.
 
-2. **Style Reasoning Pipeline** (commit `feat(style): ...`)
-   Two-stage venue-aware writing-style extraction + restyle. Entry points: `/ars-style-extract` and `/ars-restyle`.
+2. **Progressive Style Extraction** (commit `feat(style): ...`)
+   Four-phase venue-aware writing-style extraction embedded in `academic-paper`'s writing flow. Entry point: `intake_agent` Step 3.5 (exemplar manifest), then L1→L2→L3+4→framework extracted by `structure_architect_agent`, `argument_builder_agent`, and `draft_writer_agent` at each phase.
 
-Both layers are **purely additive** — removing the new files and reverting the appended sections in 8 modified files restores upstream behavior byte-for-byte.
+Both layers are **purely additive** — removing the new files and reverting the appended sections in the modified files restores upstream behavior byte-for-byte.
 
 ## Sync workflow
 

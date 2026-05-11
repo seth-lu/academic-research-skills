@@ -1,8 +1,8 @@
 # Rhetorical Move Taxonomy
 
-Closed vocabulary for paragraph-level rhetorical analysis of academic papers. Used by `/ars-style-extract` (annotation phase) and `/ars-restyle` (gap analysis).
+Closed vocabulary for paragraph-level rhetorical analysis of academic papers. Used by the progressive extraction mechanism during `academic-paper`'s writing flow: `draft_writer_agent` Step 1.5 annotates exemplar paragraphs with move IDs, and Step 2 Path A uses them in framework paragraph specs.
 
-**Why a closed list**: without a fixed taxonomy, each LLM call invents its own move labels and `/ars-style-extract` and `/ars-restyle` cannot speak the same language about a draft. Every move below has a unique ID — guides reference moves by ID, restyle looks up moves by ID.
+**Why a closed list**: without a fixed taxonomy, each LLM call invents its own move labels and extraction layers cannot speak the same language across phases. Every move below has a unique ID — L3 extraction annotates by ID, framework specs reference moves by ID.
 
 **Theoretical grounding**: extends Swales (1990) CARS model for introductions and Hyland (2005) metadiscourse framework for cross-cutting features, augmented with empirical-IS / OR-analytical / DSR-specific moves observed in MISQ / ISR / Management Science / INFORMS JoC papers.
 
@@ -105,19 +105,19 @@ These are not paragraph-level moves but sentence/phrase-level patterns that recu
 
 ## How to use this taxonomy
 
-### In `/ars-style-extract`
-For each paragraph in each exemplar paper, the analysis prompt is:
+### In L3 extraction (draft_writer_agent Step 1.5)
+For each paragraph in each exemplar paper, the annotation follows:
 1. Identify the **primary move** (one of M1–M34)
 2. Identify up to **2 secondary moves** if the paragraph does more than one thing
 3. Note any **cross-cutting moves** (X1–X4) realized in the paragraph
 4. State the **author's choice rationale** — why this move at this position, given the previous paragraph?
+5. Record the move ID in `style_L3L4_<section>.md` and use it in the `framework_<section>.md` paragraph spec
 
-### In `/ars-restyle`
-For each paragraph in the user's draft:
-1. Identify the **current move(s)** the paragraph executes
-2. Look up what the guide says is the **default move** for this section + position
-3. Compute the **gap** (move mismatch / missing sub-component / vocabulary drift)
-4. Cite the move ID in the rationale: e.g., "Your ¶3 of Discussion is M29 (Managerial-Implication), but the MS guide says default for Discussion ¶1 is M28 (Theoretical-Implication). Reorder."
+### In framework-driven drafting (draft_writer_agent Step 2 Path A)
+For each paragraph spec in the framework:
+1. The **Move** field specifies the target move ID for this paragraph position
+2. Draft the paragraph to fulfill that rhetorical function
+3. If the content doesn't fit the specified move, flag it — the framework may need adjustment (user Option 3: modify spec, then rewrite)
 
 ### Failure mode to watch for
 If a paragraph cannot be classified into any move with confidence > 60%, the analysis prompt should NOT invent a new move. Instead, log the paragraph as `UNCLASSIFIED` and surface it in the guide's "Open Questions" section. The taxonomy is closed; if a paper systematically uses moves outside this list, the taxonomy needs extension (file a project-level update), not on-the-fly invention.

@@ -130,7 +130,7 @@ Phase 7: FORMAT        -> [formatter]                  -> Final Output Package
 > See `references/workflow_phase_details.md` for detailed per-phase agent behavior and output descriptions.
 > See `shared/references/progressive_style_extraction.md` for the v3.8.0 progressive style extraction mechanism.
 
-**v3.8.0 Phase 3.5**: When `exemplar_manifest.md` exists (from Phase 0 Step 10.5), Phase 3.5 activates before Phase 4. The draft_writer_agent extracts Layer 3+4 style from exemplar paragraphs and produces per-section writing frameworks. These frameworks become hard constraints for Phase 4 drafting. When no exemplar manifest exists, Phase 3.5 is silently skipped and Phase 4 uses the original single-call method.
+**v3.8.0 Phase 3.5**: When `exemplar_manifest.md` exists (from Phase 0 Step 3.5), Phase 3.5 activates before Phase 4. The draft_writer_agent extracts Layer 3+4 style from exemplar paragraphs and produces per-section writing frameworks. These frameworks become hard constraints for Phase 4 drafting. When no exemplar manifest exists, Phase 3.5 is skipped and Phase 4 drafts with generic academic conventions — the Paper Configuration Record's `Venue Style` field will show `missing`, and the draft metadata will flag this as a known risk.
 
 ### Checkpoint Rules
 

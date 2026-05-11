@@ -58,7 +58,7 @@ style_guides/
 
 ## 4. Phase 0: Exemplar Manifest
 
-**Agent**: `intake_agent` (Step 10.5)
+**Agent**: `intake_agent` (Step 3.5)
 **Action**: Select exemplar papers. No style extraction.
 **Output**: `exemplar_manifest.md`
 
@@ -99,7 +99,7 @@ Minimum: 1 deep + 1 spot. More spot exemplars = higher confidence.
 
 ### Activation Condition
 
-Step 10.5 activates when `target_journal` is set in Paper Configuration Record AND the user confirms they have venue exemplars. If declined, set `exemplar_manifest: null` — downstream Phases fall back to existing flat style guide or skip style constraints entirely.
+Step 3.5 activates when `target_journal` is set in Paper Configuration Record AND the user confirms they have venue exemplars. If declined, set `exemplar_manifest: null` — downstream Phases fall back to existing flat style guide or skip style constraints entirely.
 
 ---
 
@@ -413,9 +413,7 @@ When exemplars are unavailable or user skips exemplar selection:
 | Phase | Normal path | Degraded path |
 |-------|------------|---------------|
 | P0 | exemplar_manifest.md | `exemplar_manifest: null` |
-| P2 | Extract L1 from exemplar | Read existing flat guide (`style_guides/*_v1.md`) structure rules |
-| P3 | Extract L2 per section from exemplar | Read flat guide argumentation rules (MS-INTRO-* etc.) |
-| P3.5 | Extract L3+4 per paragraph from exemplar | Read flat guide paragraph rules + `writing_quality_check.md` |
-| P4 | Per-section drafting with framework | Current single-call behavior (no framework, no per-section) |
-
-Degraded path = current pipeline behavior. Backwards compatible.
+| P2 | Extract L1 from exemplar | Default allocation tables |
+| P3 | Extract L2 per section from exemplar | Discipline-default argumentation patterns |
+| P3.5 | Extract L3+4 per paragraph → framework | Skip Phase 3.5 entirely |
+| P4 | Per-section drafting with framework | Original single-call method |

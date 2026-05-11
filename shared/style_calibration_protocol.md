@@ -152,36 +152,27 @@ If samples span many years: weight recent samples more heavily (2x weight for sa
 
 ---
 
-## Priority 2 Implementation — Progressive Style Extraction (v3.8.0)
+## Priority 2 Implementation — Progressive Style Extraction
 
 The Priority hierarchy above (Discipline > Target journal > Personal style) leaves Priority 2 ("Target journal conventions") unfilled in the base protocol — it is enforced only by handwritten domain references like `journal_submission_guide.md`, which carry submission mechanics but not WRITING reasoning.
 
-### v3.8.0 change: Progressive extraction replaces flat guide loading
+Priority 2 is sourced from **progressive style extraction** embedded in `academic-paper`'s writing flow. See `shared/references/progressive_style_extraction.md` for the authoritative reference.
 
-Priority 2 is now sourced from **progressive style extraction** across Phases 2→3→3.5→4, not from a single flat guide loaded at Phase 4. See `shared/references/progressive_style_extraction.md` for the authoritative reference.
-
-**Old path (pre-v3.8.0)**:
-1. Phase 0: `/ars-style-extract` produces flat guide
-2. Phase 4: `draft_writer_agent` loads flat guide as soft guide
-3. Stage 4.3: `/ars-restyle` fixes what soft-guiding missed
-
-**New path (v3.8.0)**:
-1. Phase 0 Step 10.5: User selects exemplars → `exemplar_manifest.md`
+1. Phase 0 Step 3.5: User selects exemplars → `exemplar_manifest.md`
 2. Phase 2: `structure_architect_agent` extracts Layer 1 structure → `style_L1_structure.md` → outline is venue-shaped
 3. Phase 3: `argument_builder_agent` extracts Layer 2 per-section → `style_L2_<section>.md` → CER chains use venue argumentation
 4. Phase 3.5: `draft_writer_agent` extracts Layer 3+4 per-paragraph → `style_L3L4_<section>.md` + `framework_<section>.md` → hard constraints for drafting
 5. Phase 4: `draft_writer_agent` drafts per-section with framework hard constraints
-6. Stage 4.3: downgraded to final polish pass only
 
 ### Activation
 
 When ALL of the following are true, progressive style extraction activates:
 
-1. `intake_agent` Phase 0 Step 10.5 produced `exemplar_manifest.md` (user supplied venue exemplars)
+1. `intake_agent` Phase 0 Step 3.5 produced `exemplar_manifest.md` (user supplied venue exemplars)
 2. `passport.style_profile.priority_2_source` points at the exemplar manifest directory
 3. The exemplar files referenced in the manifest are readable
 
-If condition 1 holds but exemplars are unreadable, fall back to any existing flat guide at `style_guides/<journal>*_v1.md` (MEDIUM confidence). If no flat guide exists either, proceed with no Priority 2 source.
+If conditions are not met, proceed with no Priority 2 source — the config record shows `venue_style_status = "missing"` and draft metadata flags this as a known risk.
 
 ### Degradation path
 
@@ -191,18 +182,10 @@ If condition 1 holds but exemplars are unreadable, fall back to any existing fla
 | P3 | Extract L2 per section from exemplar → venue CER chains | Discipline-default argumentation patterns |
 | P3.5 | Extract L3+4 per paragraph → framework hard constraints | Skip Phase 3.5 entirely |
 | P4 | Per-section calls with framework | Original single-call method |
-| Stage 4.3 | Final polish only | Same as before (primary style fix) |
-
-Degraded path = pre-v3.8.0 behavior. Fully backwards compatible.
 
 ### Conflict resolution (extends existing rules)
 
 The base hierarchy stays: Priority 1 (discipline) > Priority 2 (venue style) > Priority 3 (personal style).
-
-Within Priority 2, the progressive extraction files take precedence over any flat guide:
-- `style_L1_structure.md` > flat guide structural rules
-- `style_L2_<section>.md` > flat guide argumentation rules
-- `style_L3L4_<section>.md` + `framework_<section>.md` > flat guide paragraph/narrative rules
 
 When a progressive extraction rule conflicts with a Priority 3 personal style preference:
 - Progressive extraction wins (Priority 2 > Priority 3)
@@ -211,9 +194,7 @@ When a progressive extraction rule conflicts with a Priority 3 personal style pr
 
 ### Cross-references
 
-- Producer of exemplar manifest: `academic-paper/agents/intake_agent.md` Step 10.5
+- Producer of exemplar manifest: `academic-paper/agents/intake_agent.md` Step 3.5
 - Progressive extraction reference: `shared/references/progressive_style_extraction.md`
 - Consumers: `structure_architect_agent.md` (P2), `argument_builder_agent.md` (P3), `draft_writer_agent.md` (P3.5, P4)
-- Pipeline insertion points: `academic-pipeline/SKILL.md` § Stage 4.3 (downgraded)
 - Storage convention: `style_guides/README.md`
-- Legacy flat guide schema: `shared/contracts/style_thinking_guide.schema.md` (still valid for degraded path)

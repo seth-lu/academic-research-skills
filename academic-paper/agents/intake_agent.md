@@ -128,10 +128,70 @@ Present options with brief descriptions:
 
 Default: IMRaD (for empirical research) or Literature Review (for synthesis topics)
 
-### Step 3: Target Journal (Optional)
+### Step 3: Target Journal
 - Ask if the user has a target journal
-- If yes, note journal name for formatting agent
-- If no, skip (use generic academic format)
+- If yes, note journal name for formatting agent. **Immediately proceed to Step 3.5.**
+- If no, skip Step 3.5 and go to Step 4 (use generic academic format)
+
+### Step 3.5: Venue Style Exemplars
+
+**Activation**: fires when `target_journal` is set in Step 3 AND no existing guide for this journal exists. NOT optional — this is a required decision point.
+
+When activated, present the user with a clear choice:
+
+> "You're targeting **<target_journal>**. Every top journal has a distinct house style — section architecture, argumentation patterns, sentence rhythm, vocabulary conventions. Writing without studying the venue first is the #1 reason papers get desk-rejected before review.
+>
+> **Option A — I have exemplar papers (recommended):** Provide 2–3 PDFs of papers published in <target_journal> on a topic close to yours. I'll extract the venue's writing style progressively through the drafting process — structure patterns inform the outline, argumentation patterns shape the logic, paragraph patterns guide the prose. Minimum 2 PDFs for reliable results.
+>
+> **Option B — I don't have exemplars yet:** I'll note this as a risk. The draft will use generic academic style. You can still proceed, but the draft won't match `<target_journal>` house style — a known desk-reject risk at top venues.
+>
+> **Option C — I already have extraction artifacts:** Point me to the existing `style_guides/<journal>_*/` directory and I'll reuse the manifest and layered files."
+
+**If Option A:**
+1. Collect PDF file paths. Minimum 2 (1 deep + 1 spot) for HIGH confidence.
+2. Produce an exemplar manifest at `style_guides/<journal-slug>_<topic-slug>_<date>/exemplar_manifest.md`:
+
+```markdown
+# Exemplar Manifest: <journal>
+
+## Target Journal
+- Name: <journal name>
+- Track: <track if applicable>
+
+## Selected Exemplars
+| # | Paper | Role | Why Selected |
+|---|-------|------|-------------|
+| 1 | <citation> | Deep exemplar | ... |
+| 2 | <citation> | Spot exemplar | ... |
+
+## Exemplar Files
+- <path/to/exemplar1>
+- <path/to/exemplar2>
+
+## Confidence Assessment
+- L1 Structure: TBD (extracted at outline stage by structure_architect_agent)
+- L2 Argumentation: TBD (extracted at argumentation stage by argument_builder_agent)
+- L3+4 Paragraph+Narrative: TBD (extracted at pre-writing stage by draft_writer_agent)
+```
+
+3. Write manifest path to `passport.style_profile.priority_2_source`.
+4. Confirm: "Exemplar manifest saved. Style will be extracted in three layers as the paper takes shape — you'll see it influence the outline, then the argument structure, then the actual prose. You can edit the manifest to add/remove exemplars before each stage."
+
+**If Option B:**
+- Set `exemplar_manifest = null` and `venue_style_status = "missing"` in Paper Configuration Record.
+- Warn explicitly: "Noted. The draft will use generic academic conventions, not <target_journal> house style. This is a known risk for desk rejection."
+
+**If Option C:**
+- Verify the directory exists and contains a valid `exemplar_manifest.md`.
+- Set `venue_style_status = "existing"` and record the directory path.
+- Downstream agents will use the existing layered files; missing layers will be re-extracted on demand.
+
+**Edge cases:**
+- Only 1 exemplar: proceed with MEDIUM confidence; warn that 2+ exemplars distinguish journal convention from single-paper style.
+- PDF unreadable: skip that file; if 0 readable, treat as Option B.
+- Exemplar not actually from target_journal: warn, ask whether to proceed.
+- Existing manifest for same journal, different topic: offer to reuse (cheaper) or create new (more accurate).
+- Existing extraction directory: reuse existing manifest; re-extract layers only for sections where files are missing.
 
 ### Step 4: Citation Format
 | Format | Default Disciplines |
@@ -181,86 +241,25 @@ Reference: `references/credit_authorship_guide.md`
   - Any equal contribution declarations?
 - If single-author: skip, note in configuration
 
-### Step 10: Style Calibration (Optional)
+### Step 10: Personal Style Calibration (Optional, Priority 3)
 
 Ask the user:
-> "Do you have past papers or writing samples you'd like me to learn your style from? Providing 3+ samples helps me match your natural voice. This is optional."
+> "Do you have past papers or writing samples you'd like me to learn your personal style from? Providing 3+ samples helps me match your natural voice. This is optional — venue style (Step 3.5) takes priority over personal style."
 
 **If user provides samples:**
 1. Read each sample and extract style dimensions per `shared/style_calibration_protocol.md`
 2. Produce a Style Profile artifact (see `shared/handoff_schemas.md` Schema 10)
 3. Attach to Paper Configuration Record as `style_profile` field
-4. Inform user: "I've analyzed your writing style. Key traits: [summary]. I'll use this as a soft guide — discipline conventions take priority."
+4. Inform user: "I've analyzed your writing style. Key traits: [summary]. I'll use this as a soft guide — venue conventions and discipline standards take priority. Conflicts with venue style (Step 3.5) resolve per `shared/style_calibration_protocol.md` priority hierarchy."
 
 **If user declines:**
 - Set `style_profile: null` in Paper Configuration Record
-- Proceed normally (zero behavior change from previous versions)
+- Proceed normally
 
 **Edge cases:**
 - < 3 samples: generate partial profile with warning about limited reliability
 - Co-authored samples: ask which sections the user wrote; analyze only those
 - Different language from target paper: extract transferable dimensions only (paragraph structure, citation style, modifier density)
-
-### Step 10.5: Venue Style Exemplars (Optional, recommended for top-tier venues)
-
-This step fills **Priority 2** of `shared/style_calibration_protocol.md` (target journal conventions). It is distinct from Step 10 (which fills Priority 3, the user's personal style).
-
-**v3.8.0 change**: Step 10.5 now produces an **exemplar manifest** instead of a flat style guide. Style content is extracted progressively at P2/P3/P3.5, not all at once here. See `shared/references/progressive_style_extraction.md` for the full mechanism.
-
-**Gating conditions** — only fire when ALL hold:
-1. `target_journal` was set in Step 3 (not "Optional / undecided")
-2. `passport.style_profile.priority_2_source` is empty (no existing venue guide for this journal)
-3. The session is NOT a `resume_from_passport` re-entry (resumes inherit the prior guide)
-
-**Prompt the user**:
-> "Do you have 1–3 papers published in <target_journal> on a similar topic that you'd like me to learn the writing style from? Providing exemplars activates progressive style extraction: structure patterns inform the outline, argumentation patterns inform the argument blueprint, and paragraph-level patterns inform per-section drafting. This is optional but **strongly recommended** for top-tier venues like MISQ / ISR / Management Science / INFORMS JoC where house style differs sharply from generic academic writing — and even more so for the UTD24 IS-track / MS-track if you're using the `/ars-utd24-full` preset."
-
-**If user provides exemplars:**
-1. Collect PDF/markdown file paths. Minimum: 1 deep exemplar + 1 spot exemplar for HIGH confidence. Single exemplar = MEDIUM confidence (cannot distinguish journal convention from single-paper style).
-2. Optionally collect a `topic_scope` one-liner (default: derive from exemplar abstracts).
-3. Produce an **exemplar manifest** (not a style guide):
-
-```markdown
-# Exemplar Manifest: <journal>
-
-## Target Journal
-- Name: <journal name>
-- Track: <track if applicable>
-
-## Selected Exemplars
-| # | Paper | Role | Why Selected |
-|---|-------|------|-------------|
-| 1 | <citation> | Deep exemplar | Same domain + same journal + exemplary writing |
-| 2 | <citation> | Spot exemplar | Validate features are journal convention, not single-paper style |
-
-## Exemplar Files
-- <path/to/exemplar1>
-- <path/to/exemplar2>
-
-## Confidence Assessment
-- L1 Structure: TBD (assessed at Phase 2)
-- L2 Argumentation: TBD (assessed at Phase 3)
-- L3+4 Paragraph+Narrative: TBD (assessed at Phase 3.5)
-```
-
-4. Save manifest at `style_guides/<journal-slug>_<topic-slug>_<date>/exemplar_manifest.md` and write its path to `passport.style_profile.priority_2_source`.
-5. Confirm to user: "Exemplar manifest saved at `style_guides/<path>/exemplar_manifest.md`. Style rules will be extracted progressively as the paper is built: structure at the outline stage, argumentation at the argument stage, paragraph patterns at the writing framework stage. You can add or remove exemplars by editing the manifest before the next stage."
-
-**If user declines:**
-- Set `passport.style_profile.priority_2_source = null` and `exemplar_manifest = null`
-- Proceed normally; downstream Phases will fall back to existing flat style guide (if any) or skip style constraints entirely. See `shared/references/progressive_style_extraction.md` §10 Degradation Path.
-
-**Edge cases:**
-- Exemplar PDF unreadable: skip with warning; if 0 readable, treat as decline.
-- Exemplar paper not actually published in target_journal: warn user, ask whether to proceed.
-- Only 1 exemplar provided: proceed with MEDIUM confidence; warn that multi-exemplar provides HIGH confidence by distinguishing journal convention from single-paper style.
-- User has a manifest for the journal but on a different topic: offer to reuse the existing manifest (cheaper) or create a new one (more accurate).
-- Legacy flat guide exists at `style_guides/<journal>*_v1.md`: both can coexist. The progressive extraction takes priority; flat guide serves as degradation fallback.
-
-**Why this is a separate step from Step 10**:
-- Step 10 captures YOUR style (Priority 3, soft guide).
-- Step 10.5 captures the VENUE's style (Priority 2, stronger constraint).
-- They are orthogonal and can both be present. Conflicts resolve via the priority hierarchy in `shared/style_calibration_protocol.md` § Conflict Resolution and § Priority 2 Implementation.
 
 ### Step 11: Funding Sources
 Reference: `references/funding_statement_guide.md`
@@ -296,6 +295,7 @@ Reference: `references/funding_statement_guide.md`
 | **Existing Materials** | [list of provided materials] |
 | **Co-Authors** | [single-author / number of co-authors + corresponding author + brief contribution notes] |
 | **Funding** | [no funding / funder name(s) + grant number(s) + PI role] |
+| **Venue Style** | [exemplar_manifest path / flat_guide path / missing] |
 | **Style Profile** | [attached / null] |
 | **Operational Mode** | [full / outline-only / revision / abstract-only / lit-review / format-convert / citation-check] |
 
