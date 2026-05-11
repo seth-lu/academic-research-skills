@@ -112,41 +112,113 @@ APA 7.0 (default), Chicago (Author-Date or Notes-Bibliography), MLA 9, IEEE, Van
 
 ---
 
-## Orchestration Workflow (9 Phases)
+## Orchestration Workflow (11 Phases)
 
 ```
-Phase 0: CONFIG        -> [intake_agent]              -> Paper Configuration Record + Exemplar Manifest
-Phase 1: RESEARCH      -> [literature_strategist]      -> Search Strategy + Source Corpus
-Phase 2: ARCHITECTURE  -> [structure_architect]        -> Paper Outline + Evidence Map + style_L1_structure.md
-Phase 3: ARGUMENTATION -> [argument_builder]           -> Argument Blueprint + style_L2_<section>.md files
-Phase 3.5: FRAMEWORK   -> [draft_writer]               -> style_L3L4_<section>.md + framework_<section>.md per section
-Phase 4: DRAFTING      -> [draft_writer]               -> Complete Draft (per-section calls when framework exists)
+Phase 0:  CONFIG       -> [intake_agent]              -> Paper Configuration Record + Exemplar Manifest
+
+Phase 1:  RESEARCH     -> [literature_strategist]      -> Search Strategy + Source Corpus
+
+Phase 2a: EXTRACT-L1   -> [structure_architect]        -> style_L1_structure.md
+          (SEPARATE CALL when exemplar_manifest.md exists. Before Phase 2b.)
+Phase 2b: ARCHITECTURE -> [structure_architect]        -> Paper Outline + Evidence Map
+
+Phase 3a: EXTRACT-L2   -> [argument_builder]           -> style_L2_<section>.md files
+          (SEPARATE CALL when L1 exists. Before Phase 3b.)
+Phase 3b: ARGUMENTATION -> [argument_builder]          -> Argument Blueprint
+
+Phase 3.5: FRAMEWORK   -> [draft_writer]               -> style_L3L4_<section>.md + framework_<section>.md
+Phase 4:  DRAFTING     -> [draft_writer]               -> Complete Draft (per-section calls)
 Phase 5a: CITATIONS    -> [citation_compliance] ──┐    -> Citation Audit Report
 Phase 5b: ABSTRACT     -> [abstract_bilingual]   ─┘    -> Bilingual Abstract + Keywords  (parallel)
-Phase 6: PEER REVIEW   -> [peer_reviewer]              -> Review Report (max 2 revision loops)
-Phase 7: FORMAT        -> [formatter]                  -> Final Output Package
+Phase 6:  PEER REVIEW  -> [peer_reviewer]              -> Review Report (max 2 revision loops)
+Phase 7:  FORMAT       -> [formatter]                  -> Final Output Package
 ```
 
 > See `references/workflow_phase_details.md` for detailed per-phase agent behavior and output descriptions.
 > See `shared/references/progressive_style_extraction.md` for the v3.8.0 progressive style extraction mechanism.
 
-**v3.8.0 Style Extraction**: Progressive extraction is embedded in Phases 2–3.5. Each phase extract only the layer it needs, from the exemplar PDFs selected at Phase 0.
+### v3.8.0 Phase 2a/3a: Physical Call Separation
 
-- **Phase 2 (L1 Structure)**: `structure_architect_agent` Step 0 — MANDATORY when `exemplar_manifest.md` exists. Extracts section architecture and structural rules. Language-agnostic.
-- **Phase 3 (L2 Argumentation)**: `argument_builder_agent` Step 0 — MANDATORY when manifest + L1 exist. Extracts argumentation patterns per section. Language-agnostic.
-- **Phase 3.5 (L3+L4 Paragraph + Framework)**: `draft_writer_agent` Step 1.5 — language-gated. EXTRACT only when exemplar language = draft language. SKIP (defer to English finalization) when languages differ.
-- **Phase 4 (Drafting)**: Three paths — Path A (full framework, same language), Path B (L1+L2-constrained per-section, cross-language), Path C (degraded, no style files).
+Phase 2a (L1 extraction) and Phase 3a (L2 extraction) are **physically separate LLM calls** from Phase 2b (outline) and Phase 3b (CER chains). This mirrors the v3.6.6 Phase 4a/4b split pattern: the extraction call cannot see the construction task and therefore cannot skip ahead to it.
 
-When no exemplar manifest exists, L1/L2/L3+L4 are all skipped — the Paper Configuration Record's `Venue Style` field shows `missing`, and the draft metadata flags this as a known risk. See `shared/references/progressive_style_extraction.md` §10 for the full degradation table.
+#### Phase 2a gate (before Phase 2b)
+
+**Condition**: `exemplar_manifest.md` exists (from Phase 0) AND `style_L1_structure.md` does NOT exist.
+
+**Call script** — send this as a standalone prompt, do NOT include the outline construction task:
+
+```
+You are executing Phase 2a: Layer 1 Structure Extraction. Your ONLY task is to extract structural rules from the exemplar PDFs and write one file.
+
+1. Read <exemplar_manifest_path>
+2. Read each exemplar PDF listed in the manifest — only section headings, sub-section patterns, word count ratios. Do NOT read prose content.
+3. Compare across exemplars. Assign confidence: HIGH (all agree), MEDIUM (1 exemplar only), LOW (contradiction).
+4. Write style_L1_structure.md to the same directory as the exemplar manifest.
+
+Output format: <reference to shared/references/progressive_style_extraction.md §5>
+
+When done, report: [L1 EXTRACTION COMPLETE] + file path + section count + rule count.
+
+Do NOT produce an outline. Do NOT select a paper structure. Only extract L1.
+```
+
+**If Phase 2a is skipped** (no manifest): log `[L1 SKIPPED: no exemplar manifest]`. Phase 2b uses default allocation tables.
+
+#### Phase 3a gate (before Phase 3b)
+
+**Condition**: `style_L1_structure.md` exists AND `style_L2_<section>.md` files do NOT exist.
+
+**Call script** — send this as a standalone prompt, do NOT include the CER chain construction task:
+
+```
+You are executing Phase 3a: Layer 2 Argumentation Extraction. Your ONLY task is to extract argumentation patterns from exemplar corresponding sections and write one file per outline section.
+
+Prerequisites: P2 Outline + style_L1_structure.md must exist.
+
+For each section in the outline:
+1. Locate the corresponding section in each exemplar PDF
+2. Read only that section's prose
+3. Extract: core argument framework, literature positioning, differentiation writing, contribution declaration structure, pre-emptive rebuttal pattern, two-sided acknowledgment pattern
+4. Compare across exemplars → assign confidence
+5. Write style_L2_<section>.md to the exemplar manifest directory
+
+Output format: <reference to shared/references/progressive_style_extraction.md §6>
+
+When done, report: [L2 EXTRACTION COMPLETE] + file list + rule count per section.
+
+Do NOT build CER chains. Do NOT write a central thesis. Only extract L2.
+```
+
+**If Phase 3a is skipped** (no L1): log `[L2 SKIPPED: style_L1_structure.md missing]`. Phase 3b uses discipline-default argumentation patterns.
+
+#### Phase 3.5 gate (before Phase 4)
+
+**Language gate**: compare exemplar language vs. draft language (from Paper Configuration Record).
+
+| Exemplar | Draft | Action |
+|----------|-------|--------|
+| EN | EN | EXTRACT L3+L4 → produce frameworks |
+| ZH | ZH | EXTRACT L3+L4 → produce frameworks |
+| EN | ZH | **SKIP** — sentence rhythm, word choice, signposting are language-bound. Log `[L3+L4 DEFERRED]`. Re-run at English finalization. |
+| ZH | EN | **SKIP** — same reason, reverse direction |
+
+When EXTRACT: call draft_writer_agent Step 1.5 for each section, producing `style_L3L4_<section>.md` + `framework_<section>.md`. Present each framework to user for approval.
+
+When SKIP: proceed directly to Phase 4 Path B (L1+L2-constrained per-section drafting).
+
+When no manifest: skip entirely. Phase 4 uses Path C (degraded).
 
 ### Checkpoint Rules
 
 1. ⚠️ **IRON RULE**: User must confirm Paper Configuration Record before proceeding to Phase 1
-2. **Phase 2 -> 3**: User must approve outline (can request restructuring)
-3. **Phase 3.5** (v3.8.0): User must approve each section's writing framework before Phase 4 drafts that section
-4. ⚠️ **IRON RULE**: Max 2 revision loops; unresolved items -> "Acknowledged Limitations"
-5. **Peer Review** Critical-severity issues block progression to Phase 7
-6. User can skip Phase 1 (literature) if providing own sources
+2. ⚠️ **v3.8.0 Phase 2a gate**: When `exemplar_manifest.md` exists, `style_L1_structure.md` MUST be produced BEFORE Phase 2b. Do NOT skip to outline construction. If the file is missing after the Phase 2a call, re-run Phase 2a — do not silently proceed.
+3. ⚠️ **v3.8.0 Phase 3a gate**: When `style_L1_structure.md` exists, `style_L2_<section>.md` MUST be produced BEFORE Phase 3b. Same re-run rule as Phase 2a.
+4. **Phase 2b -> 3a**: User must approve outline (can request restructuring)
+5. **Phase 3.5** (v3.8.0): User must approve each section's writing framework before Phase 4 drafts that section. When cross-language: Phase 3.5 is skipped with deferral log — user does not need to approve.
+6. ⚠️ **IRON RULE**: Max 2 revision loops; unresolved items -> "Acknowledged Limitations"
+7. **Peer Review** Critical-severity issues block progression to Phase 7
+8. User can skip Phase 1 (literature) if providing own sources
 
 ---
 
