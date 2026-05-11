@@ -31,13 +31,24 @@ Before writing, confirm you have:
 - [ ] Style Profile — check `style_profile` field in Paper Configuration Record. If `null`, skip all style-related steps below. Only if non-null: read `shared/style_calibration_protocol.md` and apply as soft guide
 - [ ] Writing Quality Check reference (`references/writing_quality_check.md`)
 - [ ] Anti-Leakage Protocol — check if Knowledge Isolation should be activated (from `references/anti_leakage_protocol.md`). Activate if user provided RQ Brief + Synthesis Report + Annotated Bibliography AND mode is `full` or `revision`. When activated, prepend the Knowledge Isolation Directive to your working context. When not activated (plan/socratic mode, or minimal materials), skip.
-- [ ] **Exemplar manifest** (v3.8.0) — check if `exemplar_manifest.md` exists. If yes, activate progressive style extraction path (Step 1.5 → Step 2.5 → Step 3.5). If no, use standard single-call path (Step 2 original).
+- [ ] **Exemplar manifest** (v3.8.0) — check if `exemplar_manifest.md` exists. If yes, determine draft language from Paper Configuration Record. Same language → Step 1.5 EXTRACT → Step 2 Path A. Cross-language → Step 1.5 SKIP (L3+L4 deferred) → Step 2 Path B. If no manifest → Step 2 Path C.
 
-### Step 1.5: Phase 3.5 — Layer 3+4 Extraction + Writing Framework (v3.8.0, conditional)
+### Step 1.5: Phase 3.5 — Layer 3+4 Extraction + Writing Framework (v3.8.0, mandatory gate)
 
-**Activation**: only when `exemplar_manifest.md` exists AND `style_L2_<section>.md` files exist (from Phase 3).
+Execute this step BEFORE Step 2. Do NOT proceed to drafting until this step's decision is resolved.
 
-For each section in the outline:
+**1. Check prerequisites**: Look for `exemplar_manifest.md` AND `style_L2_<section>.md` files AND verify the draft language from Paper Configuration Record.
+
+**2. Language gate** (v3.8.0): Compare exemplar language vs. draft language.
+
+| Exemplar language | Draft language | L3+L4 action |
+|------------------|---------------|-------------|
+| English | English | EXTRACT — L3+L4 features transfer directly |
+| English | Chinese | **SKIP** — sentence rhythm, word choice, signposting are language-bound and do not transfer. Log `[L3+L4 DEFERRED: exemplar=EN, draft=ZH. Will re-run at English finalization.]` |
+| Chinese | Chinese | EXTRACT |
+| Chinese | English | SKIP — same reason, reverse direction |
+
+**3. If EXTRACT (same language, prerequisites met)**: For each section in the outline:
 
 1. **Extract Layer 3+4** from exemplar corresponding section's paragraphs:
    - Locate each exemplar paragraph by matching rhetorical function to the section's expected moves
@@ -88,15 +99,21 @@ For each section in the outline:
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    ```
 
-**Exemplar Anchor Iron Rule**: The anchor records HOW the exemplar writes, not WHAT it writes. Claim and Required Content come from Phase 3 CER chains + the user's own research. Exemplar provides only the writing pattern. Never copy exemplar's specific cases, data, institution names, or verbatim sentences.
+**4. If SKIP (cross-language)**: Log the deferral reason. L3+L4 extraction is deferred to English finalization stage (see `shared/references/progressive_style_extraction.md` §10 Cross-language path). Do NOT extract L3+L4 now. Proceed to Step 2 Path B.
 
-**Degradation**: If no exemplar manifest, skip this step entirely. Phase 4 will use the original single-call method.
+**5. If prerequisites NOT met** (no manifest or no L2 files): Log `[L3+L4 SKIPPED: prerequisites missing]`. Proceed to Step 2 Path C.
+
+**Exemplar Anchor Iron Rule**: The anchor records HOW the exemplar writes, not WHAT it writes. Claim and Required Content come from Phase 3 CER chains + the user's own research. Exemplar provides only the writing pattern.
 
 ### Step 2: Section-by-Section Writing
 
-**v3.8.0**: Two writing paths exist depending on whether a writing framework was produced at Step 1.5.
+**v3.8.0**: Three writing paths. The path is chosen at Step 1.5 based on (a) whether style files exist and (b) whether exemplar language matches draft language.
 
-#### Path A: Framework-driven per-section drafting (when `framework_<section>.md` files exist)
+---
+
+#### Path A: Full framework-driven per-section drafting
+
+**Condition**: `framework_<section>.md` files exist (same-language exemplars, Step 1.5 EXTRACT path).
 
 For each section in the outline, make a **separate model call**:
 
@@ -112,7 +129,6 @@ For each section in the outline, make a **separate model call**:
    - Each paragraph must match its Move (rhetorical function)
    - Each paragraph must include all Required Content items
    - Each paragraph must satisfy Style Constraints from the exemplar anchor
-   - Do NOT copy exemplar content — only follow exemplar's writing pattern
 
 3. **Compliance self-check** after writing:
    - Required Content: tick each [ ] item. Any missing → `[FRAMEWORK VIOLATION]` → rewrite that paragraph
@@ -131,8 +147,8 @@ For each section in the outline, make a **separate model call**:
      ...
 
    Exemplar Anchor Match:
-     ¶1: M1 anchor → ✓ (specific event opening, parallel enumeration)
-     ¶3: M2 anchor → ✓ (3 verbatim quotes with page numbers)
+     ¶1: M1 anchor → ✓
+     ¶3: M2 anchor → ✓
      ...
 
    Word Count: <N> / <Target> (<%> deviation)
@@ -144,23 +160,63 @@ For each section in the outline, make a **separate model call**:
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    ```
 
-   **Option 3 is critical**: if the user thinks the spec itself is wrong (e.g., ¶3 Required Content incorrect), they can modify the framework and rewrite — structural problems are fixed at the framework level, prose problems at the prose level.
+5. **After user confirms**, proceed to next section.
 
-5. **After user confirms**, proceed to next section. Append this section's prose to the "previous sections' prose" buffer for the next call's style anchor.
+---
 
-**Style Anchor Strategy** (context window management):
+#### Path B: L1+L2-constrained per-section drafting (v3.8.0 cross-language)
 
-| Section being drafted | Prose included as anchor |
-|----------------------|------------------------|
-| §1 | None |
-| §2 | §1 full prose |
-| §3 | §1-2 full prose |
-| §4 | §1-3 full prose |
-| §5+ | §1 first+last paragraph + most recent 3 sections' full prose |
+**Condition**: `style_L1_structure.md` AND `style_L2_<section>.md` files exist, but no framework (exemplar language ≠ draft language, Step 1.5 SKIP path with deferral log).
 
-Older sections' full prose is pruned to avoid token overflow, but §1's first and last paragraphs are always retained as the primary style anchor.
+This is the **cross-language path**: L1 (structure) and L2 (argumentation) are language-agnostic and constrain the draft; L3+L4 (paragraph rhythm, word choice) are deferred to English finalization.
 
-#### Path B: Original single-call drafting (when no framework files exist)
+For each section in the outline, make a **separate call**:
+
+1. **Load per-section inputs**:
+   - `style_L1_structure.md` — structural rules (section architecture, word % ratios)
+   - `style_L2_<section>.md` — argumentation rules for this section
+   - Section CER chains from Argument Blueprint
+   - Section bibliography subset from Annotated Bibliography
+   - **Previous sections' prose** as continuity anchor (see Style Anchor Strategy below)
+   - Word count constraint from Outline
+
+2. **Write section prose** with L1+L2 constraints:
+   - Section structure follows L1 structural rules (HIGH-confidence S-* rules are hard constraints)
+   - Argumentation follows L2 rules (HIGH-confidence A-* rules are hard constraints)
+   - Prose is in the **draft language** (not exemplar language) — write naturally, do not mimic English sentence patterns
+   - Paragraph structure follows the CER chain, not exemplar paragraph patterns
+
+3. **Compliance self-check** after writing:
+   - L1 structural rules: verify each HIGH-confidence S-* rule is satisfied
+   - L2 argumentation rules: verify each HIGH-confidence A-* rule is satisfied
+   - Citations: each claim has a source
+   - Word count: section ±15%, running total ±10%
+
+4. **Present section to user** for confirmation:
+
+   ```
+   ━━━ Section N: <Name> Draft Complete ━━━
+
+   L1+L2 Compliance:
+     S-* rules: [3/3] ✓
+     A-* rules: [2/2] ✓
+
+   Word Count: <N> / <Target> (<%> deviation)
+   Language: <ZH/EN> (L3+L4 deferred to English finalization)
+
+   Options:
+   1. Accept and proceed to next section
+   2. Request revision of specific paragraphs
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ```
+
+5. **After user confirms**, proceed to next section.
+
+---
+
+#### Path C: Degraded per-section drafting
+
+**Condition**: No style files exist (no exemplar manifest, or manifest exists but L1/L2 extraction was skipped).
 
 For each section in the outline:
 
@@ -170,7 +226,21 @@ For each section in the outline:
 4. **Write transitions** connecting to the next section
 5. **Check word count** against allocation
 6. **Self-review** for clarity, logic, and completeness
-7. **Quick style check** — while writing, target academic prose: open paragraphs with the actual claim, vary sentence lengths to match argument rhythm, and choose precise vocabulary. `references/writing_quality_check.md` is the style diagnostic after drafting. If Style Profile is non-null: verify section voice aligns with profile traits (within discipline constraints per `shared/style_calibration_protocol.md` priority system)
+7. **Quick style check** — while writing, target academic prose: open paragraphs with the actual claim, vary sentence lengths to match argument rhythm, and choose precise vocabulary. `references/writing_quality_check.md` is the style diagnostic after drafting.
+
+---
+
+**Style Anchor Strategy** (Paths A and B, context window management):
+
+| Section being drafted | Prose included as anchor |
+|----------------------|------------------------|
+| §1 | None |
+| §2 | §1 full prose |
+| §3 | §1-2 full prose |
+| §4 | §1-3 full prose |
+| §5+ | §1 first+last paragraph + most recent 3 sections' full prose |
+
+Older sections' full prose is pruned to avoid token overflow, but §1's first and last paragraphs are always retained as continuity anchor.
 
 ### Step 3: Full Draft Assembly
 Combine all sections into a coherent document with:

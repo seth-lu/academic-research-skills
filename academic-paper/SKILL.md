@@ -130,7 +130,14 @@ Phase 7: FORMAT        -> [formatter]                  -> Final Output Package
 > See `references/workflow_phase_details.md` for detailed per-phase agent behavior and output descriptions.
 > See `shared/references/progressive_style_extraction.md` for the v3.8.0 progressive style extraction mechanism.
 
-**v3.8.0 Phase 3.5**: When `exemplar_manifest.md` exists (from Phase 0 Step 3.5), Phase 3.5 activates before Phase 4. The draft_writer_agent extracts Layer 3+4 style from exemplar paragraphs and produces per-section writing frameworks. These frameworks become hard constraints for Phase 4 drafting. When no exemplar manifest exists, Phase 3.5 is skipped and Phase 4 drafts with generic academic conventions — the Paper Configuration Record's `Venue Style` field will show `missing`, and the draft metadata will flag this as a known risk.
+**v3.8.0 Style Extraction**: Progressive extraction is embedded in Phases 2–3.5. Each phase extract only the layer it needs, from the exemplar PDFs selected at Phase 0.
+
+- **Phase 2 (L1 Structure)**: `structure_architect_agent` Step 0 — MANDATORY when `exemplar_manifest.md` exists. Extracts section architecture and structural rules. Language-agnostic.
+- **Phase 3 (L2 Argumentation)**: `argument_builder_agent` Step 0 — MANDATORY when manifest + L1 exist. Extracts argumentation patterns per section. Language-agnostic.
+- **Phase 3.5 (L3+L4 Paragraph + Framework)**: `draft_writer_agent` Step 1.5 — language-gated. EXTRACT only when exemplar language = draft language. SKIP (defer to English finalization) when languages differ.
+- **Phase 4 (Drafting)**: Three paths — Path A (full framework, same language), Path B (L1+L2-constrained per-section, cross-language), Path C (degraded, no style files).
+
+When no exemplar manifest exists, L1/L2/L3+L4 are all skipped — the Paper Configuration Record's `Venue Style` field shows `missing`, and the draft metadata flags this as a known risk. See `shared/references/progressive_style_extraction.md` §10 for the full degradation table.
 
 ### Checkpoint Rules
 

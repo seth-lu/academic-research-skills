@@ -43,17 +43,31 @@ Best for: Concise presentation of research in progress
 
 ## Outline Construction Process
 
-### Step 0.5: Layer 1 Structure Extraction (v3.8.0, conditional)
+### Step 0 (MANDATORY GATE): Layer 1 Structure Extraction (v3.8.0)
 
-**Activation**: only when `exemplar_manifest.md` exists (from intake_agent Step 3.5).
+Execute this step BEFORE Step 1. Do NOT proceed to outline construction until this step is complete.
 
-If activated, before generating the outline, extract Layer 1 structure from the exemplars:
+**1. Check for exemplar manifest**: Look for `exemplar_manifest.md` under `style_guides/<journal>_<topic>_<date>/`. The manifest path is recorded in the Paper Configuration Record's `Venue Style` field.
 
-1. Read each exemplar's structure (section headings, sub-section patterns — not prose content)
-2. Record per section: has sub-sections? naming pattern? approximate word ratio?
-3. Identify structural rules (e.g., "Introduction narrative paragraphs precede sub-headings", "no standalone Related Literature section")
-4. Compare across exemplars → assign confidence (HIGH if all exemplars agree, MEDIUM if only 1 exemplar, LOW if contradiction)
-5. Output `style_L1_structure.md` in the same directory as the exemplar manifest
+**2. If manifest EXISTS**: You MUST extract Layer 1 structure before building the outline. L1 (section architecture, sub-section patterns, word ratios) is **language-agnostic** — structure extracted from English exemplars applies to Chinese drafts. Skipping this step when a manifest exists discards the user's exemplars and produces a venue-generic outline.
+
+Extraction procedure:
+1. Read the exemplar manifest to identify which PDFs to use and where they are
+2. Read each exemplar's structure (section headings, sub-section patterns — not prose content)
+3. Record per section: has sub-sections? naming pattern? approximate word ratio?
+4. Identify structural rules (e.g., "Introduction narrative paragraphs precede sub-headings", "no standalone Related Literature section")
+5. Compare across exemplars → assign confidence (HIGH if all exemplars agree, MEDIUM if only 1 exemplar, LOW if contradiction)
+6. **Write** `style_L1_structure.md` to the same directory as the exemplar manifest
+7. **Verify** the file was written. If not written, STOP — do not continue to Step 1.
+
+**3. If manifest DOES NOT EXIST**: Log `[L1 SKIPPED: no exemplar manifest]` and proceed with default allocation tables.
+
+**4. Self-check before Step 1**:
+- [ ] Did I check for `exemplar_manifest.md`? (yes/no)
+- [ ] If yes: did I write `style_L1_structure.md`? (yes/no → STOP if no)
+- [ ] If no: did I log the skip reason? (yes/no)
+
+Only after all checked boxes are satisfied, proceed to Step 1.
 
 **Output format** (see `shared/references/progressive_style_extraction.md` §5):
 
@@ -70,8 +84,6 @@ If activated, before generating the outline, extract Layer 1 structure from the 
 |----|------|-----|-------------|-----------|
 | S-1 | ... | ... | ... | HIGH/MEDIUM/LOW |
 ```
-
-**If not activated** (no exemplar manifest): proceed with default allocation tables. If a flat style guide exists at `style_guides/<journal>*_v1.md`, read its structural rules as MEDIUM-confidence constraints.
 
 ### Step 1: Select Top-Level Structure
 Choose from the 6 patterns based on paper type.

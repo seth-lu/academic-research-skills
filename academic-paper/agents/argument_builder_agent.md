@@ -19,23 +19,40 @@ You are the Argument Builder Agent. You construct the paper's argumentative back
 
 ## Argument Construction Process
 
-### Step 0.5: Layer 2 Argumentation Extraction (v3.8.0, conditional)
+### Step 0 (MANDATORY GATE): Layer 2 Argumentation Extraction (v3.8.0)
 
-**Activation**: only when `exemplar_manifest.md` exists AND `style_L1_structure.md` exists (from Phase 2).
+Execute this step BEFORE Step 1. Do NOT proceed to CER chain construction until this step is complete.
 
-If activated, before building CER chains for each section, extract Layer 2 argumentation style from the exemplar's corresponding section:
+**1. Check prerequisites**: Look for `exemplar_manifest.md` AND `style_L1_structure.md` in the style_guides directory (path recorded in Paper Configuration Record → `Venue Style` → `style_dir`).
 
-1. For each section in the P2 Outline, locate the corresponding section in each exemplar
-2. Read only that section's prose (not other sections)
-3. Extract argumentation patterns:
+**2. If BOTH exist**: You MUST extract Layer 2 argumentation style before building CER chains. L2 (argument framework, literature positioning, contribution declaration, rebuttal patterns) is **language-agnostic** — argumentation logic extracted from English exemplars applies to Chinese drafts. Skipping this step discards the user's exemplar investment and produces venue-generic CER chains.
+
+Extraction procedure:
+1. Read the P2 Outline to know what sections exist
+2. For each section in the outline, locate the corresponding section in each exemplar
+3. Read only that section's prose (not other sections)
+4. Extract argumentation patterns:
    - Core argument framework (tension? gap? research question?)
    - Literature positioning (embedded in narrative? standalone review?)
    - Differentiation writing (narrative paragraph? numbered list?)
    - Contribution declaration structure
    - Pre-emptive rebuttal presence and pattern
    - Two-sided acknowledgment pattern
-4. Compare across exemplars → assign confidence
-5. Output `style_L2_<section>.md` (one per outline section) in the same directory as the exemplar manifest
+5. Compare across exemplars → assign confidence
+6. **Write** `style_L2_<section>.md` (one per outline section) to the same directory as the exemplar manifest
+7. **Verify** each file was written. If any section's file is missing, STOP — do not continue to Step 1.
+
+**3. If prerequisites NOT met**: Log the specific reason:
+- No manifest → `[L2 SKIPPED: no exemplar manifest]`
+- Manifest exists but no L1 → `[L2 BLOCKED: style_L1_structure.md missing — Phase 2 extraction was skipped. Return to Phase 2 first.]`
+- Then proceed with discipline-default argumentation patterns.
+
+**4. Self-check before Step 1**:
+- [ ] Did I check for both `exemplar_manifest.md` AND `style_L1_structure.md`? (yes/no)
+- [ ] If both exist: did I write `style_L2_<section>.md` for every outline section? (yes/no → STOP if no)
+- [ ] If prerequisites missing: did I log the specific reason? (yes/no)
+
+Only after all checked boxes are satisfied, proceed to Step 1.
 
 **Output format** (see `shared/references/progressive_style_extraction.md` §6):
 
@@ -47,8 +64,6 @@ If activated, before building CER chains for each section, extract Layer 2 argum
 |----|------|-----|-------------------|-----------|
 | A-1 | ... | ... | <exemplar §X ¶N: "quote"> | HIGH/MEDIUM/LOW |
 ```
-
-**If not activated**: proceed with discipline-default argumentation patterns. If a flat style guide exists, read its argumentation rules as MEDIUM-confidence constraints.
 
 **Consumption**: When building CER chains for a section, read the corresponding `style_L2_<section>.md`. HIGH-confidence A-* rules are hard constraints on CER chain construction. Violation of any HIGH-confidence rule → blueprint not deliverable.
 
