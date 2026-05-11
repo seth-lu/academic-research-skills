@@ -408,12 +408,18 @@ Option 3 enables "fix structural problems at the framework level, fix prose prob
 
 ## 10. Degradation Path
 
-When exemplars are unavailable or user skips exemplar selection:
+Three paths depending on exemplar availability and language match:
 
-| Phase | Normal path | Degraded path |
-|-------|------------|---------------|
-| P0 | exemplar_manifest.md | `exemplar_manifest: null` |
-| P2 | Extract L1 from exemplar | Default allocation tables |
-| P3 | Extract L2 per section from exemplar | Discipline-default argumentation patterns |
-| P3.5 | Extract L3+4 per paragraph → framework | Skip Phase 3.5 entirely |
-| P4 | Per-section drafting with framework | Original single-call method |
+| Phase | Normal (exemplar + same language) | Cross-language (exemplar + different language) | Degraded (no exemplar) |
+|-------|-----------------------------------|-----------------------------------------------|------------------------|
+| P0 | exemplar_manifest.md | exemplar_manifest.md | `exemplar_manifest: null` |
+| P2 | Extract L1 from exemplar | Extract L1 from exemplar (cross-language: structure is language-agnostic) | Default allocation tables |
+| P3 | Extract L2 per section from exemplar | Extract L2 per section from exemplar (cross-language: argumentation logic is language-agnostic) | Discipline-default argumentation patterns |
+| P3.5 | Extract L3+4 per paragraph → framework | **Skip** (L3+L4 are language-bound — sentence rhythm, word choice, signposting do not transfer) | Skip Phase 3.5 entirely |
+| P4 | Per-section drafting with framework | Draft with L1+L2 constraints only, no framework | Original single-call method |
+
+### Cross-language path: L3+L4 deferred
+
+When exemplar language ≠ draft language, L3+L4 extraction is **deferred**, not discarded. After the draft is finalized and translated to English, re-run Phase 3.5 against the English exemplars to extract L3+L4 features and polish the translation at the paragraph level.
+
+Gate: re-entry requires finalized draft + exemplar manifest + user confirmation. Do not trigger L3+L4 automatically upon translation.
