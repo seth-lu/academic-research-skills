@@ -194,18 +194,22 @@ Do NOT build CER chains. Do NOT write a central thesis. Only extract L2.
 
 #### Phase 3.5 gate (before Phase 4)
 
-**Language gate**: compare exemplar language vs. draft language (from Paper Configuration Record).
+**L3+L4 extraction always runs** when prerequisites (manifest + L2 files) exist. Language does NOT gate extraction — sentence patterns and rhetorical moves are captured regardless of draft language. The user can inspect the extracted files to understand exemplar writing patterns.
 
-| Exemplar | Draft | Action |
-|----------|-------|--------|
-| EN | EN | EXTRACT L3+L4 → produce frameworks |
-| ZH | ZH | EXTRACT L3+L4 → produce frameworks |
-| EN | ZH | **SKIP** — sentence rhythm, word choice, signposting are language-bound. Log `[L3+L4 DEFERRED]`. Re-run at English finalization. |
-| ZH | EN | **SKIP** — same reason, reverse direction |
+**Language gates only framework building** (whether paragraph specs become hard constraints for drafting):
 
-When EXTRACT: call draft_writer_agent Step 1.5 for each section, producing `style_L3L4_<section>.md` + `framework_<section>.md`. Present each framework to user for approval.
+| Exemplar | Draft | L3+L4 Extraction | Framework |
+|----------|-------|-----------------|-----------|
+| EN | EN | EXTRACT | BUILD → Path A |
+| ZH | ZH | EXTRACT | BUILD → Path A |
+| EN | ZH | EXTRACT | **SKIP** (paragraph rhythm/word choice don't transfer) → Path B |
+| ZH | EN | EXTRACT | SKIP → Path B |
 
-When SKIP: proceed directly to Phase 4 Path B (L1+L2-constrained per-section drafting).
+When framework is skipped: L3+L4 files are saved as reference. Log `[FRAMEWORK DEFERRED: exemplar=<L>, draft=<L>. L3+L4 extracted for reference.]`.
+
+When BUILD framework (same language): call draft_writer_agent Step 1.5 for each section, producing `style_L3L4_<section>.md` + `framework_<section>.md`. Present each framework to user for approval. Then Phase 4 Path A.
+
+When SKIP framework (cross-language): L3+L4 extracted but no framework. Produce `style_L3L4_<section>.md` only (reference files). Proceed to Phase 4 Path B.
 
 When no manifest: skip entirely. Phase 4 uses Path C (degraded).
 
@@ -267,7 +271,7 @@ Do NOT proceed to §<N+1> until user confirms §<N>.
 3. ⚠️ **v3.8.0 Phase 3a gate**: When `style_L1_structure.md` exists, `style_L2_<section>.md` MUST be produced BEFORE Phase 3b. Same re-run rule as Phase 2a.
 4. **Phase 2b -> 3a**: User must approve outline (can request restructuring)
 5. ⚠️ **v3.8.0 Phase 4 gate**: Each section MUST be written as a separate call. Do NOT batch multiple sections into one call. User must confirm each section before the next begins.
-6. **Phase 3.5** (v3.8.0): User must approve each section's writing framework before Phase 4 drafts that section. When cross-language: Phase 3.5 is skipped with deferral log — user does not need to approve.
+6. **Phase 3.5** (v3.8.0): L3+L4 extraction always runs when prerequisites met. User must approve each framework (same language) or is informed of framework deferral (cross-language — L3+L4 files saved for reference, no approval needed).
 7. ⚠️ **IRON RULE**: Max 2 revision loops; unresolved items -> "Acknowledged Limitations"
 8. **Peer Review** Critical-severity issues block progression to Phase 7
 9. User can skip Phase 1 (literature) if providing own sources

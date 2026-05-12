@@ -33,22 +33,15 @@ Before writing, confirm you have:
 - [ ] Anti-Leakage Protocol — check if Knowledge Isolation should be activated (from `references/anti_leakage_protocol.md`). Activate if user provided RQ Brief + Synthesis Report + Annotated Bibliography AND mode is `full` or `revision`. When activated, prepend the Knowledge Isolation Directive to your working context. When not activated (plan/socratic mode, or minimal materials), skip.
 - [ ] **Exemplar manifest** (v3.8.0) — check if `exemplar_manifest.md` exists. If yes, determine draft language from Paper Configuration Record. Same language → Step 1.5 EXTRACT → Step 2 Path A. Cross-language → Step 1.5 SKIP (L3+L4 deferred) → Step 2 Path B. If no manifest → Step 2 Path C.
 
-### Step 1.5: Phase 3.5 — Layer 3+4 Extraction + Writing Framework (v3.8.0, mandatory gate)
+### Step 1.5: Phase 3.5 — Layer 3+4 Extraction + Writing Framework (v3.8.0)
 
 Execute this step BEFORE Step 2. Do NOT proceed to drafting until this step's decision is resolved.
 
-**1. Check prerequisites**: Look for `exemplar_manifest.md` AND `style_L2_<section>.md` files AND verify the draft language from Paper Configuration Record.
+**1. Check prerequisites**: Look for `exemplar_manifest.md` AND `style_L2_<section>.md` files.
 
-**2. Language gate** (v3.8.0): Compare exemplar language vs. draft language.
+**2. If prerequisites met**: ALWAYS extract L3+L4. Language does NOT gate extraction — sentence patterns and rhetorical moves are worth capturing even when draft language differs. The user may read the extracted files to understand exemplar writing patterns, and they will be used when the draft reaches the same language.
 
-| Exemplar language | Draft language | L3+L4 action |
-|------------------|---------------|-------------|
-| English | English | EXTRACT — L3+L4 features transfer directly |
-| English | Chinese | **SKIP** — sentence rhythm, word choice, signposting are language-bound and do not transfer. Log `[L3+L4 DEFERRED: exemplar=EN, draft=ZH. Will re-run at English finalization.]` |
-| Chinese | Chinese | EXTRACT |
-| Chinese | English | SKIP — same reason, reverse direction |
-
-**3. If EXTRACT (same language, prerequisites met)**: For each section in the outline:
+For each section in the outline:
 
 1. **Extract Layer 3+4** from exemplar corresponding section's paragraphs:
    - Locate each exemplar paragraph by matching rhetorical function to the section's expected moves
@@ -62,9 +55,16 @@ Execute this step BEFORE Step 2. Do NOT proceed to drafting until this step's de
    - Compare across exemplars → assign confidence
    - Output `style_L3L4_<section>.md`
 
-2. **Build Writing Framework** for this section:
-   - For each paragraph position, write a Paragraph Spec (see `shared/references/progressive_style_extraction.md` §7):
+2. **Language gate for framework** (v3.8.0): Compare exemplar language vs. draft language.
 
+| Exemplar lang | Draft lang | Framework action |
+|--------------|-----------|-----------------|
+| English | English | BUILD framework → `framework_<section>.md` as hard constraints |
+| Chinese | Chinese | BUILD framework |
+| English | Chinese | **SKIP framework** — paragraph rhythm and word choice don't transfer. L3+L4 files saved for reference. Log `[FRAMEWORK DEFERRED: exemplar=EN, draft=ZH. L3+L4 extracted for reference; framework will be built at English finalization.]` |
+| Chinese | English | SKIP framework — same reason, reverse direction |
+
+3. **If BUILD framework** (same language): For each section, write a Paragraph Spec:
    ```
    ### ¶<N>
    **Move**: <M-ID> — <rhetorical function>
@@ -79,31 +79,13 @@ Execute this step BEFORE Step 2. Do NOT proceed to drafting until this step's de
    **Transition**: <how this paragraph connects to the next>
    **Word Target**: <N> words (±20%)
    ```
+   Output `framework_<section>.md`. Present each framework to user for approval.
 
-   - Output `framework_<section>.md`
+4. **If SKIP framework** (cross-language): Log the deferral. L3+L4 extraction is complete; framework is deferred. Proceed to Step 2 Path B. No user approval needed — L3+L4 files are reference-only at this stage.
 
-3. **Present Framework to user** for approval:
+**3. If prerequisites NOT met** (no manifest or no L2 files): Log `[L3+L4 SKIPPED: prerequisites missing]`. Proceed to Step 2 Path C.
 
-   ```
-   ━━━ Phase 3.5: §<N> <Section Name> Writing Framework ━━━
-
-   Paragraphs: <N>
-   Exemplar anchors: <N> (matched / unmatched)
-   Word allocation: <N> words
-
-   Options:
-   1. Approve framework → proceed
-   2. Modify specific paragraph specs
-   3. Add/remove paragraphs
-   4. Re-extract from different exemplar section
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   ```
-
-**4. If SKIP (cross-language)**: Log the deferral reason. L3+L4 extraction is deferred to English finalization stage (see `shared/references/progressive_style_extraction.md` §10 Cross-language path). Do NOT extract L3+L4 now. Proceed to Step 2 Path B.
-
-**5. If prerequisites NOT met** (no manifest or no L2 files): Log `[L3+L4 SKIPPED: prerequisites missing]`. Proceed to Step 2 Path C.
-
-**Exemplar Anchor Iron Rule**: The anchor records HOW the exemplar writes, not WHAT it writes. Claim and Required Content come from Phase 3 CER chains + the user's own research. Exemplar provides only the writing pattern.
+**Exemplar Anchor Iron Rule**: The anchor records HOW the exemplar writes, not WHAT it writes.
 
 ### Step 2: Section-by-Section Writing
 

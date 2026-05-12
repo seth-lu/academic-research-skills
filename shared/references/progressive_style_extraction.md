@@ -413,13 +413,17 @@ Three paths depending on exemplar availability and language match:
 | Phase | Normal (exemplar + same language) | Cross-language (exemplar + different language) | Degraded (no exemplar) |
 |-------|-----------------------------------|-----------------------------------------------|------------------------|
 | P0 | exemplar_manifest.md | exemplar_manifest.md | `exemplar_manifest: null` |
-| P2 | Extract L1 from exemplar | Extract L1 from exemplar (cross-language: structure is language-agnostic) | Default allocation tables |
-| P3 | Extract L2 per section from exemplar | Extract L2 per section from exemplar (cross-language: argumentation logic is language-agnostic) | Discipline-default argumentation patterns |
-| P3.5 | Extract L3+4 per paragraph → framework | **Skip** (L3+L4 are language-bound — sentence rhythm, word choice, signposting do not transfer) | Skip Phase 3.5 entirely |
-| P4 | Per-section drafting with framework | Draft with L1+L2 constraints only, no framework | Original single-call method |
+| P2 | Extract L1 from exemplar | Extract L1 from exemplar (structure is language-agnostic) | Default allocation tables |
+| P3 | Extract L2 per section from exemplar | Extract L2 per section from exemplar (argumentation is language-agnostic) | Discipline-default argumentation patterns |
+| P3.5 | Extract L3+4 per paragraph → framework | **Extract L3+4** (saved as reference) → **skip framework** (paragraph rhythm/word choice don't transfer to different language) | Skip Phase 3.5 entirely |
+| P4 | Per-section drafting with framework | Draft with L1+L2 constraints; L3+L4 files available for reference | Original per-section drafting |
 
-### Cross-language path: L3+L4 deferred
+### Cross-language path: L3+L4 extracted, framework deferred
 
-When exemplar language ≠ draft language, L3+L4 extraction is **deferred**, not discarded. After the draft is finalized and translated to English, re-run Phase 3.5 against the English exemplars to extract L3+L4 features and polish the translation at the paragraph level.
+When exemplar language ≠ draft language, L3+L4 is **always extracted** — sentence patterns and rhetorical moves are worth capturing regardless of draft language. The user can inspect the `style_L3L4_<section>.md` files to understand exemplar writing patterns.
 
-Gate: re-entry requires finalized draft + exemplar manifest + user confirmation. Do not trigger L3+L4 automatically upon translation.
+The **framework** (paragraph specs as hard drafting constraints) is deferred because it binds exemplar sentence-level features to draft paragraphs — this only makes sense when both languages match.
+
+After the draft is finalized and translated to English, re-enter Phase 3.5 to build frameworks using the already-extracted L3+L4 files.
+
+Gate: re-entry requires finalized draft + existing L3+L4 files + user confirmation.
