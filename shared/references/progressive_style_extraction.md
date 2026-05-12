@@ -8,19 +8,22 @@
 
 ## 1. Overview
 
-Style rules are extracted **progressively** — each Phase extracts only the granularity it needs, from the exemplar papers selected at Phase 0. Later Phases extract at finer granularity because the context (outline, argument blueprint) becomes more specific.
+Style rules are extracted **progressively** in three layers. Each layer analyzes the exemplar at a different scope, producing a fixed-size file. Because later layers split the paper into more files (1 → N → N), the total context budget grows and depth increases.
 
-**Core principle**: Extract once per granularity level, consume immediately. Never extract all four levels upfront.
+**Depth escalation principle**: Same file size budget × narrower scope = deeper analysis.
 
 ```
-P0  Select exemplars           → exemplar_manifest.md (no style content)
-P2  Full-text → structure      → style_L1_structure.md
-P3  Per-section → argumentation → style_L2_<section>.md (one per section)
-P3.5 Per-paragraph → paragraph+ narrative → style_L3L4_<section>.md + framework_<section>.md
-P4  No extraction, only consume → per-section prose output
+Layer  Scope      Files  Depth   Extracts
+L1     Full text  1      Coarse  Section architecture, word ratios, structural rules
+L2     Per-section N      Deep    Argumentation strategy per section (tension, positioning, contribution, rebuttal)
+L3     Per-section N      Deeper  Paragraph move sequence per section (M-ID, citation fusion, transition chain)
 ```
 
-Every extracted rule must include a **Why** — without it, the rule is surface mimicry and the LLM cannot make judgment calls at the boundary.
+Each layer's file has the same approximate size budget — but L1 stretches it across the whole paper while L2/L3 focus it on one section, producing proportionally deeper analysis.
+
+**Language**: All three layers are language-agnostic (structure, argumentation logic, and rhetorical moves transfer across languages). L3 does not extract sentence-level language features (word choice, rhythm, signposting vocabulary) — those are language-bound and not captured.
+
+**Core principle**: Extract once per layer, consume immediately. Never extract all layers upfront.
 
 ---
 
@@ -40,19 +43,18 @@ When 2+ exemplars are provided, each extracted rule receives a confidence level:
 
 ```
 style_guides/
-  <journal>_<date>/
-    exemplar_manifest.md           ← P0 output
-    style_L1_structure.md          ← P2 output
-    style_L2_introduction.md       ← P3 output
-    style_L2_method.md             ← P3 output
-    style_L2_<section>.md          ← P3 output (one per outline section)
-    style_L3L4_introduction.md     ← P3.5 output
-    style_L3L4_method.md           ← P3.5 output
-    style_L3L4_<section>.md        ← P3.5 output (one per outline section)
-    framework_introduction.md      ← P3.5 output
-    framework_method.md            ← P3.5 output
-    framework_<section>.md         ← P3.5 output (one per outline section)
+  <journal>_<topic>_<date>/
+    exemplar_manifest.md            ← P0 output
+    style_L1_structure.md           ← P2 output (1 file)
+    style_L2_introduction.md        ← P3 output
+    style_L2_background.md          ← P3 output
+    style_L2_<section>.md           ← P3 output (N files, one per outline section)
+    style_L3_introduction.md        ← P3.5 output
+    style_L3_background.md          ← P3.5 output
+    style_L3_<section>.md           ← P3.5 output (N files, one per outline section)
 ```
+
+Total: 1 (L1) + N (L2) + N (L3) = 2N+1 files. No framework files — L3 serves as the direct paragraph-level reference during drafting.
 
 ---
 
@@ -85,7 +87,7 @@ style_guides/
 ## Confidence Assessment
 - L1 Structure: TBD (assessed at P2)
 - L2 Argumentation: TBD (assessed at P3)
-- L3+4 Paragraph+Narrative: TBD (assessed at P3.5)
+- L3 Paragraph Moves: TBD (assessed at P3.5)
 ```
 
 ### Role Definitions
@@ -203,43 +205,36 @@ For each section in the P2 outline:
 
 ---
 
-## 7. Phase 3.5: Layer 3+4 Paragraph & Narrative Extraction + Writing Framework
+## 7. Phase 3.5: Layer 3 Paragraph Move Extraction
 
-**Agent**: `draft_writer_agent` (Phase 3.5 sub-step)
+**Agent**: `draft_writer_agent` (Phase 3.5)
 **Input**: exemplar_manifest.md + exemplar texts + P2 Outline + P3 Argument Blueprint
-**Extraction scope**: Per outline section per paragraph → read exemplar corresponding paragraph → paragraph-level + narrative-level features
-**Output**: `style_L3L4_<section>.md` + `framework_<section>.md` (one pair per section)
+**Extraction scope**: Per outline section → read exemplar corresponding section's paragraphs → paragraph-level rhetorical patterns
+**Output**: `style_L3_<section>.md` (N files, one per outline section)
+
+L3 extracts paragraph-level writing patterns. With the same file size budget as L2 but focused at the paragraph level (not section level), it captures deeper detail: the rhetorical move sequence, how citations are fused into arguments, and how transitions chain paragraphs together.
 
 ### Extraction Method
 
 ```
 For each section in the P2 outline:
-  For each paragraph position in that section:
-    1. Locate exemplar corresponding section, corresponding paragraph
-       (match by rhetorical function, not by position number)
-    2. Read that paragraph's prose
-    3. Extract:
-       a. Paragraph-level (Layer 3):
-          - Rhetorical function (M1-M34 move ID)
-          - Sentence count / approximate word count
-          - Citation integration method + specific attribution verbs
-          - In-paragraph argument progression
-          - Transition role (how this paragraph connects to the next)
-       b. Narrative-level (Layer 4):
-          - Person usage ("we" vs "this paper")
-          - Sentence length rhythm pattern
-          - Conversational signposting words used
-          - Vivid vocabulary choices
-          - Long sentence construction method
-    4. Compare across exemplars → assign confidence
-    5. Write findings into style_L3L4_<section>.md
-    6. Write paragraph spec into framework_<section>.md
+  1. Locate corresponding section in each exemplar
+  2. For each paragraph in that section:
+     a. Identify rhetorical function (M1-M34 move ID from rhetorical_move_taxonomy.md)
+     b. Record sentence count and approximate word count
+     c. Extract citation integration method — how sources are embedded (narrative, parenthetical, block quote)
+     d. Map in-paragraph argument progression (topic → evidence → analysis → transition)
+     e. Identify transition role — how this paragraph connects to the next
+  3. Build the paragraph move sequence as a table
+  4. Extract cross-paragraph patterns (citation fusion, transition chain)
+  5. Compare across exemplars → assign confidence
+  6. Write style_L3_<section>.md
 ```
 
-### style_L3L4 Output Format
+### Output Format
 
 ```markdown
-# Layer 3+4 Style: <journal> — <Section> Paragraph & Narrative
+# Layer 3 Style: <journal> — <Section> Paragraph Moves
 
 > Extracted at: Phase 3.5
 > From: <exemplar1 §X>, <exemplar2 §X>
@@ -247,102 +242,63 @@ For each section in the P2 outline:
 
 ## Paragraph Move Sequence
 
-| Exemplar ¶ | Move ID | Rhetorical Function | Sentences | Key Feature |
-|-----------|---------|-------------------|-----------|-------------|
-| ... | ... | ... | ... | ... |
+| ¶ | Move ID | Rhetorical Function | Sentences | Citation Method | Transition To Next |
+|----|---------|-------------------|-----------|----------------|-------------------|
+| 1 | M1 | ... | ... | ... | ... |
+| 2 | M2 | ... | ... | ... | ... |
+| ... | ... | ... | ... | ... | ... |
 
 ## Citation Integration Patterns
 
-| Pattern ID | Exemplar Instance | Template | When to Use |
-|-----------|-----------------|---------|-------------|
+| Pattern ID | How Sources Are Embedded | Exemplar Instance | When to Use |
+|-----------|------------------------|-------------------|-------------|
 | ... | ... | ... | ... |
 
-## Narrative Features
+## Paragraph Transition Chain
 
-### Voice / Sentence Rhythm / Signposting / Vocabulary / AI Blacklist
-(see full format in layered_style_guide_schema.md §4)
+| From ¶ | To ¶ | Transition Mechanism |
+|--------|------|---------------------|
+| ... | ... | ... |
+
+## Style Constraints
+
+| ID | Rule | Why | Confidence |
+|----|------|-----|-----------|
+| P-1 | ... | ... | HIGH/MEDIUM/LOW |
 ```
 
-### framework Output Format
+### Consumption
 
-```markdown
-# Section Writing Framework: <Section Name>
+`draft_writer_agent` reads L3 alongside L1 and L2 during Phase 4 per-section drafting:
+- L1 provides section architecture and word ratios
+- L2 provides argumentation strategy for the section
+- L3 provides paragraph move sequence — how many paragraphs, what each does, how citations are integrated, how transitions chain
 
-> Section: §<N> <Section Name>
-> Source Exemplar: <exemplar> §<corresponding_section>
-> Source Blueprint: <blueprint_section_summary>
-> Word Allocation: <N> words
+L3 does NOT prescribe exact sentence count or word choice — it describes the rhetorical skeleton, not the prose surface.
 
-### Framework Overview
-(structure overview + word allocation)
-
-### ¶<N>
-**Move**: <M-ID> — <rhetorical function>
-**Exemplar Anchor**: <exemplar §X ¶N, function=...>
-  → Observed: <key features from exemplar paragraph>
-**Claim**: <one-sentence claim from CER chains>
-**Required Content**:
-  - [ ] <item 1>
-  - [ ] <item 2>
-**Style Constraints** (from exemplar anchor):
-  - <constraint 1>
-  - <constraint 2>
-**Transition**: <how this paragraph connects to the next>
-**Word Target**: <N> words (±20%)
-```
-
-### Exemplar Anchor Iron Rule
-
-Exemplar Anchor records **how** the exemplar writes, not **what** it writes.
-
-| Allowed (style learning) | Forbidden (content copying) |
-|--------------------------|---------------------------|
-| Observe rhetorical progression pattern | Copy specific cases/data/institutions |
-| Observe citation integration verb choice | Copy verbatim sentences |
-| Observe sentence length rhythm | Replace exemplar content with our content in same sentence slots |
-| Observe transition word placement | Use exemplar's institutional examples |
-
-**Claim** and **Required Content** come from Phase 3 CER chains + the user's own research. Exemplar provides only the writing pattern.
-
-### User Confirmation
-
-After all framework files are produced for a section, present to the user:
-
-```
-━━━ Phase 3.5: §<N> <Section Name> Writing Framework ━━━
-
-Paragraphs: <N>
-Exemplar anchors: <N> (all matched)
-Word allocation: <N> words
-
-Options:
-1. Approve framework → proceed to Phase 4 drafting
-2. Modify specific paragraph specs
-3. Add/remove paragraphs
-4. Re-extract from different exemplar section
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+**No framework files**: L3 serves as the direct paragraph-level reference. The LLM writes prose following L1 structure + L2 argumentation + L3 paragraph moves, adapting the rhetorical pattern to the draft language naturally.
 
 ---
 
-## 8. Phase 4: Per-Section Drafting (Plan C)
+## 8. Phase 4: Per-Section Drafting with L1+L2+L3
 
 **Agent**: `draft_writer_agent`
-**Input per section call**: framework_<section>.md (hard) + style_L3L4_<section>.md narrative rules (hard) + previous sections' prose (style anchor) + CER chains + bibliography subset
+**Input per section call**: `style_L1_structure.md` + `style_L2_<section>.md` + `style_L3_<section>.md` + previous sections' prose (continuity anchor) + CER chains + bibliography subset
 **Output per section call**: section prose + compliance self-check + word count + user confirmation
 
 ### Per-Section Call Structure
 
 ```
 System Prompt:
-  ├── style_L3L4_<section>.md narrative features
-  ├── framework_<section>.md paragraph specs
-  └── "Draft this section following the framework specs exactly"
+  ├── style_L1_structure.md — structural rules, word ratios
+  ├── style_L2_<section>.md — argumentation rules for this section
+  ├── style_L3_<section>.md — paragraph move sequence for this section
+  └── "Write §<N> only. Follow L1 structure + L2 argumentation + L3 paragraph moves."
 
 User Content:
   ├── Section CER chains
   ├── Section bibliography subset
-  ├── Previous sections' prose (style anchor + inter-section continuity)
+  ├── Previous sections' prose (continuity anchor)
   └── Word count constraint
 ```
 
@@ -360,70 +316,42 @@ User Content:
 
 After writing each section:
 
-1. **Required Content**: tick each [ ] item — any missing → `[FRAMEWORK VIOLATION]` → rewrite that paragraph
-2. **Style Constraints**: verify each constraint from exemplar anchor
-3. **Move function**: verify each paragraph's rhetorical function matches spec
-4. **Word count**: section ±15%, running total ±10%
+1. **L1**: Verify structural rules satisfied (HIGH-confidence S-* rules are hard)
+2. **L2**: Verify argumentation rules satisfied (HIGH-confidence A-* rules are hard)
+3. **L3**: Verify paragraph move sequence followed (¶ count, each ¶'s rhetorical function)
+4. **Citations**: Each claim has a source
+5. **Word count**: Section ±15%, running total ±10%
 
 ### User Confirmation per Section
 
 ```
 ━━━ Section N: <Name> Draft Complete ━━━
 
-Framework Compliance:
-  ¶1: [4/4 required] [3/3 style] ✓
-  ¶2: [4/4 required] [2/2 style] ✓
-  ...
-
-Exemplar Anchor Match:
-  ¶1: M1 anchor → ✓
-  ¶3: M2 anchor → ✓
-  ...
+L1+L2+L3 Compliance:
+  L1 S-*: [N/N] ✓
+  L2 A-*: [N/N] ✓
+  L3 Moves: [N/N ¶s matched] ✓
 
 Word Count: <N> / <Target> (<%> deviation)
 
 Options:
 1. Accept and proceed to next section
 2. Request revision of specific paragraphs
-3. Adjust framework (modify spec, then rewrite)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-Option 3 enables "fix structural problems at the framework level, fix prose problems at the prose level."
-
 ---
 
-## 9. Stage 4.3 Downgrade
+## 9. Degradation Path
 
-`academic-pipeline` Stage 4.3 (Style Alignment) is **downgraded** from "primary style fix mechanism" to "final polish pass":
+Two paths depending on exemplar availability:
 
-| Aspect | Before | After |
-|--------|--------|-------|
-| Purpose | Fix style problems in draft | Polish minor issues that slipped through framework |
-| Trigger | Reviewer mentions style + guide exists | Same trigger, but only handles micro-adjustments |
-| Scope | Per-paragraph diff + rationale | Sentence-level tweaks (word choice, transition phrasing) |
-| Cannot fix | Structural style problems | Same — but these should now be rare since P2/P3/P3.5 handled them |
+| Phase | Normal (exemplar manifest exists) | Degraded (no exemplar) |
+|-------|-----------------------------------|------------------------|
+| P0 | exemplar_manifest.md | `exemplar_manifest: null` |
+| P2 | Extract L1 from exemplar (1 file) | Default allocation tables |
+| P3 | Extract L2 per section from exemplar (N files) | Discipline-default argumentation patterns |
+| P3.5 | Extract L3 per section from exemplar (N files) | Skip Phase 3.5 entirely |
+| P4 | Per-section drafting with L1+L2+L3 | Per-section drafting with outline + CER chains only |
 
----
-
-## 10. Degradation Path
-
-Three paths depending on exemplar availability and language match:
-
-| Phase | Normal (exemplar + same language) | Cross-language (exemplar + different language) | Degraded (no exemplar) |
-|-------|-----------------------------------|-----------------------------------------------|------------------------|
-| P0 | exemplar_manifest.md | exemplar_manifest.md | `exemplar_manifest: null` |
-| P2 | Extract L1 from exemplar | Extract L1 from exemplar (structure is language-agnostic) | Default allocation tables |
-| P3 | Extract L2 per section from exemplar | Extract L2 per section from exemplar (argumentation is language-agnostic) | Discipline-default argumentation patterns |
-| P3.5 | Extract L3+4 per paragraph → framework | **Extract L3+4** (saved as reference) → **skip framework** (paragraph rhythm/word choice don't transfer to different language) | Skip Phase 3.5 entirely |
-| P4 | Per-section drafting with framework | Draft with L1+L2 constraints; L3+L4 files available for reference | Original per-section drafting |
-
-### Cross-language path: L3+L4 extracted, framework deferred
-
-When exemplar language ≠ draft language, L3+L4 is **always extracted** — sentence patterns and rhetorical moves are worth capturing regardless of draft language. The user can inspect the `style_L3L4_<section>.md` files to understand exemplar writing patterns.
-
-The **framework** (paragraph specs as hard drafting constraints) is deferred because it binds exemplar sentence-level features to draft paragraphs — this only makes sense when both languages match.
-
-After the draft is finalized and translated to English, re-enter Phase 3.5 to build frameworks using the already-extracted L3+L4 files.
-
-Gate: re-entry requires finalized draft + existing L3+L4 files + user confirmation.
+No cross-language path — L1/L2/L3 are all language-agnostic and apply directly to drafts in any language. Sentence-level features (word choice, rhythm, signposting vocabulary) are not captured at any layer and are left to the LLM's natural target-language prose ability.

@@ -127,8 +127,8 @@ Phase 3a: EXTRACT-L2   -> [argument_builder]           -> style_L2_<section>.md 
           (SEPARATE CALL when L1 exists. Before Phase 3b.)
 Phase 3b: ARGUMENTATION -> [argument_builder]          -> Argument Blueprint
 
-Phase 3.5: FRAMEWORK   -> [draft_writer]               -> style_L3L4_<section>.md + framework_<section>.md
-Phase 4:  DRAFTING     -> [draft_writer]               -> Complete Draft (§1→§2→...→§N, per-section calls)
+Phase 3.5: EXTRACT-L3  -> [draft_writer]               -> style_L3_<section>.md
+Phase 4:  DRAFTING     -> [draft_writer]               -> Complete Draft (§1→§2→...→§N, per-section calls with L1+L2+L3)
 Phase 5a: CITATIONS    -> [citation_compliance] ──┐    -> Citation Audit Report
 Phase 5b: ABSTRACT     -> [abstract_bilingual]   ─┘    -> Bilingual Abstract + Keywords  (parallel)
 Phase 6:  PEER REVIEW  -> [peer_reviewer]              -> Review Report (max 2 revision loops)
@@ -194,32 +194,40 @@ Do NOT build CER chains. Do NOT write a central thesis. Only extract L2.
 
 #### Phase 3.5 gate (before Phase 4)
 
-**L3+L4 extraction always runs** when prerequisites (manifest + L2 files) exist. Language does NOT gate extraction — sentence patterns and rhetorical moves are captured regardless of draft language. The user can inspect the extracted files to understand exemplar writing patterns.
+**Condition**: `exemplar_manifest.md` exists AND `style_L2_<section>.md` files exist.
 
-**Language gates only framework building** (whether paragraph specs become hard constraints for drafting):
+**Call script** — send this as a standalone prompt, do NOT include the drafting task:
 
-| Exemplar | Draft | L3+L4 Extraction | Framework |
-|----------|-------|-----------------|-----------|
-| EN | EN | EXTRACT | BUILD → Path A |
-| ZH | ZH | EXTRACT | BUILD → Path A |
-| EN | ZH | EXTRACT | **SKIP** (paragraph rhythm/word choice don't transfer) → Path B |
-| ZH | EN | EXTRACT | SKIP → Path B |
+```
+You are executing Phase 3.5: Layer 3 Paragraph Move Extraction. Your ONLY task is to extract paragraph-level rhetorical patterns from exemplar corresponding sections and write one file per outline section.
 
-When framework is skipped: L3+L4 files are saved as reference. Log `[FRAMEWORK DEFERRED: exemplar=<L>, draft=<L>. L3+L4 extracted for reference.]`.
+Prerequisites: P2 Outline + style_L2_<section>.md files must exist.
 
-When BUILD framework (same language): call draft_writer_agent Step 1.5 for each section, producing `style_L3L4_<section>.md` + `framework_<section>.md`. Present each framework to user for approval. Then Phase 4 Path A.
+For each section in the outline:
+1. Locate the corresponding section in each exemplar PDF
+2. For each paragraph: identify rhetorical function (M1-M34 move ID), sentence count, citation integration method, in-paragraph argument progression, transition role
+3. Build the paragraph move sequence table
+4. Extract cross-paragraph patterns (citation fusion, transition chain)
+5. Compare across exemplars → assign confidence
+6. Write style_L3_<section>.md to the exemplar manifest directory
 
-When SKIP framework (cross-language): L3+L4 extracted but no framework. Produce `style_L3L4_<section>.md` only (reference files). Proceed to Phase 4 Path B.
+Output format: shared/references/progressive_style_extraction.md §7
 
-When no manifest: skip entirely. Phase 4 uses Path C (degraded).
+When done, report: [L3 EXTRACTION COMPLETE] + file list + paragraph move count per section.
+
+Do NOT write prose. Do NOT produce full-text paragraphs. Only extract L3.
+```
+
+L3 is language-agnostic (rhetorical moves transfer across languages). Sentence-level features (word choice, rhythm, signposting) are NOT extracted — those are left to the LLM's natural prose ability. No framework files are produced; L3 serves as the direct paragraph-level reference during drafting.
+
+**If Phase 3.5 is skipped** (no manifest or no L2 files): log `[L3 SKIPPED: prerequisites missing]`. Phase 4 uses Path C (degraded).
 
 #### Phase 4: Per-Section Drafting (mandatory loop)
 
 **IRON RULE**: Do NOT write the entire draft in a single call. Phase 4 MUST be executed as a loop — one section per call, user confirms, then next section.
 
 **Path determination** (set at Phase 3.5):
-- **Path A** (same language): Load `framework_<section>.md` + `style_L3L4_<section>.md` for each section
-- **Path B** (cross-language): Load `style_L1_structure.md` + `style_L2_<section>.md` for each section
+- **Path A** (style-constrained): Load `style_L1_structure.md` + `style_L2_<section>.md` + `style_L3_<section>.md` for each section
 - **Path C** (degraded): No style files — draft with outline + CER chains only
 
 **Call script for each section** (send this as a standalone prompt, one section at a time):
@@ -227,22 +235,21 @@ When no manifest: skip entirely. Phase 4 uses Path C (degraded).
 ```
 You are writing §<N>: <Section Name>. Write ONLY this section. Do NOT write other sections.
 
-Path: <A/B/C>
-Language: <draft language>
+Path: <A/C>
 Word target: <allocation> words (±15%)
 
 Inputs:
 - Outline section description: <from Phase 2b>
 - CER chains for this section: <from Phase 3b>
 - Bibliography subset for this section: <from Phase 1>
-- Style constraints (Path A: framework + L3+L4; Path B: L1 + L2; Path C: none)
+- Style constraints (Path A: L1 + L2 + L3; Path C: none)
 - Previous section prose: <§1..§N-1, as continuity anchor>
 
 Output: §<N> prose only. Do NOT include other sections.
 
 After writing, self-check:
 - Word count: <actual>/<target> (±15%)
-- Style constraints: [N/N] satisfied (Path A/B only)
+- Style constraints: [N/N] satisfied (Path A only)
 - CER chains: all claims have sources
 
 End with: [§<N> COMPLETE] <word count> <style compliance>
@@ -253,7 +260,7 @@ End with: [§<N> COMPLETE] <word count> <style compliance>
 ```
 ━━━ §<N>: <Section Name> ━━━
 Word Count: <N> / <Target> (<%>)
-Style: [N/N] L1+L2 rules satisfied
+L1+L2+L3: [N/N] rules satisfied
 Options:
 1. Accept → proceed to §<N+1>
 2. Revise → re-write this section
@@ -271,7 +278,7 @@ Do NOT proceed to §<N+1> until user confirms §<N>.
 3. ⚠️ **v3.8.0 Phase 3a gate**: When `style_L1_structure.md` exists, `style_L2_<section>.md` MUST be produced BEFORE Phase 3b. Same re-run rule as Phase 2a.
 4. **Phase 2b -> 3a**: User must approve outline (can request restructuring)
 5. ⚠️ **v3.8.0 Phase 4 gate**: Each section MUST be written as a separate call. Do NOT batch multiple sections into one call. User must confirm each section before the next begins.
-6. **Phase 3.5** (v3.8.0): L3+L4 extraction always runs when prerequisites met. User must approve each framework (same language) or is informed of framework deferral (cross-language — L3+L4 files saved for reference, no approval needed).
+6. **Phase 3.5** (v3.8.0): L3 extraction runs whenever prerequisites (manifest + L2 files) are met. Output is `style_L3_<section>.md` per outline section. No framework files — L3 serves as the direct paragraph-level reference. Language-agnostic: applies to drafts in any language.
 7. ⚠️ **IRON RULE**: Max 2 revision loops; unresolved items -> "Acknowledged Limitations"
 8. **Peer Review** Critical-severity issues block progression to Phase 7
 9. User can skip Phase 1 (literature) if providing own sources

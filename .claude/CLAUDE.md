@@ -176,27 +176,27 @@ Targets MIS Quarterly, Information Systems Research, Management Science, INFORMS
 
 ### Style Reasoning Pipeline (venue-aware writing-style extraction + restyle)
 
-Four-phase progressive extraction embedded in `academic-paper`'s writing flow. At each phase, the agent reads the user's exemplar PDFs and extracts only the style layer relevant to that phase's output — structure for the outline, argumentation for the CER chains, paragraph patterns for the prose. Designed to fix the gap that `shared/style_calibration_protocol.md` Priority 2 ("Target journal conventions") was a placeholder. Journal-agnostic infrastructure — works for any venue with sufficient exemplars.
+Three-phase progressive extraction embedded in `academic-paper`'s writing flow. At each phase, the agent reads the user's exemplar PDFs and extracts only the style layer relevant to that phase's output — structure for the outline, argumentation for the CER chains, paragraph moves for the prose. Designed to fix the gap that `shared/style_calibration_protocol.md` Priority 2 ("Target journal conventions") was a placeholder. Journal-agnostic infrastructure — works for any venue with sufficient exemplars.
 
 **Entry point**: `intake_agent` Step 3.5 (immediately after target journal is set). User provides 2+ exemplar PDFs → `exemplar_manifest.md` is written → downstream agents extract progressively.
 
 **Extraction phases** (see `shared/references/progressive_style_extraction.md`):
-- **L1 Structure** (`structure_architect_agent` Step 0.5): Read exemplar section headings → extract structural rules → outline is venue-shaped
-- **L2 Argumentation** (`argument_builder_agent` Step 0.5): Read exemplar corresponding sections → extract argumentation patterns → CER chains use venue logic
-- **L3+4 Paragraph + Framework** (`draft_writer_agent` Step 1.5): Read exemplar corresponding paragraphs → extract paragraph and narrative features → build per-section writing frameworks → user approves each framework
-- **Drafting** (`draft_writer_agent` Step 2 Path A): Write per-section with framework as hard constraint → user approves each section
+- **L1 Structure** (`structure_architect_agent` Phase 2a): Read exemplar section headings → extract structural rules → outline is venue-shaped
+- **L2 Argumentation** (`argument_builder_agent` Phase 3a): Read exemplar corresponding sections → extract argumentation patterns → CER chains use venue logic
+- **L3 Paragraph Moves** (`draft_writer_agent` Phase 3.5): Read exemplar corresponding paragraphs → extract paragraph move sequence → guides per-section drafting
+- **Drafting** (`draft_writer_agent` Step 2 Path A): Write per-section with L1+L2+L3 as constraints → user approves each section
 
 **If user has no exemplars**: `venue_style_status = "missing"` in config record. Draft proceeds with generic academic conventions. This is a known risk flagged in draft metadata.
 
 **Reference files**:
-- `shared/references/progressive_style_extraction.md` — authoritative reference for the four-phase mechanism
+- `shared/references/progressive_style_extraction.md` — authoritative reference for the three-phase mechanism
 - `shared/references/rhetorical_move_taxonomy.md` — closed list of 34 section-level moves (M1–M34) + 4 cross-cutting moves (X1–X4)
 - `style_guides/README.md` — output layout under `<journal-slug>_<topic-slug>_<date>/`
 
 **Priority hierarchy hook** at `shared/style_calibration_protocol.md` § Priority 2 Implementation: venue guide (Priority 2) > personal style profile (Priority 3). Conflicts logged in Draft Metadata.
 
 ## Version Info
-- **Suite version**: 3.7.0-seth-lu-2026051120 (per plugin.json)
-- **Last Updated**: 2026-05-11
+- **Suite version**: 3.7.0-seth-lu-2026051209 (per plugin.json)
+- **Last Updated**: 2026-05-12
 - **Author**: Cheng-I Wu
 - **License**: CC-BY-NC 4.0

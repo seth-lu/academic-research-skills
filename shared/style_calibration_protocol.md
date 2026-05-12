@@ -161,8 +161,8 @@ Priority 2 is sourced from **progressive style extraction** embedded in `academi
 1. Phase 0 Step 3.5: User selects exemplars → `exemplar_manifest.md`
 2. Phase 2: `structure_architect_agent` extracts Layer 1 structure → `style_L1_structure.md` → outline is venue-shaped
 3. Phase 3: `argument_builder_agent` extracts Layer 2 per-section → `style_L2_<section>.md` → CER chains use venue argumentation
-4. Phase 3.5: `draft_writer_agent` extracts Layer 3+4 per-paragraph → `style_L3L4_<section>.md` + `framework_<section>.md` → hard constraints for drafting
-5. Phase 4: `draft_writer_agent` drafts per-section with framework hard constraints
+4. Phase 3.5: `draft_writer_agent` extracts Layer 3 per-paragraph → `style_L3_<section>.md` → paragraph move sequence for drafting
+5. Phase 4: `draft_writer_agent` drafts per-section with L1+L2+L3 constraints
 
 ### Activation
 
@@ -180,8 +180,8 @@ If conditions are not met, proceed with no Priority 2 source — the config reco
 |-------|------------------|-------------------------------------|
 | P2 | Extract L1 from exemplar → venue-shaped outline | Default allocation tables |
 | P3 | Extract L2 per section from exemplar → venue CER chains | Discipline-default argumentation patterns |
-| P3.5 | Extract L3+4 per paragraph → framework hard constraints | Skip Phase 3.5 entirely |
-| P4 | Per-section calls with framework | Original single-call method |
+| P3.5 | Extract L3 per paragraph → paragraph move sequence | Skip Phase 3.5 entirely |
+| P4 | Per-section calls with L1+L2+L3 constraints | Original single-call method |
 
 ### Conflict resolution (extends existing rules)
 

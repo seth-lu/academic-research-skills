@@ -9,16 +9,13 @@ Each extraction run produces a dated directory:
 ```
 style_guides/<journal-slug>_<topic-slug>_<date>/
 ├── exemplar_manifest.md          # P0: user's selected exemplars (produced by intake_agent Step 3.5)
-├── style_L1_structure.md         # L1: section architecture rules (produced by structure_architect_agent Step 0.5)
-├── style_L2_introduction.md      # L2: argumentation patterns per section (produced by argument_builder_agent Step 0.5)
+├── style_L1_structure.md         # L1: section architecture rules (produced by structure_architect_agent Phase 2a)
+├── style_L2_introduction.md      # L2: argumentation patterns per section (produced by argument_builder_agent Phase 3a)
 ├── style_L2_method.md
 ├── style_L2_<section>.md
-├── style_L3L4_introduction.md    # L3+4: paragraph + narrative features per section (produced by draft_writer_agent Step 1.5)
-├── style_L3L4_method.md
-├── style_L3L4_<section>.md
-├── framework_introduction.md     # Writing framework: paragraph specs with exemplar anchors (produced by draft_writer_agent Step 1.5)
-├── framework_method.md
-└── framework_<section>.md
+├── style_L3_introduction.md      # L3: paragraph move sequence per section (produced by draft_writer_agent Phase 3.5)
+├── style_L3_method.md
+└── style_L3_<section>.md
 ```
 
 ## How extraction works
@@ -26,8 +23,8 @@ style_guides/<journal-slug>_<topic-slug>_<date>/
 1. `intake_agent` Step 3.5 asks for exemplar PDFs → writes `exemplar_manifest.md`
 2. `structure_architect_agent` reads exemplar structure → writes `style_L1_structure.md` → outline is venue-shaped
 3. `argument_builder_agent` reads exemplar corresponding sections → writes `style_L2_<section>.md` → CER chains use venue argumentation
-4. `draft_writer_agent` reads exemplar corresponding paragraphs → writes `style_L3L4_<section>.md` + `framework_<section>.md` → user approves each framework
-5. `draft_writer_agent` drafts per-section with framework as hard constraint → user approves each section
+4. `draft_writer_agent` reads exemplar corresponding paragraphs → writes `style_L3_<section>.md` → paragraph move sequence guides drafting
+5. `draft_writer_agent` drafts per-section with L1+L2+L3 as constraints → user approves each section
 
 ## If you don't have exemplars
 

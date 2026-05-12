@@ -120,8 +120,8 @@ The companion to drafting quality is `intake_agent` Phase 0 **Step 3.5** ("Venue
 If Step 3.5 yields a manifest:
 - `structure_architect_agent` in Phase 2 extracts Layer 1 structure → outline is venue-shaped
 - `argument_builder_agent` in Phase 3 extracts Layer 2 per-section → CER chains use venue argumentation patterns
-- `draft_writer_agent` in Phase 3.5 extracts Layer 3+4 per-paragraph → writing frameworks as hard constraints
-- Phase 4 drafts per-section with framework hard constraints → draft is venue-styled from the start
+- `draft_writer_agent` in Phase 3.5 extracts Layer 3 paragraph moves → per-section paragraph move sequence
+- Phase 4 drafts per-section with L1+L2+L3 constraints → draft is venue-styled from the start
 
 If Step 3.5 was declined (no manifest), the config record shows `venue_style_status = "missing"` and the draft metadata flags this as a known risk.
 

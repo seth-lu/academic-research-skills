@@ -31,164 +31,104 @@ Before writing, confirm you have:
 - [ ] Style Profile — check `style_profile` field in Paper Configuration Record. If `null`, skip all style-related steps below. Only if non-null: read `shared/style_calibration_protocol.md` and apply as soft guide
 - [ ] Writing Quality Check reference (`references/writing_quality_check.md`)
 - [ ] Anti-Leakage Protocol — check if Knowledge Isolation should be activated (from `references/anti_leakage_protocol.md`). Activate if user provided RQ Brief + Synthesis Report + Annotated Bibliography AND mode is `full` or `revision`. When activated, prepend the Knowledge Isolation Directive to your working context. When not activated (plan/socratic mode, or minimal materials), skip.
-- [ ] **Exemplar manifest** (v3.8.0) — check if `exemplar_manifest.md` exists. If yes, determine draft language from Paper Configuration Record. Same language → Step 1.5 EXTRACT → Step 2 Path A. Cross-language → Step 1.5 SKIP (L3+L4 deferred) → Step 2 Path B. If no manifest → Step 2 Path C.
+- [ ] **Exemplar manifest** (v3.8.0) — check if `exemplar_manifest.md` exists. If yes → Step 1.5 L3 extraction → Step 2 Path A (L1+L2+L3). If no → Step 2 Path C (degraded).
 
-### Step 1.5: Phase 3.5 — Layer 3+4 Extraction + Writing Framework (v3.8.0)
+### Step 1.5: Phase 3.5 — Layer 3 Paragraph Move Extraction (v3.8.0)
 
-Execute this step BEFORE Step 2. Do NOT proceed to drafting until this step's decision is resolved.
+Execute this step BEFORE Step 2. Do NOT proceed to drafting until L3 extraction is complete.
 
 **1. Check prerequisites**: Look for `exemplar_manifest.md` AND `style_L2_<section>.md` files.
 
-**2. If prerequisites met**: ALWAYS extract L3+L4. Language does NOT gate extraction — sentence patterns and rhetorical moves are worth capturing even when draft language differs. The user may read the extracted files to understand exemplar writing patterns, and they will be used when the draft reaches the same language.
+**2. If prerequisites met**: Extract L3 for each section in the outline. L3 captures paragraph-level rhetorical patterns — the move sequence, citation integration, and transition chain. L3 is language-agnostic (rhetorical moves transfer across languages). Sentence-level features (word choice, rhythm, signposting) are NOT extracted — those are left to the LLM's natural prose ability in the draft language.
 
 For each section in the outline:
 
-1. **Extract Layer 3+4** from exemplar corresponding section's paragraphs:
-   - Locate each exemplar paragraph by matching rhetorical function to the section's expected moves
+1. **Extract Layer 3** from exemplar corresponding section's paragraphs:
+   - Locate each paragraph and match by rhetorical function to the section's expected moves
    - Extract per paragraph:
-     - Rhetorical function (M1-M34 move ID)
+     - Rhetorical function (M1-M34 move ID from `shared/references/rhetorical_move_taxonomy.md`)
      - Sentence count, approximate word count
-     - Citation integration method + attribution verbs used
-     - In-paragraph argument progression
-     - Transition role
-     - Person usage, sentence rhythm, signposting, vivid vocabulary, long sentence construction
+     - Citation integration method — how sources are embedded (narrative, parenthetical, block quote)
+     - In-paragraph argument progression (topic → evidence → analysis → transition)
+     - Transition role — how this paragraph connects to the next
    - Compare across exemplars → assign confidence
-   - Output `style_L3L4_<section>.md`
+   - **Write** `style_L3_<section>.md` to the exemplar manifest directory
+   - **Verify** each file was written
 
-2. **Language gate for framework** (v3.8.0): Compare exemplar language vs. draft language.
+2. Report: `[L3 EXTRACTION COMPLETE] <N> sections, <M> paragraph moves total`
 
-| Exemplar lang | Draft lang | Framework action |
-|--------------|-----------|-----------------|
-| English | English | BUILD framework → `framework_<section>.md` as hard constraints |
-| Chinese | Chinese | BUILD framework |
-| English | Chinese | **SKIP framework** — paragraph rhythm and word choice don't transfer. L3+L4 files saved for reference. Log `[FRAMEWORK DEFERRED: exemplar=EN, draft=ZH. L3+L4 extracted for reference; framework will be built at English finalization.]` |
-| Chinese | English | SKIP framework — same reason, reverse direction |
+**Output format** (see `shared/references/progressive_style_extraction.md` §7):
 
-3. **If BUILD framework** (same language): For each section, write a Paragraph Spec:
-   ```
-   ### ¶<N>
-   **Move**: <M-ID> — <rhetorical function>
-   **Exemplar Anchor**: <exemplar §X ¶N, function=...>
-     → Observed: <key features from exemplar paragraph>
-   **Claim**: <one-sentence claim from CER chains>
-   **Required Content**:
-     - [ ] <item 1>
-     - [ ] <item 2>
-   **Style Constraints** (from exemplar anchor):
-     - <constraint 1>
-   **Transition**: <how this paragraph connects to the next>
-   **Word Target**: <N> words (±20%)
-   ```
-   Output `framework_<section>.md`. Present each framework to user for approval.
+```markdown
+# Layer 3 Style: <journal> — <Section> Paragraph Moves
 
-4. **If SKIP framework** (cross-language): Log the deferral. L3+L4 extraction is complete; framework is deferred. Proceed to Step 2 Path B. No user approval needed — L3+L4 files are reference-only at this stage.
+## Paragraph Move Sequence
+| ¶ | Move ID | Rhetorical Function | Sentences | Citation Method | Transition To Next |
+|----|---------|-------------------|-----------|----------------|-------------------|
+| 1 | M1 | ... | ... | ... | ... |
 
-**3. If prerequisites NOT met** (no manifest or no L2 files): Log `[L3+L4 SKIPPED: prerequisites missing]`. Proceed to Step 2 Path C.
+## Citation Integration Patterns
+| Pattern ID | How Sources Are Embedded | Exemplar Instance | When to Use |
 
-**Exemplar Anchor Iron Rule**: The anchor records HOW the exemplar writes, not WHAT it writes.
+## Paragraph Transition Chain
+| From ¶ | To ¶ | Transition Mechanism |
+
+## Style Constraints
+| ID | Rule | Why | Confidence |
+```
+
+**No framework files**: L3 serves as the direct paragraph-level reference. No separate framework is produced.
+
+**3. If prerequisites NOT met** (no manifest or no L2 files): Log `[L3 SKIPPED: prerequisites missing]`. Proceed to Step 2 Path C.
 
 ### Step 2: Section-by-Section Writing
 
-**v3.8.0**: Three writing paths. The path is chosen at Step 1.5 based on (a) whether style files exist and (b) whether exemplar language matches draft language.
+**v3.8.0**: Two writing paths.
 
 ---
 
-#### Path A: Full framework-driven per-section drafting
+#### Path A: Style-constrained per-section drafting (L1+L2+L3)
 
-**Condition**: `framework_<section>.md` files exist (same-language exemplars, Step 1.5 EXTRACT path).
+**Condition**: `style_L1_structure.md` AND `style_L2_<section>.md` AND `style_L3_<section>.md` files exist (exemplar manifest → all layers extracted).
 
 **CRITICAL — Single-section scope**: This call writes ONE section only. Do NOT write the full paper. End with `[§<N> COMPLETE]`.
 
 For the specified section, in a **single call**:
 
 1. **Load per-section inputs**:
-   - `framework_<section>.md` — paragraph specs as hard constraints
-   - `style_L3L4_<section>.md` — narrative features (Voice, Rhythm, Signposting, Vocabulary, AI Blacklist)
-   - Section CER chains from Argument Blueprint
-   - Section bibliography subset from Annotated Bibliography
-   - **Previous sections' prose** as style anchor (see Style Anchor Strategy below)
-   - Word count constraint from Outline
-
-2. **Write section prose** following the framework specs:
-   - Each paragraph must match its Move (rhetorical function)
-   - Each paragraph must include all Required Content items
-   - Each paragraph must satisfy Style Constraints from the exemplar anchor
-
-3. **Compliance self-check** after writing:
-   - Required Content: tick each [ ] item. Any missing → `[FRAMEWORK VIOLATION]` → rewrite that paragraph
-   - Style Constraints: verify each constraint from exemplar anchor
-   - Move function: verify each paragraph's rhetorical function matches spec
-   - Word count: section ±15%, running total ±10%
-
-4. **Present section to user** for confirmation:
-
-   ```
-   ━━━ Section N: <Name> Draft Complete ━━━
-
-   Framework Compliance:
-     ¶1: [4/4 required] [3/3 style] ✓
-     ¶2: [4/4 required] [2/2 style] ✓
-     ...
-
-   Exemplar Anchor Match:
-     ¶1: M1 anchor → ✓
-     ¶3: M2 anchor → ✓
-     ...
-
-   Word Count: <N> / <Target> (<%> deviation)
-
-   Options:
-   1. Accept and proceed to next section
-   2. Request revision of specific paragraphs
-   3. Adjust framework (modify spec, then rewrite)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   ```
-
-5. End response with `[§<N> COMPLETE] <word_count> <framework_checks>`. Do NOT continue to next section — the orchestrator will initiate a separate call for §<N+1>.
-
----
-
-#### Path B: L1+L2-constrained per-section drafting (v3.8.0 cross-language)
-
-**Condition**: `style_L1_structure.md` AND `style_L2_<section>.md` files exist, but no framework (exemplar language ≠ draft language, Step 1.5 SKIP path with deferral log).
-
-**CRITICAL — Single-section scope**: This call writes **ONE section only**. You will receive a section number and name (e.g., "§1 Introduction"). Write only that section. Do NOT write a full paper, other sections, or the abstract. The orchestrator will call you again for each subsequent section. Writing multiple sections in one call violates the per-section review contract and prevents the user from reviewing each section before the next is written.
-
-This is the **cross-language path**: L1 (structure) and L2 (argumentation) are language-agnostic and constrain the draft; L3+L4 (paragraph rhythm, word choice) are deferred to English finalization.
-
-For the specified section, in a **single call**:
-
-1. **Load per-section inputs**:
-   - `style_L1_structure.md` — structural rules (section architecture, word % ratios)
+   - `style_L1_structure.md` — structural rules, section word % ratios
    - `style_L2_<section>.md` — argumentation rules for this section
+   - `style_L3_<section>.md` — paragraph move sequence for this section
    - Section CER chains from Argument Blueprint
    - Section bibliography subset from Annotated Bibliography
    - **Previous sections' prose** as continuity anchor (see Style Anchor Strategy below)
    - Word count constraint from Outline
 
-2. **Write section prose** with L1+L2 constraints:
-   - Section structure follows L1 structural rules (HIGH-confidence S-* rules are hard constraints)
-   - Argumentation follows L2 rules (HIGH-confidence A-* rules are hard constraints)
-   - Prose is in the **draft language** (not exemplar language) — write naturally, do not mimic English sentence patterns
-   - Paragraph structure follows the CER chain, not exemplar paragraph patterns
+2. **Write section prose** with L1+L2+L3 constraints:
+   - Section structure follows L1 rules (HIGH-confidence S-* hard constraints)
+   - Argumentation follows L2 rules (HIGH-confidence A-* hard constraints)
+   - Paragraph sequence follows L3 move sequence (¶ count, each ¶'s rhetorical function)
+   - Prose language is natural to the draft — do NOT mimic exemplar sentence patterns
+   - L3 provides the rhetorical skeleton (what each paragraph does), not the prose surface
 
 3. **Compliance self-check** after writing:
-   - L1 structural rules: verify each HIGH-confidence S-* rule is satisfied
-   - L2 argumentation rules: verify each HIGH-confidence A-* rule is satisfied
-   - Citations: each claim has a source
-   - Word count: section ±15%, running total ±10%
+   - L1: Verify HIGH-confidence S-* rules satisfied
+   - L2: Verify HIGH-confidence A-* rules satisfied
+   - L3: Verify paragraph move sequence matched (¶ count, each ¶'s function)
+   - Citations: Each claim has a source
+   - Word count: Section ±15%, running total ±10%
 
 4. **Present section to user** for confirmation:
 
    ```
    ━━━ Section N: <Name> Draft Complete ━━━
 
-   L1+L2 Compliance:
-     S-* rules: [3/3] ✓
-     A-* rules: [2/2] ✓
+   L1+L2+L3 Compliance:
+     L1 S-*: [N/N] ✓
+     L2 A-*: [N/N] ✓
+     L3 Moves: [N/N ¶s matched] ✓
 
    Word Count: <N> / <Target> (<%> deviation)
-   Language: <ZH/EN> (L3+L4 deferred to English finalization)
 
    Options:
    1. Accept and proceed to next section
@@ -196,15 +136,15 @@ For the specified section, in a **single call**:
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    ```
 
-5. End response with `[§<N> COMPLETE] <word_count> <L1_count>/<L2_count> rules`. Do NOT continue to next section — the orchestrator will initiate a separate call for §<N+1>.
+5. End response with `[§<N> COMPLETE] <word_count> L1:<N>/<N> L2:<N>/<N> L3:<N>/<N>`. Do NOT continue to next section.
 
 ---
 
 #### Path C: Degraded per-section drafting
 
-**Condition**: No style files exist (no exemplar manifest, or manifest exists but L1/L2 extraction was skipped).
+**Condition**: No style files exist.
 
-**CRITICAL — Single-section scope**: Same as Path B. Write ONE section per call. End with `[§<N> COMPLETE] <word_count>`.
+**CRITICAL — Single-section scope**: Write ONE section per call. End with `[§<N> COMPLETE] <word_count>`.
 
 For the specified section:
 
@@ -214,11 +154,10 @@ For the specified section:
 4. **Write transitions** connecting to the next section
 5. **Check word count** against allocation
 6. **Self-review** for clarity, logic, and completeness
-7. **Quick style check** — while writing, target academic prose: open paragraphs with the actual claim, vary sentence lengths to match argument rhythm, and choose precise vocabulary. `references/writing_quality_check.md` is the style diagnostic after drafting.
 
 ---
 
-**Style Anchor Strategy** (Paths A and B, context window management):
+**Style Anchor Strategy** (Path A, context window management):
 
 | Section being drafted | Prose included as anchor |
 |----------------------|------------------------|

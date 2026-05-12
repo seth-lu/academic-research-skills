@@ -111,13 +111,14 @@ For each paragraph in each exemplar paper, the annotation follows:
 2. Identify up to **2 secondary moves** if the paragraph does more than one thing
 3. Note any **cross-cutting moves** (X1–X4) realized in the paragraph
 4. State the **author's choice rationale** — why this move at this position, given the previous paragraph?
-5. Record the move ID in `style_L3L4_<section>.md` and use it in the `framework_<section>.md` paragraph spec
+5. Record the move ID in `style_L3_<section>.md` for use as the paragraph-level reference during drafting
 
-### In framework-driven drafting (draft_writer_agent Step 2 Path A)
-For each paragraph spec in the framework:
-1. The **Move** field specifies the target move ID for this paragraph position
-2. Draft the paragraph to fulfill that rhetorical function
-3. If the content doesn't fit the specified move, flag it — the framework may need adjustment (user Option 3: modify spec, then rewrite)
+### In L3-constrained drafting (draft_writer_agent Step 2 Path A)
+For each paragraph in the section:
+1. Consult the paragraph move sequence in `style_L3_<section>.md`
+2. Each row specifies the target move ID for that paragraph position
+3. Draft the paragraph to fulfill that rhetorical function
+4. If the content doesn't fit the specified move, flag it — the L3 file may need adjustment (user can request revision of specific paragraphs)
 
 ### Failure mode to watch for
 If a paragraph cannot be classified into any move with confidence > 60%, the analysis prompt should NOT invent a new move. Instead, log the paragraph as `UNCLASSIFIED` and surface it in the guide's "Open Questions" section. The taxonomy is closed; if a paper systematically uses moves outside this list, the taxonomy needs extension (file a project-level update), not on-the-fly invention.

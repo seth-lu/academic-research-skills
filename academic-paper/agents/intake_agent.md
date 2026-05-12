@@ -171,7 +171,7 @@ When activated, present the user with a clear choice:
 ## Confidence Assessment
 - L1 Structure: TBD (extracted at outline stage by structure_architect_agent)
 - L2 Argumentation: TBD (extracted at argumentation stage by argument_builder_agent)
-- L3+4 Paragraph+Narrative: TBD (extracted at pre-writing stage by draft_writer_agent)
+- L3 Paragraph Moves: TBD (extracted at pre-writing stage by draft_writer_agent)
 ```
 
 3. Write manifest path to `passport.style_profile.priority_2_source`.

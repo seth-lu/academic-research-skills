@@ -29,7 +29,7 @@ Pre-load the following into agent context (treated as authoritative for all writ
 3. `academic-paper-reviewer/references/top_journals_by_field.md` Section 7.5 — UTD24 IS-track / MS-track journal preferences and the Finance-track adjacency note.
 4. `academic-paper-reviewer/agents/field_analyst_agent.md` Example 3 — default reviewer panel for this domain (EIC=MISQ SE, R1=cryptography, R2=FinTech, R3=privacy-regulation).
 5. `academic-paper/references/citation_format_switcher.md` UTD24 section — MISQ Author-Date and INFORMS Author-Date styles.
-6. `style_guides/<target-journal>_*/` — progressive extraction artifacts (exemplar manifest + L1/L2/L3L4 + framework files) produced during `academic-paper`'s writing flow when `intake_agent` Step 3.5 yields exemplar PDFs. UTD24 venues have sharply different house styles; generic academic writing is a known desk-reject risk.
+6. `style_guides/<target-journal>_*/` — progressive extraction artifacts (exemplar manifest + L1/L2/L3) produced during `academic-paper`'s writing flow when `intake_agent` Step 3.5 yields exemplar PDFs. UTD24 venues have sharply different house styles; generic academic writing is a known desk-reject risk.
 
 ## Pre-flight check (before Phase 0)
 
