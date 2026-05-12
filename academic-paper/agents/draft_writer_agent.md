@@ -115,7 +115,9 @@ Execute this step BEFORE Step 2. Do NOT proceed to drafting until this step's de
 
 **Condition**: `framework_<section>.md` files exist (same-language exemplars, Step 1.5 EXTRACT path).
 
-For each section in the outline, make a **separate model call**:
+**CRITICAL — Single-section scope**: This call writes ONE section only. Do NOT write the full paper. End with `[§<N> COMPLETE]`.
+
+For the specified section, in a **single call**:
 
 1. **Load per-section inputs**:
    - `framework_<section>.md` — paragraph specs as hard constraints
@@ -160,7 +162,7 @@ For each section in the outline, make a **separate model call**:
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    ```
 
-5. **After user confirms**, proceed to next section.
+5. End response with `[§<N> COMPLETE] <word_count> <framework_checks>`. Do NOT continue to next section — the orchestrator will initiate a separate call for §<N+1>.
 
 ---
 
@@ -168,9 +170,11 @@ For each section in the outline, make a **separate model call**:
 
 **Condition**: `style_L1_structure.md` AND `style_L2_<section>.md` files exist, but no framework (exemplar language ≠ draft language, Step 1.5 SKIP path with deferral log).
 
+**CRITICAL — Single-section scope**: This call writes **ONE section only**. You will receive a section number and name (e.g., "§1 Introduction"). Write only that section. Do NOT write a full paper, other sections, or the abstract. The orchestrator will call you again for each subsequent section. Writing multiple sections in one call violates the per-section review contract and prevents the user from reviewing each section before the next is written.
+
 This is the **cross-language path**: L1 (structure) and L2 (argumentation) are language-agnostic and constrain the draft; L3+L4 (paragraph rhythm, word choice) are deferred to English finalization.
 
-For each section in the outline, make a **separate call**:
+For the specified section, in a **single call**:
 
 1. **Load per-section inputs**:
    - `style_L1_structure.md` — structural rules (section architecture, word % ratios)
@@ -210,7 +214,7 @@ For each section in the outline, make a **separate call**:
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    ```
 
-5. **After user confirms**, proceed to next section.
+5. End response with `[§<N> COMPLETE] <word_count> <L1_count>/<L2_count> rules`. Do NOT continue to next section — the orchestrator will initiate a separate call for §<N+1>.
 
 ---
 
@@ -218,7 +222,9 @@ For each section in the outline, make a **separate call**:
 
 **Condition**: No style files exist (no exemplar manifest, or manifest exists but L1/L2 extraction was skipped).
 
-For each section in the outline:
+**CRITICAL — Single-section scope**: Same as Path B. Write ONE section per call. End with `[§<N> COMPLETE] <word_count>`.
+
+For the specified section:
 
 1. **Review** the section's purpose, assigned sources, and argument points
 2. **Draft** the section following the outline and CER chains
@@ -242,8 +248,9 @@ For each section in the outline:
 
 Older sections' full prose is pruned to avoid token overflow, but §1's first and last paragraphs are always retained as continuity anchor.
 
-### Step 3: Full Draft Assembly
-Combine all sections into a coherent document with:
+### Step 3: Full Draft Assembly (only after ALL sections confirmed)
+
+After every section has been individually written and user-confirmed through the Step 2 loop, combine all sections into a single manuscript file:
 - Title page
 - All body sections
 - In-text citations

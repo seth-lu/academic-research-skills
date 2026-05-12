@@ -128,7 +128,7 @@ Phase 3a: EXTRACT-L2   -> [argument_builder]           -> style_L2_<section>.md 
 Phase 3b: ARGUMENTATION -> [argument_builder]          -> Argument Blueprint
 
 Phase 3.5: FRAMEWORK   -> [draft_writer]               -> style_L3L4_<section>.md + framework_<section>.md
-Phase 4:  DRAFTING     -> [draft_writer]               -> Complete Draft (per-section calls)
+Phase 4:  DRAFTING     -> [draft_writer]               -> Complete Draft (§1→§2→...→§N, per-section calls)
 Phase 5a: CITATIONS    -> [citation_compliance] ──┐    -> Citation Audit Report
 Phase 5b: ABSTRACT     -> [abstract_bilingual]   ─┘    -> Bilingual Abstract + Keywords  (parallel)
 Phase 6:  PEER REVIEW  -> [peer_reviewer]              -> Review Report (max 2 revision loops)
@@ -209,16 +209,68 @@ When SKIP: proceed directly to Phase 4 Path B (L1+L2-constrained per-section dra
 
 When no manifest: skip entirely. Phase 4 uses Path C (degraded).
 
+#### Phase 4: Per-Section Drafting (mandatory loop)
+
+**IRON RULE**: Do NOT write the entire draft in a single call. Phase 4 MUST be executed as a loop — one section per call, user confirms, then next section.
+
+**Path determination** (set at Phase 3.5):
+- **Path A** (same language): Load `framework_<section>.md` + `style_L3L4_<section>.md` for each section
+- **Path B** (cross-language): Load `style_L1_structure.md` + `style_L2_<section>.md` for each section
+- **Path C** (degraded): No style files — draft with outline + CER chains only
+
+**Call script for each section** (send this as a standalone prompt, one section at a time):
+
+```
+You are writing §<N>: <Section Name>. Write ONLY this section. Do NOT write other sections.
+
+Path: <A/B/C>
+Language: <draft language>
+Word target: <allocation> words (±15%)
+
+Inputs:
+- Outline section description: <from Phase 2b>
+- CER chains for this section: <from Phase 3b>
+- Bibliography subset for this section: <from Phase 1>
+- Style constraints (Path A: framework + L3+L4; Path B: L1 + L2; Path C: none)
+- Previous section prose: <§1..§N-1, as continuity anchor>
+
+Output: §<N> prose only. Do NOT include other sections.
+
+After writing, self-check:
+- Word count: <actual>/<target> (±15%)
+- Style constraints: [N/N] satisfied (Path A/B only)
+- CER chains: all claims have sources
+
+End with: [§<N> COMPLETE] <word count> <style compliance>
+```
+
+**After each section call**, present to user:
+
+```
+━━━ §<N>: <Section Name> ━━━
+Word Count: <N> / <Target> (<%>)
+Style: [N/N] L1+L2 rules satisfied
+Options:
+1. Accept → proceed to §<N+1>
+2. Revise → re-write this section
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+Do NOT proceed to §<N+1> until user confirms §<N>.
+
+**Output directory**: Write each section to `draft/<section_slug>.md`. After all sections are confirmed, assemble into `draft/manuscript_v1.md`.
+
 ### Checkpoint Rules
 
 1. ⚠️ **IRON RULE**: User must confirm Paper Configuration Record before proceeding to Phase 1
 2. ⚠️ **v3.8.0 Phase 2a gate**: When `exemplar_manifest.md` exists, `style_L1_structure.md` MUST be produced BEFORE Phase 2b. Do NOT skip to outline construction. If the file is missing after the Phase 2a call, re-run Phase 2a — do not silently proceed.
 3. ⚠️ **v3.8.0 Phase 3a gate**: When `style_L1_structure.md` exists, `style_L2_<section>.md` MUST be produced BEFORE Phase 3b. Same re-run rule as Phase 2a.
 4. **Phase 2b -> 3a**: User must approve outline (can request restructuring)
-5. **Phase 3.5** (v3.8.0): User must approve each section's writing framework before Phase 4 drafts that section. When cross-language: Phase 3.5 is skipped with deferral log — user does not need to approve.
-6. ⚠️ **IRON RULE**: Max 2 revision loops; unresolved items -> "Acknowledged Limitations"
-7. **Peer Review** Critical-severity issues block progression to Phase 7
-8. User can skip Phase 1 (literature) if providing own sources
+5. ⚠️ **v3.8.0 Phase 4 gate**: Each section MUST be written as a separate call. Do NOT batch multiple sections into one call. User must confirm each section before the next begins.
+6. **Phase 3.5** (v3.8.0): User must approve each section's writing framework before Phase 4 drafts that section. When cross-language: Phase 3.5 is skipped with deferral log — user does not need to approve.
+7. ⚠️ **IRON RULE**: Max 2 revision loops; unresolved items -> "Acknowledged Limitations"
+8. **Peer Review** Critical-severity issues block progression to Phase 7
+9. User can skip Phase 1 (literature) if providing own sources
 
 ---
 
