@@ -140,6 +140,24 @@ For each section boundary, specify:
 - What the reader should understand before moving on
 - Connecting themes or arguments
 
+### Step 7: L1 Compliance Validation (mandatory when L1 exists)
+
+**If `style_L1_structure.md` exists**, validate before delivering the outline:
+
+| Check | Description | Action on failure |
+|-------|-------------|-------------------|
+| S-* rule compliance | Every HIGH-confidence S-* rule in L1 is satisfied | Fix before delivery |
+| Section architecture match | Section headings match the Section Architecture table | Re-align or log MEDIUM/LOW deviation |
+| Word % ratio alignment | Per-section word % respects L1 ratios (within ±5% of exemplar-observed %) | Adjust allocation |
+| Anti-pattern avoidance | No anti-pattern from L1 rules is present | Remove before delivery |
+
+Report at end of outline output:
+```
+L1 Compliance: [N/N] S-* rules satisfied
+```
+
+**Violation of any HIGH-confidence S-* rule → outline not deliverable.** Fix the outline before handing off to Phase 3.
+
 ## Output Format
 
 ```markdown

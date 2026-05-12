@@ -128,7 +128,7 @@ Phase 3a: EXTRACT-L2   -> [argument_builder]           -> style_L2_<section>.md 
 Phase 3b: ARGUMENTATION -> [argument_builder]          -> Argument Blueprint
 
 Phase 3.5: EXTRACT-L3  -> [draft_writer]               -> style_L3_<section>.md
-Phase 4:  DRAFTING     -> [draft_writer]               -> Complete Draft (§1→§2→...→§N, per-section calls with L1+L2+L3)
+Phase 4:  DRAFTING     -> [draft_writer]               -> Complete Draft (§1→§2→...→§N, per-section calls with L3)
 Phase 5a: CITATIONS    -> [citation_compliance] ──┐    -> Citation Audit Report
 Phase 5b: ABSTRACT     -> [abstract_bilingual]   ─┘    -> Bilingual Abstract + Keywords  (parallel)
 Phase 6:  PEER REVIEW  -> [peer_reviewer]              -> Review Report (max 2 revision loops)
@@ -227,7 +227,7 @@ L3 is language-agnostic (rhetorical moves transfer across languages). Sentence-l
 **IRON RULE**: Do NOT write the entire draft in a single call. Phase 4 MUST be executed as a loop — one section per call, user confirms, then next section.
 
 **Path determination** (set at Phase 3.5):
-- **Path A** (style-constrained): Load `style_L1_structure.md` + `style_L2_<section>.md` + `style_L3_<section>.md` for each section
+- **Path A** (style-constrained): Load `style_L3_<section>.md` for each section. L1 and L2 are NOT loaded — they were already consumed upstream (L1→Outline, L2→Argument Blueprint).
 - **Path C** (degraded): No style files — draft with outline + CER chains only
 
 **Call script for each section** (send this as a standalone prompt, one section at a time):
@@ -239,20 +239,20 @@ Path: <A/C>
 Word target: <allocation> words (±15%)
 
 Inputs:
-- Outline section description: <from Phase 2b>
-- CER chains for this section: <from Phase 3b>
+- Outline section description: <from Phase 2b> (L1 already baked into structure)
+- CER chains for this section: <from Phase 3b> (L2 already baked into argument structure)
 - Bibliography subset for this section: <from Phase 1>
-- Style constraints (Path A: L1 + L2 + L3; Path C: none)
+- Paragraph move sequence (Path A: style_L3_<section>.md; Path C: none)
 - Previous section prose: <§1..§N-1, as continuity anchor>
 
 Output: §<N> prose only. Do NOT include other sections.
 
 After writing, self-check:
 - Word count: <actual>/<target> (±15%)
-- Style constraints: [N/N] satisfied (Path A only)
+- Paragraph moves: [N/N] matched (Path A only)
 - CER chains: all claims have sources
 
-End with: [§<N> COMPLETE] <word count> <style compliance>
+End with: [§<N> COMPLETE] <word count> <L3 compliance if Path A>
 ```
 
 **After each section call**, present to user:
@@ -260,7 +260,7 @@ End with: [§<N> COMPLETE] <word count> <style compliance>
 ```
 ━━━ §<N>: <Section Name> ━━━
 Word Count: <N> / <Target> (<%>)
-L1+L2+L3: [N/N] rules satisfied
+L3 Moves: [N/N ¶s matched] ✓
 Options:
 1. Accept → proceed to §<N+1>
 2. Revise → re-write this section

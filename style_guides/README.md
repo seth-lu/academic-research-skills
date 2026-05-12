@@ -24,7 +24,7 @@ style_guides/<journal-slug>_<topic-slug>_<date>/
 2. `structure_architect_agent` reads exemplar structure → writes `style_L1_structure.md` → outline is venue-shaped
 3. `argument_builder_agent` reads exemplar corresponding sections → writes `style_L2_<section>.md` → CER chains use venue argumentation
 4. `draft_writer_agent` reads exemplar corresponding paragraphs → writes `style_L3_<section>.md` → paragraph move sequence guides drafting
-5. `draft_writer_agent` drafts per-section with L1+L2+L3 as constraints → user approves each section
+5. `draft_writer_agent` drafts per-section with L3 as paragraph-level constraint (L1/L2 baked into outline + blueprint) → user approves each section
 
 ## If you don't have exemplars
 

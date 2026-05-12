@@ -269,37 +269,44 @@ For each section in the P2 outline:
 
 ### Consumption
 
-`draft_writer_agent` reads L3 alongside L1 and L2 during Phase 4 per-section drafting:
-- L1 provides section architecture and word ratios
-- L2 provides argumentation strategy for the section
-- L3 provides paragraph move sequence — how many paragraphs, what each does, how citations are integrated, how transitions chain
+`draft_writer_agent` reads **only L3** during Phase 4 per-section drafting. L1 and L2 were already consumed upstream and baked into their respective deliverables:
 
-L3 does NOT prescribe exact sentence count or word choice — it describes the rhetorical skeleton, not the prose surface.
+| Layer | Consumed at | Baked into | Validated by |
+|-------|------------|------------|--------------|
+| L1 | Phase 2b | Outline (section structure, word ratios) | `structure_architect_agent` S-* rules before delivery |
+| L2 | Phase 3b | Argument Blueprint (CER chains, argument strategy) | `argument_builder_agent` A-* rules before delivery |
+| L3 | Phase 4 | Section prose (paragraph sequence) | `draft_writer_agent` per-section |
 
-**No framework files**: L3 serves as the direct paragraph-level reference. The LLM writes prose following L1 structure + L2 argumentation + L3 paragraph moves, adapting the rhetorical pattern to the draft language naturally.
+L3 provides the paragraph move sequence — how many paragraphs, what each does, how citations are integrated, how transitions chain. It does NOT prescribe exact sentence count or word choice — it describes the rhetorical skeleton, not the prose surface.
+
+**No framework files**: L3 serves as the direct paragraph-level reference. The LLM writes prose following the L3 paragraph moves, adapting the rhetorical pattern to the draft language naturally.
 
 ---
 
-## 8. Phase 4: Per-Section Drafting with L1+L2+L3
+## 8. Phase 4: Per-Section Drafting with L3
 
 **Agent**: `draft_writer_agent`
-**Input per section call**: `style_L1_structure.md` + `style_L2_<section>.md` + `style_L3_<section>.md` + previous sections' prose (continuity anchor) + CER chains + bibliography subset
+**Input per section call**: `style_L3_<section>.md` + previous sections' prose (continuity anchor) + CER chains + bibliography subset
 **Output per section call**: section prose + compliance self-check + word count + user confirmation
+
+L1 and L2 are NOT consumed in Phase 4. They were already consumed upstream:
+- L1 → `structure_architect_agent` validated S-* rules before Outline delivery (Phase 2b)
+- L2 → `argument_builder_agent` validated A-* rules before Argument Blueprint delivery (Phase 3b)
+
+Phase 4 only needs L3 for the paragraph move sequence. The outline and CER chains already carry the baked-in L1 and L2 constraints.
 
 ### Per-Section Call Structure
 
 ```
 System Prompt:
-  ├── style_L1_structure.md — structural rules, word ratios
-  ├── style_L2_<section>.md — argumentation rules for this section
   ├── style_L3_<section>.md — paragraph move sequence for this section
-  └── "Write §<N> only. Follow L1 structure + L2 argumentation + L3 paragraph moves."
+  └── "Write §<N> only. Follow the paragraph move sequence."
 
 User Content:
-  ├── Section CER chains
+  ├── Section CER chains (L2 already baked into argument structure)
   ├── Section bibliography subset
   ├── Previous sections' prose (continuity anchor)
-  └── Word count constraint
+  └── Word count constraint (L1 already baked into section allocation)
 ```
 
 ### Style Anchor Strategy (Context Window Management)
@@ -316,21 +323,16 @@ User Content:
 
 After writing each section:
 
-1. **L1**: Verify structural rules satisfied (HIGH-confidence S-* rules are hard)
-2. **L2**: Verify argumentation rules satisfied (HIGH-confidence A-* rules are hard)
-3. **L3**: Verify paragraph move sequence followed (¶ count, each ¶'s rhetorical function)
-4. **Citations**: Each claim has a source
-5. **Word count**: Section ±15%, running total ±10%
+1. **L3**: Verify paragraph move sequence followed (¶ count, each ¶'s rhetorical function)
+2. **Citations**: Each claim has a source
+3. **Word count**: Section ±15%, running total ±10%
 
 ### User Confirmation per Section
 
 ```
 ━━━ Section N: <Name> Draft Complete ━━━
 
-L1+L2+L3 Compliance:
-  L1 S-*: [N/N] ✓
-  L2 A-*: [N/N] ✓
-  L3 Moves: [N/N ¶s matched] ✓
+L3 Moves: [N/N ¶s matched] ✓
 
 Word Count: <N> / <Target> (<%> deviation)
 
@@ -352,6 +354,6 @@ Two paths depending on exemplar availability:
 | P2 | Extract L1 from exemplar (1 file) | Default allocation tables |
 | P3 | Extract L2 per section from exemplar (N files) | Discipline-default argumentation patterns |
 | P3.5 | Extract L3 per section from exemplar (N files) | Skip Phase 3.5 entirely |
-| P4 | Per-section drafting with L1+L2+L3 | Per-section drafting with outline + CER chains only |
+| P4 | Per-section drafting with L3 | Per-section drafting with outline + CER chains only |
 
 No cross-language path — L1/L2/L3 are all language-agnostic and apply directly to drafts in any language. Sentence-level features (word choice, rhythm, signposting vocabulary) are not captured at any layer and are left to the LLM's natural target-language prose ability.

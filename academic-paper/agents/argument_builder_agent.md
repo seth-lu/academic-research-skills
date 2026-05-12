@@ -125,6 +125,27 @@ Discussion: Interpretation -> Comparison with literature -> Counter-arguments ad
 Conclusion: Thesis restated -> Implications -> Future research
 ```
 
+### Step 6: L2 Compliance Validation (mandatory when L2 exists)
+
+**If `style_L2_<section>.md` files exist**, validate before delivering the blueprint:
+
+| Check | Description | Action on failure |
+|-------|-------------|-------------------|
+| A-* rule per-section compliance | Every HIGH-confidence A-* rule in each section's L2 file is reflected in the CER chain for that section | Fix before delivery |
+| Argument framework match | Core argument framework matches L2's expected pattern (tension/gap/research question) | Re-align or log MEDIUM/LOW deviation |
+| Literature positioning match | Source positioning strategy matches L2 (embedded/standalone review) | Adjust CER structure |
+| Contribution declaration match | Contribution structure follows L2 pattern | Adjust sub-arguments |
+| Rebuttal pattern match | Pre-emptive rebuttal strategy matches L2 | Add missing rebuttal steps |
+
+Report at end of blueprint output:
+```
+L2 Compliance: [N/N] A-* rules satisfied across all sections
+```
+
+**Violation of any HIGH-confidence A-* rule → blueprint not deliverable.** Fix the blueprint before handing off to Phase 4.
+
+---
+
 ## Argumentation Patterns by Discipline
 
 | Discipline | Preferred Pattern |

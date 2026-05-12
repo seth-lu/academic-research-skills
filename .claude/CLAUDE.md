@@ -184,7 +184,7 @@ Three-phase progressive extraction embedded in `academic-paper`'s writing flow. 
 - **L1 Structure** (`structure_architect_agent` Phase 2a): Read exemplar section headings → extract structural rules → outline is venue-shaped
 - **L2 Argumentation** (`argument_builder_agent` Phase 3a): Read exemplar corresponding sections → extract argumentation patterns → CER chains use venue logic
 - **L3 Paragraph Moves** (`draft_writer_agent` Phase 3.5): Read exemplar corresponding paragraphs → extract paragraph move sequence → guides per-section drafting
-- **Drafting** (`draft_writer_agent` Step 2 Path A): Write per-section with L1+L2+L3 as constraints → user approves each section
+- **Drafting** (`draft_writer_agent` Step 2 Path A): Write per-section with L3 as paragraph-level constraint (L1/L2 already baked into outline + blueprint) → user approves each section
 
 **If user has no exemplars**: `venue_style_status = "missing"` in config record. Draft proceeds with generic academic conventions. This is a known risk flagged in draft metadata.
 
