@@ -43,16 +43,16 @@ Execute this step BEFORE Step 2. Do NOT proceed to drafting until L3 extraction 
 
 For each section in the outline:
 
-1. **Extract Layer 3** from exemplar corresponding section's paragraphs:
+1. **Extract Layer 3** from exemplar corresponding section's paragraphs — FORM only, never CONTENT:
    - Locate each paragraph and match by rhetorical function to the section's expected moves
-   - Extract per paragraph:
+   - Extract per paragraph (use generic descriptors, strip exemplar author names):
      - Rhetorical function (M1-M34 move ID from `shared/references/rhetorical_move_taxonomy.md`)
      - Sentence count, approximate word count
-     - Citation integration method — how sources are embedded (narrative, parenthetical, block quote)
+     - Citation integration method — HOW sources are embedded (narrative, parenthetical, block quote), not WHICH specific sources
      - In-paragraph argument progression (topic → evidence → analysis → transition)
      - Transition role — how this paragraph connects to the next
    - Compare across exemplars → assign confidence
-   - **Write** `style_L3_<section>.md` to the exemplar manifest directory
+   - **Write** `style_L3_<section>.md` to the exemplar manifest directory — **verify no exemplar-specific author names, quote text, or named entities remain**
    - **Verify** each file was written
 
 2. Report: `[L3 EXTRACTION COMPLETE] <N> sections, <M> paragraph moves total`
@@ -68,7 +68,7 @@ For each section in the outline:
 | 1 | M1 | ... | ... | ... | ... |
 
 ## Citation Integration Patterns
-| Pattern ID | How Sources Are Embedded | Exemplar Instance | When to Use |
+| Pattern ID | How Sources Are Embedded | Abstract Form (generic — no exemplar author names) | When to Use |
 
 ## Paragraph Transition Chain
 | From ¶ | To ¶ | Transition Mechanism |
@@ -109,9 +109,17 @@ For the specified section, in a **single call**:
    - Prose language is natural to the draft — do NOT mimic exemplar sentence patterns
    - L3 provides the rhetorical skeleton (what each paragraph does), not the prose surface
 
+   ⚠️ **CONTENT ISOLATION (IRON RULE)**: L3 describes rhetorical FORM, never exemplar CONTENT.
+   - **ALL citations** must come from this section's CER chains and bibliography subset — never from L3's exemplar instances
+   - **ALL quotes** must come from your own Annotated Bibliography sources — never replicate exemplar quotes
+   - **ALL examples/case studies** must come from your own paper's domain — never copy exemplar examples (BWWC, DGI, etc.)
+   - **If L3 mentions a specific citation or example**: that is an extraction defect. Ignore it. Replace with your own evidence.
+   - **The paragraph move sequence tells you WHAT FUNCTION each paragraph serves** (e.g., "M1: stake-setting with policy quote"), not WHICH specific source to cite
+
 3. **Compliance self-check** after writing:
    - L3: Verify paragraph move sequence matched (¶ count, each ¶'s function)
-   - Citations: Each claim has a source
+   - **Content isolation**: Verify NO exemplar citations, quotes, or examples leaked into draft (all content from CER chains + bibliography)
+   - Citations: Each claim has a source from the draft's own bibliography
    - Word count: Section ±15%, running total ±10%
 
 4. **Present section to user** for confirmation:

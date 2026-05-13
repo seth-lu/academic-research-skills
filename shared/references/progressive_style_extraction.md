@@ -25,6 +25,24 @@ Each layer's file has the same approximate size budget — but L1 stretches it a
 
 **Core principle**: Extract once per layer, consume immediately. Never extract all layers upfront.
 
+### 1.1 Content Isolation Principle (IRON RULE)
+
+**All three layers extract rhetorical FORM, never exemplar CONTENT.**
+
+Style rules describe HOW to write, not WHAT to write. The exemplar's specific citations, quotes, case studies, named initiatives, and data are the exemplar author's evidence — they must never appear in any style file output or leak into the draft through style constraints.
+
+| Layer | Extracts (FORM) | Does NOT extract (CONTENT) |
+|-------|-----------------|---------------------------|
+| L1 | Section architecture, word ratios, structural rules | Specific section topics, model names |
+| L2 | Argumentation strategy (tension→rebuttal→contribution), literature positioning pattern, contribution declaration structure | Specific authors cited, specific quotes, specific initiatives/examples |
+| L3 | Paragraph move sequence (M1→M8→M3→M4), citation integration method (narrative/parenthetical/block), transition pattern | Specific citations embedded in those moves, specific quote content |
+
+**Extraction rule**: When describing a pattern in L2/L3 output, use generic descriptors (e.g., "authoritative policy document", "block quote from regulator", "real-world initiative example") — never the exemplar's actual author names, quote text, or named entities.
+
+**Drafting rule**: Phase 4 uses L3 for paragraph-level rhetorical skeleton only. ALL content — citations, quotes, examples, case studies — must come from the draft's own CER chains and Annotated Bibliography. If L3 mentions an exemplar-specific entity (e.g., "BWWC"), that is an extraction defect and must be ignored.
+
+**Violation consequence**: Draft content that replicates exemplar citations or examples constitutes accidental plagiarism and must be rewritten before the section is accepted.
+
 ---
 
 ## 2. Multi-Exemplar Confidence
@@ -189,9 +207,9 @@ For each section in the P2 outline:
 
 ## Argumentation Rules for <Section>
 
-| ID | Rule | Why | Exemplar Evidence | Confidence |
+| ID | Rule | Why | Pattern Description (abstract form only — no exemplar names/quotes) | Confidence |
 |----|------|-----|-------------------|-----------|
-| A-1 | ... | ... | <exemplar §X ¶N: "quote"> | HIGH/MEDIUM/LOW |
+| A-1 | ... | ... | e.g., "Section opens with policy quote from regulator, then counters with two academic sources" — NOT "Baudino 2018 says..." | HIGH/MEDIUM/LOW |
 | ... | ... | ... | ... | ... |
 ```
 
@@ -222,13 +240,13 @@ For each section in the P2 outline:
   2. For each paragraph in that section:
      a. Identify rhetorical function (M1-M34 move ID from rhetorical_move_taxonomy.md)
      b. Record sentence count and approximate word count
-     c. Extract citation integration method — how sources are embedded (narrative, parenthetical, block quote)
+     c. Extract citation integration method — HOW sources are embedded (narrative, parenthetical, block quote), not WHICH sources
      d. Map in-paragraph argument progression (topic → evidence → analysis → transition)
      e. Identify transition role — how this paragraph connects to the next
-  3. Build the paragraph move sequence as a table
-  4. Extract cross-paragraph patterns (citation fusion, transition chain)
+  3. Build the paragraph move sequence as a table — use generic descriptors, strip exemplar author names
+  4. Extract cross-paragraph patterns (citation fusion, transition chain) — abstract form only
   5. Compare across exemplars → assign confidence
-  6. Write style_L3_<section>.md
+  6. Write style_L3_<section>.md — **verify no exemplar-specific names, quotes, or entities remain**
 ```
 
 ### Output Format
@@ -250,7 +268,7 @@ For each section in the P2 outline:
 
 ## Citation Integration Patterns
 
-| Pattern ID | How Sources Are Embedded | Exemplar Instance | When to Use |
+| Pattern ID | How Sources Are Embedded | Abstract Form (generic — no exemplar author names) | When to Use |
 |-----------|------------------------|-------------------|-------------|
 | ... | ... | ... | ... |
 
@@ -264,7 +282,7 @@ For each section in the P2 outline:
 
 | ID | Rule | Why | Confidence |
 |----|------|-----|-----------|
-| P-1 | ... | ... | HIGH/MEDIUM/LOW |
+| P-1 | Write generic pattern (e.g., "Implications anchored by concrete initiative example") — NOT exemplar-specific (e.g., NOT "Include BWWC example") | ... | HIGH/MEDIUM/LOW |
 ```
 
 ### Consumption

@@ -23,11 +23,18 @@ Prerequisites for this call:
 Procedure:
 1. For each section in the P2 Outline, locate the corresponding section in each exemplar PDF
 2. Read only that section's prose
-3. Extract: core argument framework, literature positioning, differentiation writing, contribution declaration structure, pre-emptive rebuttal pattern, two-sided acknowledgment pattern
-4. Compare across exemplars → assign confidence
-5. **Write** `style_L2_<section>.md` to the exemplar manifest directory
-6. **Verify** each file exists on disk. If any is missing, write it again.
-7. Report: `[L2 EXTRACTION COMPLETE] <N> sections, <M> rules total`
+3. Extract argumentation patterns — FORM only, never CONTENT:
+   - Core argument framework (tension? gap? research question?) — describe the structure, not the specific tension topic
+   - Literature positioning (embedded? standalone review?) — describe the pattern, not which papers are cited
+   - Differentiation writing (narrative paragraph? numbered list?)
+   - Contribution declaration structure
+   - Pre-emptive rebuttal presence and pattern
+   - Two-sided acknowledgment pattern
+4. **Strip exemplar-specific content**: All rule descriptions and pattern descriptions must use generic descriptors (e.g., "block quote from policy document", "two academic sources", "concrete initiative example") — NEVER the exemplar's actual author names, quote text, or named entities (Baudino, Cimini, BWWC, etc.)
+5. Compare across exemplars → assign confidence
+6. **Write** `style_L2_<section>.md` to the exemplar manifest directory
+7. **Verify** each file exists on disk. If any is missing, write it again.
+8. Report: `[L2 EXTRACTION COMPLETE] <N> sections, <M> rules total`
 
 **Do NOT continue to CER chain construction.** This is a separate call. When L2 extraction is done, your response ends with the `[L2 EXTRACTION COMPLETE]` tag.
 
