@@ -54,6 +54,19 @@ From the Paper Configuration Record, extract:
 | General | Google Scholar, Web of Science, Scopus |
 | Taiwan HEI | Taiwan National Digital Library of Theses and Dissertations, Airiti Library, TSSCI |
 
+**Cross-Domain Database Strategy (Privacy Computing × Finance — v3.10)**: This domain requires a joint search strategy drawing from TWO disciplinary database clusters. Single-domain search is insufficient — you must query from BOTH sides:
+
+| Stream | Primary Databases | Secondary |
+|--------|-------------------|-----------|
+| **Privacy Computing (CS)** | IEEE Xplore, ACM Digital Library, IACR ePrint, Scopus (CS cluster) | arXiv (cs.CR), DBLP |
+| **Finance / IS (UTD24)** | Web of Science (SSCI), ABI/INFORM, Business Source Complete, SSRN | Scopus (Business cluster), EconLit |
+
+**Joint search execution rules**:
+- Each search string must be executed on at least 1 CS database AND at least 1 Finance/IS database
+- Layer 4 (Semantic Search) is mandatory for this domain — it is the primary discovery mechanism for cross-disciplinary papers that don't share keyword vocabularies
+- If CS results and Finance results show < 10% overlap (i.e., the two literatures haven't cited each other), record this as an **integration gap** — it is the paper's primary contribution opportunity
+- IEEE Xplore + ACM DL are non-negotiable for the privacy-tech stream; SSRN + WoS SSCI are non-negotiable for the finance stream
+
 ### Step 3: Search String Construction
 ```
 ("concept A" OR "synonym A1") AND ("concept B" OR "synonym B1")
@@ -90,6 +103,13 @@ From the Paper Configuration Record, extract:
 | Case Study | 15 | 20-30 |
 | Policy Brief | 10 | 15-25 |
 | Conference | 10 | 15-25 |
+| Systems+Economics (Privacy × Finance) | 30 | 40-70 |
+
+**Dual-discipline source distribution (Systems+Economics — v3.10)**: The source list must demonstrate fluency in BOTH bodies of literature. Target distribution:
+- Privacy-computing sources (CS): 40–50% of total
+- Financial-economics sources (Finance/IS): 40–50% of total
+- Cross-domain sources (papers that already bridge both): 5–15%
+- Neither stream should fall below 35%. A paper that cites 80% CS literature and 20% finance literature is a CS paper with a financial appendix — it will not pass UTD24 review.
 
 ## Annotated Bibliography
 
@@ -103,6 +123,16 @@ For each included source, produce:
 - **Relevance**: [how this source connects to the paper's RQ]
 - **Quality**: [strength/limitation assessment]
 - **Potential Use**: [which section of the paper will use this source]
+- **Narrative Role (v3.10)**: How this source can be deployed rhetorically — choose the primary role from:
+  - `stylized_fact` — provides the motivating empirical observation that opens the paper
+  - `competing_explanation` — offers an alternative account that the paper must address
+  - `methodological_justification` — justifies the choice of method/approach
+  - `baseline_comparison` — serves as the benchmark to beat
+  - `theoretical_foundation` — provides the conceptual framework the paper builds on
+  - `boundary_evidence` — defines where the finding does or doesn't apply
+  - `gap_anchor` — documents that a specific gap exists and is consequential
+  - `mechanism_evidence` — supports the causal mechanism linking privacy tech to financial outcome
+- **Citable Passage (v3.10)**: 1–2 sentence quotable fragment that captures this source's distinctive contribution, formatted as a direct quotation with page/paragraph locator when available. This feeds the `draft_writer_agent`'s quote integration and the `citation_compliance_agent`'s three-layer citation emission check.
 ```
 
 ## Literature Matrix
@@ -127,6 +157,7 @@ After reviewing the literature, identify:
 3. **Population gaps** — understudied contexts or populations
 4. **Temporal gaps** — lack of recent data
 5. **Geographical gaps** — limited to certain regions
+6. **Integration gaps (v3.10)** — two well-developed bodies of literature exist separately (e.g., cryptographic MPC protocols AND financial AML screening) but have never been synthesized. The CS literature treats the financial scenario as a motivating example; the finance literature treats privacy as an implementation detail. The gap is not that either body is incomplete — it's that they don't talk to each other. This is the primary contribution strategy for Privacy Computing × Finance papers at UTD24 venues.
 
 -> These gaps inform the paper's contribution statement.
 
@@ -153,7 +184,14 @@ When the corpus-first flow ran, gap identification operates over the merged `fin
 [Source x Theme table]
 
 ### Identified Gaps
-[List of 3-5 research gaps]
+[List of 3-5 research gaps, including at least one integration gap for cross-domain papers]
+
+### Source Distribution by Discipline (Systems+Economics papers — v3.10)
+| Stream | Count | % |
+|--------|-------|---|
+| Privacy Computing (CS) | [N] | [N]% |
+| Financial Economics (Finance/IS) | [N] | [N]% |
+| Cross-domain (bridges both) | [N] | [N]% |
 
 ### Recommended Sources by Paper Section
 | Section | Key Sources |
@@ -418,7 +456,7 @@ Each included source is quickly scored on the following 5 items (1-3 points each
 
 ### Chinese-English Literature Search Difference Handling
 
-| Aspect | English Literature | Chinese Literature (Traditional/Simplified) |
+| Aspect | English Literature | Chinese Literature (简体中文) |
 |------|---------|-----------------|
 | Databases | Scopus, WoS, PubMed, ERIC | Airiti, Taiwan Theses DB, CNKI, TSSCI |
 | Search syntax | Standard Boolean syntax | Need bilingual keywords (search same concept in both Chinese and English) |
@@ -443,6 +481,10 @@ Each included source is quickly scored on the following 5 items (1-3 points each
 | Annotated bibliography completeness | 100% of included sources have annotations | Write missing annotations |
 | Literature matrix coverage | Every Theme >= 3 sources | Supplement search for weak Themes |
 | Research gaps | >= 2 specific actionable gaps | Re-analyze literature matrix |
+| Narrative role assignment | 100% of annotated sources have a Narrative Role (v3.10) | Assign narrative roles |
+| Citable passage | ≥ 80% of annotated sources have a Citable Passage (v3.10) | Extract quotable fragments |
+| Cross-domain distribution (Systems+Economics) | Neither CS nor Finance stream < 35% of total sources; cross-domain 5-15% | Supplement the underrepresented stream |
+| Integration gap | ≥ 1 integration gap identified for cross-domain papers (v3.10) | Re-analyze for cross-domain synthesis opportunity |
 | Peer-reviewed ratio | >= 70% peer-reviewed | Replace non-academic sources |
 | Currency | >= 50% published in last 5 years | Supplement with recent literature |
 
@@ -484,6 +526,7 @@ Quality gate not passed ->
 | Theoretical | Increase weight of Layer 2 (Citation Chaining), trace theoretical origins; quality assessment emphasizes "theoretical contribution" |
 | Case study | Increase gray literature tolerance (policy documents, institutional reports); search for prior research on similar cases |
 | Policy brief | Include government reports, white papers, statistical data; increase currency requirement (last 3 years >= 60%) |
+| Systems+Economics (Privacy × Finance) | Increase weight of Layer 3 (Forward tracking) and Layer 4 (Semantic search) to bridge CS/Finance domains; dual-discipline source distribution enforced; integration gap identification is a required deliverable |
 | Conference paper | Source count can be reduced to 80% of Minimum; prioritize high-impact sources |
 
 ### Poor Quality Upstream (intake_agent output is poor)
@@ -519,8 +562,9 @@ Quality gate not passed ->
 
 - Search strategy must be documented and reproducible
 - Minimum source count met for paper type
-- Every included source has an annotation
+- Every included source has an annotation with Narrative Role and Citable Passage (v3.10)
 - Literature matrix covers all major themes
-- At least 2 research gaps identified
+- At least 2 research gaps identified (at least 1 integration gap for cross-domain papers — v3.10)
 - Source quality distribution: majority should be peer-reviewed
+- Dual-discipline source distribution enforced for Systems+Economics papers (v3.10)
 - Recency: >50% of sources from last 5 years (unless historical topic)

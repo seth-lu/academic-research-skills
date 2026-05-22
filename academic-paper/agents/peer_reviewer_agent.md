@@ -476,15 +476,174 @@ Quality gate not passed ->
     Supplementary check on peripheral impact of revised sections
 ```
 
-## Edge Case Handling
+## Diagnostic Discipline (v3.10)
 
-### Incomplete Input
+The five-dimension rubric captures *what* is wrong. Diagnostic discipline captures *what kind* of wrong — which determines whether the issue can be fixed and how. This distinction is load-bearing in UTD24 review culture: reviewers routinely distinguish "presentation problems" from "methodological defects" and calibrate revision expectations accordingly.
 
-| Missing Item | Handling |
-|--------|---------|
-| Paper Outline not provided | Reverse-engineer structure from Draft, but Argument Coherence dimension scoring may be limited |
-| Citation Audit Report not provided | Perform quick citation format scan independently; incorporate citation issues into Writing Quality dimension |
-| Draft Metadata missing word count | Calculate word count independently |
+### Issue Classification Matrix
+
+Every Critical or Major issue MUST carry a `defect_class` label drawn from the closed enum below. The class drives the `salvageability` rating in the revision instructions.
+
+| defect_class | Definition | Detection Signal | Typical Section |
+|-------------|-----------|-----------------|-----------------|
+| `presentation_issue` | The underlying work is sound; the text fails to communicate it. | The fix involves rewriting, not redoing. | Any |
+| `methodological_gap` | The method is defensible but underspecified or insufficiently justified. | The reviewer can imagine a valid fix within the current design space. | Methods, Protocol Description, Model |
+| `methodological_defect` | A design choice is structurally wrong — cannot be fixed by rewriting. | The reviewer cannot imagine a fix without changing the method itself. | Methods, Experimental Design, Threat Model |
+| `evidence_gap` | Claims are plausible but not yet supported by the data/citations presented. | The missing evidence likely exists or can be produced within revision timeline. | Results, Discussion |
+| `structural_claim_mismatch` | The Introduction claims X but the paper actually demonstrates Y (or only part of X). | Track each numbered contribution against the experimental or analytical results. | Introduction ↔ Experiments / Results |
+| `external_validity_boundary` | Results hold under conditions the paper does not make explicit. | The boundary conditions are discoverable but not stated. | Discussion, Limitations |
+| `normative_violation` | The paper violates a field-specific convention (e.g., missing threat model in a crypto paper, missing kernel theory in a DSR paper). | The checklist item is missing or incorrectly placed. | Per methodology preset |
+| `contribution_claim_inflation` | The claimed contribution exceeds what the evidence supports. | Compare Introduction's contribution list against Results' demonstrated findings. | Introduction, Abstract |
+
+**Iron rule**: Never classify an issue as `methodological_defect` when it could be `methodological_gap` or `presentation_issue`. Misclassifying a rewrite problem as a redesign problem inflates the severity and gives the author a misleading revision roadmap. Conversely, never classify a genuine `methodological_defect` as `presentation_issue` — calling a design flaw "unclear writing" is reviewer malpractice.
+
+### The "表述问题 vs 方法缺陷" Diagnostic Protocol
+
+When an issue could be either a presentation problem or a methodological defect, apply this two-step test before assigning `defect_class`:
+
+**Step 1 — Counterfactual rewrite test**: "If the authors rewrote this passage perfectly, would the underlying problem remain?" If YES → likely `methodological_defect`. If NO → likely `presentation_issue`.
+
+**Step 2 — Fix-scope test**: "Can the fix be scoped to a single section without cascading changes to the method, results, or conclusions?" If YES → likely `presentation_issue` or `methodological_gap`. If NO — fixing this would force changes to ≥2 other sections → likely `methodological_defect` or `structural_claim_mismatch`.
+
+**Example 1 (presentation_issue)**: "The threat model is described in §3.2 but the adversary's computational power is not stated until §5.1." → Counterfactual: inserting one sentence in §3.2 fixes it. Fix-scope: §3.2 edit only. → `presentation_issue`.
+
+**Example 2 (methodological_defect)**: "The protocol claims malicious security but §4.2 only proves semi-honest security with no malicious extension. The evaluation (§6) uses semi-honest baselines." → Counterfactual: rewriting won't add a missing security proof. Fix-scope: requires new proof (§4-5) + new baselines (§6) + revised contribution claim (§1). → `methodological_defect`.
+
+## Salvageability Assessment (v3.10)
+
+Every revision instruction set MUST include a `salvageability` block that tells the author which issues can be resolved within a standard revision timeline and which require structural remediation. This mirrors the "可救性判断" section in the `awesome-ai-research-writing` reviewer prompt, adapted for UTD24 review culture.
+
+### Salvageability Tiers
+
+| Tier | Label | Definition | Author Action |
+|------|-------|-----------|--------------|
+| S1 | **Fixable within revision cycle** | The issue can be resolved by rewriting, adding citations, re-running an experiment, or adding a paragraph. Estimated effort < 1 week. | Address in revision round 1. |
+| S2 | **Fixable with substantial revision** | The issue requires new analysis, additional experiments, or structural reorganization of ≥1 section. Estimated effort 1–4 weeks. | Address in revision rounds 1–2; mark as priority. |
+| S3 | **Structurally constrained — partial fix only** | The issue stems from a design choice or data limitation that cannot be fully reversed. The best outcome is acknowledging the limitation and narrowing the claim. | Narrow claims; add explicit limitation statement; revise Abstract/Introduction to match. |
+| S4 | **Non-fixable within current paper scope** | The issue exposes a fundamental flaw that requires a different method, dataset, or research design. Revision within the current scope is not viable. | Consider: (a) repositioning contribution (lower-tier journal), (b) splitting into two papers, or (c) withdrawing and redesigning. |
+
+### Salvageability Reporting Format
+
+Each Critical and Major issue in the revision instructions MUST carry a `salvageability` tier. The format appends to the existing issue table:
+
+```markdown
+| # | Section | Issue | Severity | defect_class | Salvageability | Suggested Fix |
+|---|---------|-------|----------|-------------|----------------|--------------|
+| C1 | §3.2 | Threat model missing malicious adversary specification | Critical | normative_violation | S1 — Fixable within revision cycle | Add paragraph in §3.2: state adversary type (malicious, static), corruption threshold (t < n/2), and network model (synchronous). |
+| C2 | §6.1 | Evaluation uses only synthetic transaction data | Critical | evidence_gap | S2 — Fixable with substantial revision | Run protocol on ≥1 real-world financial dataset (e.g., BIS triennial survey data, or simulated financial data with a cited generation procedure). |
+| M1 | §1 | Claims "first privacy-preserving solution" but Mohassel & Zhang (2017) is not cited | Major | contribution_claim_inflation | S1 — Fixable within revision cycle | Rewrite contribution claim: replace "first" with "first in the malicious-adversary setting" or cite and acknowledge Mohassel & Zhang (2017). |
+```
+
+### Salvageability Summary (placed before Revision Instructions)
+
+After all issues are classified, produce a one-paragraph salvageability summary:
+
+```markdown
+### Salvageability Summary
+
+Of the [N] issues identified: [n1] are S1 (fixable within cycle), [n2] are S2 (require substantial revision), [n3] are S3 (structurally constrained — partial fix only), and [n4] are S4 (non-fixable within current scope). The most consequential S4 issue is [brief description]. Recommendation: [Accept with revisions / Major revision with structural caveat / Reject with guidance for redesign].
+```
+
+### UTD24 Review-Culture Calibration
+
+The S1–S4 salvageability tiers map to how UTD24 reviewers typically frame revision expectations:
+
+| UTD24 Journal | Typical S1 Tolerance | Typical S2 Tolerance | S3/S4 Norm |
+|---------------|---------------------|---------------------|-----------|
+| Management Science | ≤3 S1 items, 0 S2 in first-round R&R | Expect S2 items identified at desk stage, not in review | S3/S4 → desk reject (not sent to review) |
+| MIS Quarterly | ≤5 S1, ≤2 S2 per revision round | S2 must be addressable within 1 round; 2-round S2 is unusual | S3/S4 identified in first-round review → Major Revision or Reject |
+| Information Systems Research | ≤4 S1, ≤1 S2 per round | S2 expected to be resolved in Round 1 | S3 → "acknowledge limitation" path; S4 → Reject |
+| INFORMS Journal on Computing | ≤5 S1, ≤2 S2 per round | Technical S2 (new proof, additional experiment) is common | S3/S4 in computational track → Reject |
+
+## Community-Contribution Lens
+
+UTD24 reviewers assess contribution against the **literature's intellectual structure**, not against baseline performance alone. When scoring Originality and Evidence Sufficiency, apply the community-contribution check:
+
+### Contribution Assessment Protocol
+
+1. **Does the paper engage the canonical literature in both streams?** For privacy×finance: the financial stream (Akerlof, Spence, Stiglitz; Fama; Hasbrouck; Easley & O'Hara; Allen & Gale) AND the privacy-computing stream. A paper that cites only one stream has not established the intellectual warrant for a cross-disciplinary contribution.
+
+2. **Is the contribution measured against a literature gap (not a baseline gap)?** "Our protocol is 23% faster than Protocol X" is a baseline gap. "Protocol X assumes a trusted third party, which is institutionally unavailable in cross-border payment networks; our protocol removes this assumption" is a literature gap. UTD24 reviewers expect the latter.
+
+3. **Does the contribution framework have a conceptual anchor?** MISQ DSR papers require kernel theory (Gregor & Hevner 2013). Management Science analytical papers require a mechanism (not just a result). Point out when the paper has no named conceptual anchor.
+
+4. **Is mathematical complexity masquerading as contribution?** "Our proof uses 15 lemmas" is not a contribution — it's exposition. The contribution is *what the proof establishes*. Flag when a paper conflates formal difficulty with intellectual novelty.
+
+### Contribution-Claim Consistency Check (Introduction ↔ Experiments/Results)
+
+This is a mandatory cross-section check added to Step 3:
+
+```
+For each numbered contribution claim in the Introduction (typically 3-5):
+  1. Locate the specific section/paragraph where this contribution is demonstrated
+  2. Check: Does the demonstrated result MATCH the claimed contribution?
+     - Same scope? (e.g., "cross-border payments" in claim → "cross-border payments" in experiment)
+     - Same direction? (e.g., "improves" in claim → actually improves in experiment)
+     - Same magnitude framing? (e.g., "significant" in claim → quantified magnitude in experiment)
+  3. If mismatch → structural_claim_mismatch, severity ≥ Major
+```
+
+Record result in the Cross-Section Checks table as a new row:
+```
+| Introduction claim ↔ Results alignment | PASS / FAIL (N/N matched) | [list mismatched claims] |
+```
+
+## Privacy×Finance Domain Review Lens (v3.10)
+
+When reviewing a privacy-computing × finance cross-domain paper, apply the following domain-specific checks in addition to the standard review dimensions. These checks are derived from documented UTD24 reviewer expectations for interdisciplinary work spanning CS security/privacy and finance/management science.
+
+### Threat-Model Mismatch Detection
+
+The most common domain-specific fatal flaw in privacy×finance papers is a threat-model mismatch: the cryptographic threat model addresses one adversary class, but the financial scenario implies or requires a different one. The reviewer's job is to detect this gap before a journal reviewer does.
+
+**Detection protocol** — for each privacy/security claim, check the 4-axis alignment:
+
+| Axis | What to Check | Mismatch Signal |
+|------|--------------|-----------------|
+| **Adversary type** | Does the paper claim semi-honest security, but the financial scenario involves competitors with profit motives? | Semi-honest security is adequate for "honest but curious" data processors, NOT for competing banks. If Bank A profits from learning Bank B's portfolio → malicious security required. |
+| **Corruption threshold** | Does the paper claim t < n/2 or t < n/3? Does the financial consortium structure support this? | A 3-bank consortium with t < n/2 tolerates 1 corrupt bank — but if 2 banks are commercial rivals, the honest-majority assumption is questionable. |
+| **Corruption type** | Static (fixed at start) vs. adaptive (can change based on protocol messages)? | Adaptive corruption is the norm when adversaries are economic agents who can decide to cheat mid-protocol. Static corruption is a cryptographic convenience, not an economic reality. |
+| **Trusted setup** | Does the protocol require a trusted dealer, CRS, or setup phase? Who runs it? | A protocol requiring a "trusted initializer" between competing banks is circular: the trust assumption the protocol claims to eliminate reappears in the setup. |
+
+**Severity rule**: A threat-model mismatch along ANY axis is ≥ Major. A mismatch along ≥2 axes is Critical. The reviewer must state WHY the mismatch matters in the financial scenario, not just note it as a technical gap.
+
+### Cross-Domain Credibility Signals
+
+UTD24 reviewers from different disciplines assess credibility differently. The internal review should anticipate which reviewer type would flag which issue:
+
+| Reviewer Background | Primary Credibility Signal | What They Flag |
+|--------------------|---------------------------|-----------------|
+| **Cryptographer / Security (R1)** | Formal definitions + proofs | Missing or informal threat model; hand-wavy security arguments; unstated assumptions; missing composition guarantees |
+| **FinTech / Finance (R2)** | Economic mechanism + empirical validation on real financial data | No named financial friction; synthetic-only evaluation; missing economic magnitudes; no baseline comparison against the non-private status quo |
+| **Privacy Regulation (R3)** | Legal/regulatory compliance grounding | Failure to name the specific regulation (GDPR, AMLD6, CCPA); treating "privacy" as a monolithic concept; no discussion of data-controller vs data-processor distinction |
+| **IS / Management Science (EIC/SE)** | Theoretical contribution + managerial implications | No kernel theory; contribution framed as technical novelty rather than design knowledge; implications section is a CS-style "future work" paragraph |
+
+**Cross-reviewer contradiction detection**: When the paper satisfies one reviewer type at the expense of another, flag it. Example: a paper with rigorous security proofs (R1 satisfied) that uses only synthetic toy data (R2 unsatisfied) has a credibility gap, not a balanced contribution.
+
+### Venue-Specific Review Priorities
+
+The review report should calibrate emphasis based on the target journal indicated in the Paper Configuration Record:
+
+| Target Journal | Highest-Weight Dimension | Dealbreaker Pattern | Expected Strengths |
+|---------------|-------------------------|---------------------|-------------------|
+| **MIS Quarterly** | Originality + Community Contribution (kernel theory, design principles) | No kernel theory named; managerial implications as afterthought; contribution framed as technical novelty | ≥2 evaluation methods; design principles traceable to theory; rich qualitative or mixed-methods evaluation |
+| **Information Systems Research** | Originality + Evidence Sufficiency | Scope too narrow for IS audience; generalizability not addressed; contribution is 100% technical, 0% behavioral/economic | Clear boundary conditions; generalizable design knowledge; multi-stakeholder analysis |
+| **Management Science** | Methodological Rigor + Evidence Sufficiency | No formal model or hypothesis; mechanism not identified; informal security arguments | Model solved for equilibrium; comparative statics; welfare analysis; mechanism that generalizes beyond the specific protocol |
+| **INFORMS Journal on Computing** | Methodological Rigor + Evidence Sufficiency | Algorithm lacks complexity analysis; no proof of correctness/security; evaluation on trivial baselines | Formal analysis; reproducible experiments; comparison to multiple competing approaches |
+
+### Domain-Specific Salvageability Patterns
+
+Some privacy×finance defect patterns map predictably to salvageability tiers:
+
+| Defect Pattern | Typical Salvageability | Why |
+|---------------|----------------------|-----|
+| Missing threat-model paragraph | S1 | Adding a paragraph specifying adversary type + corruption bound + security model is a one-hour fix |
+| Formal security proof missing but protocol structure is sound | S2 | Writing a simulation-based proof or game-based reduction takes weeks but doesn't require redesigning the protocol |
+| Semi-honest security claimed but financial scenario requires malicious | S3 | Cannot upgrade security model without redesigning the protocol. Best outcome: narrow the contribution claim to "semi-honest setting" and acknowledge the limitation. |
+| Financial scenario is a thin veneer over a CS protocol paper | S3 | The paper's DNA is CS; reframing as IS/management contribution requires restructuring Introduction + Discussion + adding managerial implications section. Partial fix: acknowledge the scope limitation. |
+| No real financial data; evaluation on synthetic benchmarks only | S2 (if data is obtainable) / S3 (if data is legally inaccessible) | Real banking data access is a genuine barrier. Distinguish "the authors didn't try" (S2) from "the data doesn't exist or is legally inaccessible" (S3). |
+| Privacy primitive mismatch (e.g., using MPC where DP would suffice, or vice versa) | S4 | Redesigning the cryptographic approach is a new paper. Flag as "consider repositioning the contribution." |
+| Terminology conflation (DP ≈ k-anonymity, MPC ≈ any distributed computation) | S1 | Fixing terminology is an editing task. Cross-reference `privacy_finance_glossary.md` and list the specific corrections needed. |
 
 ### Poor Quality Output from Upstream Agents
 

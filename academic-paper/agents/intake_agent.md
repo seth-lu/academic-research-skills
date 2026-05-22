@@ -113,6 +113,30 @@ After completing the 3-question simplified interview:
 - Ask for the paper's topic or research question
 - If vague, help refine into a researchable question
 - Identify discipline and sub-field
+- **Puzzle/Tension diagnostic (v3.10)**: After the user states the topic, probe for the underlying puzzle or tension. UTD24 papers are driven by puzzles, not topics:
+  - "What is surprising or counterintuitive about your findings or approach?"
+  - "What tension in the existing literature or practice does your work resolve?"
+  - Example transformation: "A paper about MPC for AML" → "Why do banks fail to detect 30–40% of cross-institutional money laundering despite each bank having strong internal controls? Because they cannot share customer transaction data under privacy laws. We resolve this tension with an MPC protocol that enables joint screening without exposing individual transaction graphs."
+  - If the user cannot articulate a puzzle, record `puzzle_articulated: false` in the Configuration Record. This is an early warning signal — papers without a clear puzzle are desk-rejection risks at UTD24 venues.
+
+### Step 1.5: Contribution Narrative — 30-Second Elevator Pitch (v3.10)
+
+After the topic and puzzle are established, ask the user to articulate the paper's contribution in one sentence:
+
+> "In one sentence, what is the single most important insight a reader should take from your paper? Imagine you have 30 seconds with a senior scholar in your field — what do you say?"
+
+This feeds directly into `argument_builder_agent`'s central thesis construction. A strong elevator pitch follows this structure:
+
+| Element | Example |
+|---------|---------|
+| **Context** (what we know) | "Banks lose billions to cross-institutional money laundering..." |
+| **Tension** (what we can't do) | "...but privacy laws prevent them from sharing the transaction data needed to detect it..." |
+| **Resolution** (what we did) | "...so we designed a cryptographic protocol that enables joint AML screening..." |
+| **Significance** (why it matters) | "...reducing false negatives by 18–34% without exposing any bank's customer graph." |
+
+If the user struggles to produce this, that's diagnostic — record `elevator_pitch_articulated: false`. This is a P0 signal: a paper without a crisp contribution narrative is likely under-conceptualized. The pipeline can still proceed, but the argument-building phase will need more iteration.
+
+Record the elevator pitch verbatim in the Configuration Record as `contribution_narrative`. Downstream agents (`argument_builder_agent`, `draft_writer_agent`, `abstract_bilingual_agent`) use this as a coherence anchor — every output must be consistent with the elevator pitch.
 
 ### Step 2: Paper Type
 Present options with brief descriptions:
@@ -125,12 +149,20 @@ Present options with brief descriptions:
 | **Case Study** | In-depth analysis of specific cases | 4,000-7,000 words |
 | **Policy Brief** | Evidence-based policy recommendations | 2,000-4,000 words |
 | **Conference Paper** | Concise presentation of research | 2,000-5,000 words |
+| **Systems+Economics** | Privacy tech construction applied to financial-market friction | 7,000-10,000 words |
 
-Default: IMRaD (for empirical research) or Literature Review (for synthesis topics)
+Default: IMRaD (for empirical research), Literature Review (for synthesis topics), or Systems+Economics (for Privacy Computing × Finance cross-domain with UTD24 target)
 
 ### Step 3: Target Journal
 - Ask if the user has a target journal
 - If yes, note journal name for formatting agent. **Immediately proceed to Step 3.5.**
+- **Editorial track probe (v3.10)**: If the target journal has multiple editorial tracks, ask which track the paper targets. Different tracks have profoundly different writing conventions:
+  - **MISQ**: Behavioral IS / Design Science / Economics of IS / Strategy & Organization
+  - **Management Science**: Information Systems / Finance / Operations Management / Marketing
+  - **ISR**: Behavioral / Computational / Economic / Design Science
+  - **INFORMS JoC**: Algorithms & Theory / Applications / Computational Economics
+  - Record both `target_journal` and `editorial_track` in the Configuration Record. If the user doesn't know the track, note `editorial_track: unspecified` — this is a risk flag.
+  - Ask: "Have you studied 3–5 papers from this journal's <track> track published in the last 3 years? If yes, these could serve as exemplars in Step 3.5."
 - If no, skip Step 3.5 and go to Step 4 (use generic academic format)
 
 ### Step 3.5: Venue Style Exemplars
@@ -213,8 +245,8 @@ Auto-suggest based on discipline; user can override.
 
 ### Step 6: Language & Abstract
 - Detect user's language from input
-- Ask about paper body language: EN / zh-TW / bilingual
-- Ask about abstract: Bilingual (default) / EN only / zh-TW only
+- Ask about paper body language: EN / 简体中文 / bilingual
+- Ask about abstract: Bilingual (default) / EN only / 简体中文 only
 
 ### Step 7: Word Count
 - Auto-suggest based on paper type (see table above)
@@ -227,8 +259,15 @@ Ask what the user already has:
 - [ ] Literature / bibliography
 - [ ] Data / results
 - [ ] Existing draft sections
-- [ ] Reviewer feedback (for revision mode)
+- [ ] Reviewer feedback from prior submission (for revision/resubmit scenarios — v3.10)
 - [ ] Style guide or template from target journal
+
+**Reviewer feedback handling (v3.10)**: If the user provides reviewer feedback from a prior submission:
+1. Ask which journal the prior submission was to — different journals have different review cultures, so the feedback's severity signals need recalibration
+2. Ask which round (first-round, revise-and-resubmit, etc.)
+3. Record prior reviewer comments verbatim in a `prior_reviewer_feedback` field of the Configuration Record
+4. These comments feed into `peer_reviewer_agent` (Phase 6) as calibration input — the simulated review should not repeat issues the real reviewers already identified unless the draft still hasn't addressed them
+5. For revision-mode papers: prior reviewer feedback is the single most important input after the draft itself. The revision roadmap must address every actionable prior-reviewer comment.
 
 ### Step 9: Co-Authors & Contributions
 Reference: `references/credit_authorship_guide.md`
@@ -287,12 +326,16 @@ Reference: `references/funding_statement_guide.md`
 | **Paper Type** | [IMRaD / Literature Review / Theoretical / Case Study / Policy Brief / Conference] |
 | **Discipline** | [discipline + sub-field] |
 | **Target Journal** | [journal name or "General"] |
+| **Editorial Track** | [track name or "unspecified" — v3.10] |
+| **Puzzle Articulated** | [true / false — v3.10] |
+| **Contribution Narrative** | [30-second elevator pitch verbatim — v3.10] |
 | **Citation Format** | [APA 7th / Chicago 17th / MLA 9th / IEEE / Vancouver] |
 | **Output Format** | [Markdown / LaTeX / DOCX / PDF / Combined] |
-| **Body Language** | [EN / zh-TW / Bilingual] |
-| **Abstract** | [Bilingual / EN-only / zh-TW-only] |
+| **Body Language** | [EN / 简体中文 / Bilingual / zh-TW (legacy)] |
+| **Abstract** | [Bilingual / EN-only / 简体中文-only] |
 | **Word Count Target** | [number] words |
 | **Existing Materials** | [list of provided materials] |
+| **Prior Reviewer Feedback** | [none / journal + round + verbatim comments — v3.10] |
 | **Co-Authors** | [single-author / number of co-authors + corresponding author + brief contribution notes] |
 | **Funding** | [no funding / funder name(s) + grant number(s) + PI role] |
 | **Venue Style** | [exemplar_manifest path / flat_guide path / missing] |
@@ -325,7 +368,8 @@ For `plan` mode, only the simplified 3-question interview is needed.
 
 ## Quality Criteria
 
-- All 13 parameters must be populated (journal can be "General"; co_authors can be "single-author"; funding can be "no funding"; style_profile can be "null")
+- All required parameters must be populated (journal can be "General"; editorial_track can be "unspecified"; co_authors can be "single-author"; funding can be "no funding"; style_profile can be "null"; prior_reviewer_feedback can be "none")
+- Puzzle and contribution narrative diagnostics recorded (even if false/unarticulated)
 - Word count must be realistic for paper type
 - Citation format must match discipline conventions (warn if mismatch)
 - User must explicitly confirm before pipeline proceeds

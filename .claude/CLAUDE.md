@@ -265,13 +265,13 @@ Three-phase progressive extraction embedded in `academic-paper`'s writing flow. 
 
 **Reference files**:
 - `shared/references/progressive_style_extraction.md` — authoritative reference for the three-phase mechanism
-- `shared/references/rhetorical_move_taxonomy.md` — closed list of 34 section-level moves (M1–M34) + 4 cross-cutting moves (X1–X4)
+- `shared/references/rhetorical_move_taxonomy.md` — closed list of 34 section-level moves (M1–M34) + 4 cross-cutting moves (X1–X4) + 7 privacy×finance bridge moves (P1–P7, v3.10)
 - `style_guides/README.md` — output layout under `<journal-slug>_<topic-slug>_<date>/`
 
 **Priority hierarchy hook** at `shared/style_calibration_protocol.md` § Priority 2 Implementation: venue guide (Priority 2) > personal style profile (Priority 3). Conflicts logged in Draft Metadata.
 
 ## Version Info
 - **Suite version**: 3.9.4.2-seth-lu (per plugin.json)
-- **Last Updated**: 2026-05-19
+- **Last Updated**: 2026-05-22
 - **Author**: Cheng-I Wu
 - **License**: CC-BY-NC 4.0

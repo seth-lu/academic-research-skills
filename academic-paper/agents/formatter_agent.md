@@ -100,6 +100,89 @@ Common journal requirements to check:
 - Add required sections (COI, data availability, etc.)
 - Ensure word count compliance
 
+### UTD24 Journal-Specific Formatting Profiles
+
+When the Paper Configuration Record identifies a UTD24 target journal, the formatter applies the venue-specific profile below in addition to the generic Step 1–2 checks.
+
+#### Management Science (INFORMS)
+
+| Requirement | Specification | Formatter Action |
+|-------------|--------------|-----------------|
+| Article types | Research Article (≤32 pages), Research Note (≤12 pages) | Count formatted pages; warn if approaching limit |
+| Abstract | ≤200 words; unstructured | Truncate or request user trim if >200 |
+| References | APA 7 Author-Date | Auto-apply `\usepackage[style=apa,backend=biber]{biblatex}` or APA BibTeX |
+| Figures/Tables | Embedded in text at first mention | `\begin{figure}[h]` with `[h]` placement |
+| Math notation | `\begin{equation}` for numbered equations | Use `amsmath` with `\numberwithin{equation}{section}` |
+| Title page | Separate: title, authors (affiliations + ORCID), acknowledgments (optional footnote) | Generate full title page with `\thanks{}` for funding/acknowledgments |
+| Data availability | Required; statement placed after Conclusion | Append Data Availability Statement using template from §Data Availability Statement templates |
+| Cover letter | Required | Generate using the cover letter template in §Cover Letter Generation |
+| AI disclosure | Not formally required but recommended | Include as Author Note on title page |
+| LaTeX template | INFORMS `informs3.cls` (optional; `article` accepted) | Use `informs3.cls` if available; fall back to `article` with 12pt, double-spacing |
+
+#### MIS Quarterly (MISQ)
+
+| Requirement | Specification | Formatter Action |
+|-------------|--------------|-----------------|
+| Article types | Research Article, Research Note, Theory & Review, Issues & Opinions | Verify paper type matches submission category |
+| Abstract | ≤250 words; structured encouraged but not required | Format accordingly |
+| References | APA 7 Author-Date (MISQ specific) | Ensure author-date format; in-text as (Author, Year); Reference list alphabetical |
+| Page limit | ~35 pages (including tables, figures, references) | Warn if formatted pages >35 |
+| Title page | Separate (for review: no author-identifying info) | Generate both blind and full versions |
+| Footnotes | Sequential numbering, placed at bottom of page | Use `\footnote{}` not endnotes |
+| Tables/Figures | Each on separate page at end (submission) OR embedded (final) | Generate both; label submission vs final versions |
+| Required sections | (1) CRediT author statement, (2) ORCID for all authors, (3) Acknowledgments (after Conclusion) | Auto-generate all three |
+| DSR papers | Must include: design requirements, design principles, kernel theory commitment, multi-method evaluation | Verify each element present; flag missing elements to user |
+| Cover letter | Required | Generate |
+| AI disclosure | Recommended; add to Author Note | Include |
+
+#### Information Systems Research (ISR)
+
+| Requirement | Specification | Formatter Action |
+|-------------|--------------|-----------------|
+| Article types | Research Article, Research Note, Commentary | Verify paper type |
+| Abstract | ≤300 words | Enforce |
+| References | APA 7 Author-Date | Apply same as MISQ |
+| Page limit | ~38 pages all-inclusive | Warn if exceeding |
+| Title page | Double-blind; separate title page with all author info | Generate both versions |
+| Analytical papers | Must include: model setup, equilibrium concept, comparative statics, managerial implications section | Verify each element present |
+| Data availability | Required | Append statement |
+| Cover letter | Required | Generate |
+
+#### INFORMS Journal on Computing (JoC)
+
+| Requirement | Specification | Formatter Action |
+|-------------|--------------|-----------------|
+| Article types | Research Article, Software Article, Review | Tag paper type |
+| Abstract | ≤250 words | Enforce |
+| References | APA 7 Author-Date | Apply |
+| Page limit | ~25 pages | Warn if exceeding |
+| Software section | Required for software/computational papers — code + data + Dockerfile | Ensure `repro_lock` block is populated; flag if empty |
+| LaTeX template | `informs3.cls` preferred | Use |
+| Figures | Vector format preferred (.pdf, .eps); colorblind-safe | Verify format; warn if raster images detected |
+| Supplementary materials | Accepted; uploaded separately | Package separately with S1, S2, … labeling |
+| Cover letter | Required | Generate |
+| Reproducibility checklist | Required (JoC-specific) | Auto-generate from `repro_lock` block + Software section content |
+
+### Cross-Journal Common UTD24 Requirements
+
+These apply to all four UTD24 venues above:
+
+1. **CRediT Author Contribution Statement**: Use the 14-role taxonomy. Include in title-page footnote for Management Science and JoC; on a separate Author Contributions page for MISQ and ISR.
+
+2. **Data Availability Statement**: Choose template A/B/C/D from §Data Availability Statement templates based on actual data access. Privacy×finance papers typically use Template B ("available from the corresponding author upon reasonable request") or Template D (third-party restrictions) when using proprietary financial data.
+
+3. **Conflict of Interest Declaration**: Required. Default to "The authors declare no competing interests."
+
+4. **Funding Acknowledgment**: Include funder name + grant number. If no funding: "This research did not receive any specific grant from funding agencies in the public, commercial, or not-for-profit sectors."
+
+5. **ORCID**: All authors should have ORCID iDs. If not provided, insert `[ORCID NEEDED]` placeholder.
+
+6. **Figure Resolution**: ≥300 dpi for raster; vector preferred. Color figures must be interpretable in grayscale (UTD24 print editions are often B&W).
+
+7. **Page Numbering**: Continuous throughout. No per-section reset.
+
+8. **Line Numbers**: Submit with consecutive line numbers for review. `\usepackage{lineno}` → `\linenumbers`.
+
 ## Cover Letter Generation
 
 When the user is submitting to a journal, generate a cover letter:
@@ -397,6 +480,43 @@ Step 6: Package Output
 | Footnote `[^1]` | `\footnote{text}` | |
 | Math `$...$` | `$...$` | Preserved directly |
 | Code `` `code` `` | `\texttt{code}` | |
+
+### Mandatory LaTeX Escape Discipline (IRON RULE)
+
+Before emitting ANY `.tex` file, the formatter MUST run a byte-level scan for unescaped TeX special characters in body text. A single unescaped `%`, `_`, or `&` breaks compilation and causes silent content loss (everything from `%` to end-of-line is treated as a comment in TeX).
+
+#### Escape Checklist (Pre-Emission)
+
+| Character | TeX Meaning | Escape | Scan Priority | Common Failures in Finance Prose |
+|-----------|-----------|--------|--------------|----------------------------------|
+| `%` | Comment start | `\%` | **Highest** | "5% significance level," "95% confidence interval" |
+| `_` | Subscript | `\_` | **Highest** | Variable names: `model_v1`, `data_finance` |
+| `&` | Tab/alignment | `\&` | **Highest** | "R&D spending," "A&G costs," "P&L statement" |
+| `$` | Math mode | `\$` | High | Currency amounts: "$10M portfolio," "$/EUR rate" |
+| `#` | Macro parameter | `\#` | Medium | Rare in finance; "reference #42" |
+| `{` / `}` | Grouping | `\{` / `\}` | Medium | Rare in body text; mostly in math mode |
+| `~` | Non-breaking space | `\textasciitilde{}` | Medium | "~100ms latency," "~5% improvement" |
+| `^` | Superscript | `\^{}` | Low | Rare in body text unless R² or p-values appear verbatim |
+
+**Scan algorithm**: After the `.tex` body is assembled, grep for `[%_&$#{}~^]` in non-command contexts (i.e., outside `\newcommand{...}{...}`, outside `\begin{Verbatim}...\end{Verbatim}`, outside math mode `$...$` and `\[...\]`). Each hit that is NOT already preceded by `\` is an escape failure.
+
+**Finance-domain special case — dollar signs**: `$` is especially dangerous because it also opens math mode. An unescaped "$10M" in body text silently starts a math environment, swallowing everything until the next `$` and producing garbled output or compilation failure. The formatter MUST scan for bare `$` followed by digits and escape to `\$`.
+
+#### Citation-Command Preservation
+
+When converting from Markdown to LaTeX, citation-related LaTeX commands in the source MUST be preserved through the formatting pipeline:
+- `\cite{}`, `\citep{}`, `\citet{}`, `\citeauthor{}`, `\citeyear{}` → preserved as-is
+- `\ref{}`, `\eqref{}`, `\label{}` → preserved as-is
+- `\bibliography{}`, `\bibliographystyle{}` → reformatted per target journal style, not deleted
+- Do NOT strip citation commands during markdown cleanup — they carry the paper's intellectual provenance
+
+#### Mathematical-Formula Preservation
+
+- All `$...$` (inline math) and `\[...\]` (display math) content is preserved byte-for-byte
+- `\begin{equation}...\end{equation}` → preserved
+- `\begin{align}...\end{align}` → preserved
+- Mathematical symbols (`\alpha`, `\beta`, `\varepsilon`, `\delta`, etc.) → preserved
+- The formatter does NOT rewrite, simplify, or "correct" mathematical notation
 
 **LaTeX document structure template**:
 

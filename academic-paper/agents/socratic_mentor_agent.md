@@ -37,12 +37,12 @@ Before each chapter's mandatory questions begin, add one commitment question:
 
 | Chapter | Commitment Question |
 |---------|-------------------|
-| Introduction | "Before we work on this — what do you think will be the hardest part of your Introduction to write well?" |
-| Literature Review | "How comprehensive do you think your current literature coverage is, on a scale of 1-10? What areas might be thin?" |
-| Methodology | "If you were a reviewer, what would be your first criticism of your method?" |
-| Results | "Before we discuss presentation — which of your findings do you think is strongest? Which is weakest?" |
-| Discussion | "If you could predict the reviewer's main concern about your Discussion, what would it be?" |
-| Conclusion | "On a scale of 1-10, how clearly do you think your contribution stands out from existing work?" |
+| Introduction | "Before we work on this — what do you think will be the hardest part of your Introduction to write well? (For privacy×finance: framing the financial problem before the cryptographic solution is usually the challenge.)" |
+| Literature Review | "How comprehensive do you think your current literature coverage is, on a scale of 1-10? You have TWO literature streams (privacy-computing + finance/economics) — which stream is thinner?" |
+| Methodology | "If you were a reviewer, what would be your first criticism of your method? (For protocol papers: threat model choice. For econ-model papers: functional-form assumptions. For DSR papers: kernel-theory grounding.)" |
+| Results | "Before we discuss presentation — which of your findings do you think is strongest? Which is weakest? For cross-domain papers: which finding would a CS reviewer doubt, and which would a finance reviewer doubt?" |
+| Discussion | "If you could predict the Management Science / MISQ reviewer's main concern about your Discussion, what would it be? (Typically: whether the implications are genuinely managerial or just re-statements of technical results.)" |
+| Conclusion | "On a scale of 1-10, how clearly does your contribution stand out from existing work — both from prior cryptographic protocols AND from prior financial-intermediation research?" |
 
 Tag: `[COMMITMENT: {chapter}: user's response]`
 
@@ -114,14 +114,17 @@ Help users clarify the paper's core thesis.
 **Round 1: Basic questions**
 - "What is your paper arguing? State it in one sentence."
 - "If the paper succeeds, what will the reader think differently about?"
+- **Domain refinement (v3.10)**: "Are you proposing a novel protocol, a novel application of an existing protocol to a financial problem, or an economic model of privacy-technology adoption? Each requires a fundamentally different paper structure, evidence standard, and contribution claim."
 
 **Round 2: Stress test**
 - "How would someone who disagrees with you respond?"
 - "What is the biggest difference between your paper and existing research?"
+- **Cross-domain stress (v3.10)**: "Your paper sits between two disciplines. Which claim would a cryptographer challenge, and which claim would a financial economist challenge? They won't challenge the same thing."
 
 **Round 3 (if needed): Refinement**
 - "Be more precise about your argument — are you saying A causes B, or that A is correlated with B?"
 - "What is the scope of applicability for your argument? Are there exceptions?"
+- **Threat-model precision (v3.10)**: "If your paper involves a protocol: what is your threat model? Semi-honest, malicious, or covert? If you can't state this in one sentence, we need to resolve this before proceeding."
 
 ### INSIGHT Extraction
 
@@ -163,52 +166,64 @@ For each chapter:
 **Writing direction hints**:
 ```
 Your Introduction could start like this:
-Open with [specific phenomenon/data] -> lead to [the big question in the research field]
--> Point out the [gap] in existing research -> introduce your [RQ]
+Open with [specific financial phenomenon/data] -> lead to [the market friction this reveals]
+-> Point out [why existing solutions (both technical and institutional) fail] -> introduce your [approach: privacy technology + financial mechanism]
 
-Reference structure: Hook (1-2 paragraphs) -> Background (2-3 paragraphs) -> Gap (1 paragraph) -> Purpose & RQ (1 paragraph)
+Reference structure: Stylized Fact / Puzzle (1-2 paragraphs) -> Why Existing Solutions Fail (1-2 paragraphs) -> Our Approach and Contribution (1 paragraph) -> RQ and Paper Structure (1 paragraph)
+
+Privacy×Finance note: The first sentence names the financial problem, not the cryptographic primitive. The reader should understand the economic stakes before encountering any technical notation.
 ```
 
-### Literature Review — 5 Mandatory Questions
+### Literature Review — 5+1 Mandatory Questions
 
 1. **Theoretical framework**: Which theories/concepts do you plan to review?
 2. **Literature relationships**: What is the relationship between these works? (Complementary? Contradictory? Evolutionary?)
 3. **Literature gap**: What is the biggest gap in the existing literature?
 4. **Positioning**: Where does your research sit on the literature map?
 5. **Critical perspective**: Is there an important viewpoint you disagree with?
+6. **Cross-domain integration (v3.10 — mandatory for privacy×finance)**: "You have TWO literature streams (privacy-computing + finance/economics). What specifically is the unresolved intersection between them? That intersection IS your gap. If the two streams have never cited each other, the gap is integration, not incompleteness. Why hasn't this intersection been addressed before — is it because (a) the technical tools weren't ready, (b) the financial problem wasn't recognized, or (c) no one with both skill sets has attempted it?"
 
 **Follow-up probing modes**:
 - If the user's listed literature lacks logical connections -> "What common thread ties these three topics together? What story are you trying to tell?"
 - If the gap is not specific enough -> "If you searched for this topic and got zero results, what would the search terms be? That's your gap."
+- **Cross-domain probing (v3.10)**: If the user treats both streams as one undifferentiated literature mass → "Let me push back: your privacy-tech sources and your finance sources are answering different questions. The CS papers ask 'can we build this?', the finance papers ask 'should we build this?' Your literature review needs to hold both questions in tension, not merge them into 'related work.'"
 
 **Writing direction hints**:
 ```
 Your Literature Review could be organized like this:
-Theme 1 ({name}) -> Theme 2 ({name}) -> Theme 3 ({name}) -> Critical Synthesis
+Stream 1: Privacy-Computing ({specific primitives}) -> Stream 2: Financial-Economics ({specific mechanisms})
+-> Critical Integration Gap (where they should intersect but don't)
 
-Internal structure for each theme:
-Definition/concept -> Important research findings -> Controversies/gaps -> Connection to your research
+Internal structure for each stream:
+Key technical/economic concepts -> Important findings and consensus -> Controversies and open problems -> What this stream CAN'T answer alone (this is the handoff to the other stream)
+
+Privacy×Finance note: Do not silo the two streams into disconnected sections. The "integration gap" is not an afterthought — it's the entire point of the literature review. Each stream's summary should end with what that stream CANNOT do alone, which the other stream's summary picks up. The "Critical Integration Gap" subsection then names the synthesis opportunity your paper seizes.
 ```
 
-### Methodology — 5 Mandatory Questions
+### Methodology — 5+2 Mandatory Questions
 
 1. **Method choice**: What method are you using to answer the RQ?
 2. **Method justification**: Why is this method more suitable than alternatives?
 3. **Data source**: Where does your data come from? Is it sufficient?
 4. **Quality assurance**: How do you ensure research quality (validity/reliability/trustworthiness)?
 5. **Method limitation**: What is the biggest limitation of this method? How do you handle it?
+6. **Threat model specification (v3.10 — mandatory for protocol papers)**: "What is your threat model? (a) Semi-honest, malicious, or covert adversary? (b) How many parties can the adversary corrupt? Honest majority (t < n/2) or dishonest majority (t < n)? (c) Static or adaptive corruption? (d) Standalone or UC security? — Protocol papers that cannot answer these four questions before drafting will produce threat-model sections that reviewers eviscerate."
+7. **Privacy-parameter grounding (v3.10 — mandatory for DP/FL papers)**: "What is your privacy budget (ε, δ)? Per-record or per-query? What does ε = 0.5 mean in business terms — can you explain it to a compliance officer? If you can't translate ε into a business-relevant privacy statement, your evaluation section will be technically correct but managerially irrelevant."
 
 **Follow-up probing modes**:
 - If the user's chosen method doesn't match the RQ -> "Your RQ asks about [X], but [method] is typically used to answer [Y] type questions. How do you see the connection?"
 - If quality assurance is too vague -> "Specifically, what steps did you take to ensure your results aren't coincidental?"
+- **Threat-model probing (v3.10)**: If the user cannot articulate their threat model after 2 rounds → escalate: "This is a blocking issue. Without a precise threat model, your protocol description will be unfalsifiable, and both CS and finance reviewers will reject on rigor grounds. Let's pause the chapter dialogue and resolve this first."
 
 **Writing direction hints**:
 ```
 Your Methodology could include these sections:
-Research design overview -> Participants/sample -> Data collection -> Analysis method -> Research quality
--> Research ethics (if applicable) -> Method limitations
+Research Design Overview -> Threat Model / Security Model -> Protocol/Model Construction -> Data/Evaluation Setup -> Quality Assurance -> Limitations
 
-Remember: every choice needs a "why" justification
+Privacy×Finance notes:
+- For protocol papers: the Threat Model is a first-class section, not a methodology footnote. Define adversary, trust assumptions, security notion, and what is explicitly NOT protected.
+- For econ-model papers: every parameter must have economic meaning. "Let α ∈ [0,1]" without saying what α represents in the financial context is a defect.
+- For DSR papers: the methodology must trace the artifact design to kernel theory and define evaluation criteria before presenting results.
 ```
 
 ### Results — 5 Mandatory Questions
@@ -232,17 +247,19 @@ The golden rule for Results: report only, do not interpret
 - Use text to "guide" the reader to the key points in the tables
 ```
 
-### Discussion — 5 Mandatory Questions
+### Discussion — 5+1 Mandatory Questions
 
 1. **Literature dialogue**: How do your results dialogue with existing literature?
 2. **Theoretical implications**: What are the theoretical implications of your findings?
 3. **Practical recommendations**: What practical/policy recommendations do you have?
 4. **Research limitations**: What are the research limitations? (be honest)
 5. **Future directions**: What future research directions do you suggest?
+6. **Cross-domain dialogue (v3.10 — mandatory for privacy×finance)**: "Your Discussion must address TWO audiences. How do your findings change (a) a cryptographer's understanding of what MPC/FHE/DP/ZKP can do in real financial settings, AND (b) a finance practitioner's understanding of the cost and value of privacy? If both audiences walk away with the same unidirectional takeaway, your Discussion isn't doing cross-domain work."
 
 **Follow-up probing modes**:
 - If the literature dialogue is too superficial -> "Are your results consistent with [specific author]'s findings? If not, why?"
 - If only one limitation is listed -> "Is that all? Typically you should discuss at least 2-3 limitations. What would readers most likely challenge?"
+- **Cross-domain probing (v3.10)**: If the user's implications are all technical → "Your Discussion currently reads like a CS paper's Discussion. What would a bank's CTO or a regulator's policy advisor learn from your results? If the answer is 'nothing beyond what the CS reviewer already knows,' we need to develop the managerial implications before proceeding."
 
 **Writing direction hints**:
 ```
@@ -313,6 +330,7 @@ After each chapter's dialogue concludes, extract a Chapter Summary in the follow
   3. {evidence 3}
 **Potential Risks**: {most likely point to be challenged}
 **Expected Word Count**: {word count}
+**Domain Compliance (v3.10)**: {whether the chapter's answers align with glossary entries and methodology recipe. For privacy×finance: does this chapter bridge both domains, or does it read as single-discipline?}
 **User Confirmed**: Yes / needs modification
 
 [INSIGHT: {chapter_name}_summary]
@@ -361,11 +379,11 @@ The Socratic dialogue for each chapter (and overall) converges when the user dem
 
 | # | Signal | Definition | How to Test | Example Indicator |
 |---|--------|-----------|-------------|-------------------|
-| C1 | **Thesis Clarity** | User can state the paper's core thesis in one clear sentence without hedging or vagueness | Ask: "State your thesis in one sentence." Compare across rounds — is it becoming sharper? | Round 1: "I want to study AI in education" → Round 3: "I argue that AI-powered formative assessment improves learning outcomes in STEM courses by 15-20% compared to traditional methods" |
-| C2 | **Chapter Coherence** | User can explain the logical transition from any chapter to the next | Ask: "Why does your [chapter N] lead to [chapter N+1]?" User should articulate cause-effect or logical necessity | "The literature review identifies a gap in adaptive assessment tools, which motivates my experimental methodology" |
-| C3 | **Evidence Mapping** | User can assign specific evidence (data, citations, findings) to each claim in the paper | Ask: "What evidence supports claim X?" User should name specific sources or data points, not vague references | "My regression analysis in Table 3 shows p < .001, which supports the claim that..." (not "my data shows it") |
-| C4 | **Limitation Honesty** | User proactively identifies weaknesses in their own argument without prompting | Observe: Does the user volunteer limitations, or do they only acknowledge them when challenged? | "One weakness is that my sample is limited to one university, so generalizability is constrained" |
-| C5 | **Self-Calibration** | User's chapter-level commitments become more accurate as dialogue progresses | Compare commitment accuracy: early chapters vs later chapters — improvement indicates growing self-awareness | Introduction: "The gap statement will be hardest" → Discussion: "Reviewers will challenge my generalizability" (later prediction more specific and accurate) |
+| C1 | **Thesis Clarity** | User can state the paper's core thesis in one clear sentence without hedging or vagueness | Ask: "State your thesis in one sentence." Compare across rounds — is it becoming sharper? | Round 1: "I want to apply MPC to banking" → Round 3: "I argue that a semi-honest MPC protocol in the preprocessing model can reduce cross-institutional AML false negatives by 18–34% without exposing customer transaction graphs, and that the protocol becomes incentive-compatible for consortium banks when the per-transaction MPC overhead cost is below the bank's estimated regulatory penalty for undetected laundering." |
+| C2 | **Chapter Coherence** | User can explain the logical transition from any chapter to the next | Ask: "Why does your [chapter N] lead to [chapter N+1]?" User should articulate cause-effect or logical necessity | "The threat model defines what the adversary can and cannot do; the protocol description must then show that the adversary, with those capabilities, gains no more than what the security proof bounds — if the threat model and protocol don't share the same adversary definition, the paper has a fatal structural flaw." |
+| C3 | **Evidence Mapping** | User can assign specific evidence (data, citations, findings) to each claim in the paper | Ask: "What evidence supports claim X?" User should name specific sources or data points, not vague references | "SAR backtesting (2014–2024, n=12 banks, 2.3M transactions) shows 18–34% FN reduction (Table 3, p < .01), and the communication-complexity proof (Theorem 2) shows O(n log n) rounds." |
+| C4 | **Limitation Honesty** | User proactively identifies weaknesses in their own argument without prompting | Observe: Does the user volunteer limitations, or do they only acknowledge them when challenged? | "The protocol only handles the semi-honest case; a malicious bank could deviate from the protocol and learn partial information. Also, the SAR backtesting assumes historical patterns persist — if laundering tactics evolve in response to the protocol, the 18–34% estimate degrades." |
+| C5 | **Self-Calibration** | User's chapter-level commitments become more accurate as dialogue progresses | Compare commitment accuracy: early chapters vs later chapters — improvement indicates growing self-awareness | Introduction: "The hardest part will be the gap statement" → Discussion: "A finance reviewer will say the implications aren't specific enough" (later prediction targets the actual cross-domain weakness rather than a generic writing challenge) |
 
 ### Convergence Assessment
 
@@ -393,6 +411,8 @@ Overall convergence (across all chapters):
 | All chapters converged + Stress Test passed | Fully converged; announce readiness; offer to proceed to `full` mode |
 | > 8 rounds on a single chapter without convergence | Offer to switch: (a) skip to next chapter, (b) switch to `outline-only` mode, (c) take a break and return later |
 | > 30 total rounds without completing all chapters | Suggest switching to `outline-only` mode with current progress saved |
+| **User cannot articulate their threat model after 3 probing rounds (v3.10)** | **Hard stop**: "This is a blocking issue. A paper without a precise threat model cannot produce a falsifiable protocol description. I recommend pausing the paper-planning dialogue and resolving this foundational question before continuing. Once you can state: (a) adversary type [semi-honest/malicious/covert], (b) corruption bound [t < n/2 or t < n], (c) corruption type [static/adaptive], and (d) security model [standalone/UC], we'll resume the chapter dialogue." |
+| **User cannot translate ε into a business-relevant privacy statement after 2 probing rounds (v3.10)** | **Escalate**: "This is unlikely to block paper completion, but it will produce a Discussion section that CS reviewers praise and finance reviewers ignore. Flagging this as a known downstream risk." |
 
 ---
 
@@ -407,36 +427,36 @@ Use these question types strategically. Each chapter dialogue should include at 
 
 | Template | When to Use | Example |
 |----------|------------|---------|
-| "When you say X, do you mean A or B?" | User uses ambiguous terms | "When you say 'quality assurance,' do you mean internal QA processes or external accreditation?" |
-| "Can you give a specific example of X?" | User makes abstract claims | "Can you give a specific example of how AI changed assessment practices at a university?" |
-| "How would you define X for a reader unfamiliar with the field?" | User uses jargon without definition | "How would you define 'learning analytics' for a reader outside of educational technology?" |
+| "When you say X, do you mean A or B?" | User uses ambiguous terms | "When you say 'privacy-preserving,' do you mean differential privacy, secure multi-party computation, or a general data anonymization technique? Each means something different to different reviewers." |
+| "Can you give a specific example of X?" | User makes abstract claims | "Can you give a specific example of how your protocol would handle a real interbank transaction — say, a cross-border wire transfer between Bank A in Germany and Bank B in Singapore?" |
+| "How would you define X for a reader unfamiliar with the field?" | User uses jargon without definition | "How would you define 'semi-honest security' for a finance professor who has never read a cryptography paper?" |
 
 #### 2. Probing Questions
 **Purpose**: Push the user to think deeper about their reasoning and evidence.
 
 | Template | When to Use | Example |
 |----------|------------|---------|
-| "What evidence supports that claim?" | User makes unsupported assertions | "You say AI improves learning outcomes — what evidence supports that? From your data or from the literature?" |
-| "How do you know that X causes Y, rather than being correlated?" | User implies causation | "How do you know that the AI tool caused the improvement, rather than it being correlated with student motivation?" |
-| "What would change your mind about this?" | User seems overly committed to a position | "What kind of evidence would make you reconsider your thesis?" |
+| "What evidence supports that claim?" | User makes unsupported assertions | "You say MPC reduces AML false negatives. What evidence supports that — your own SAR backtesting, prior literature, or theoretical argument? Each has a different evidentiary weight at Management Science." |
+| "How do you know that X causes Y, rather than being correlated?" | User implies causation | "How do you know the protocol caused the false-negative reduction, rather than it being correlated with your choice of SAR reporting thresholds?" |
+| "What would change your mind about this?" | User seems overly committed to a position | "What empirical result would make you conclude that your protocol is NOT suitable for production AML screening?" |
 
 #### 3. Structuring Questions
 **Purpose**: Help the user organize their thinking and see connections between parts.
 
 | Template | When to Use | Example |
 |----------|------------|---------|
-| "How does this connect to what you said about X?" | User introduces a point without linking it | "How does this finding about student satisfaction connect to what you said about retention rates?" |
-| "If you had to summarize this chapter in one sentence, what would it be?" | User has explored many ideas but lacks focus | "If you had to summarize your Results chapter in one sentence, what would it be?" |
-| "What is the one thing the reader must understand before moving to the next section?" | User is ready to transition between chapters | "What must the reader understand from your Literature Review before they can make sense of your Methodology?" |
+| "How does this connect to what you said about X?" | User introduces a point without linking it | "How does your communication-complexity result connect to what you said about consortium governance incentives? If the protocol scales to n=30 banks, how does that change the membership calculus?" |
+| "If you had to summarize this chapter in one sentence, what would it be?" | User has explored many ideas but lacks focus | "If you had to summarize your protocol's contribution in one sentence that a Management Science editor would forward to reviewers, what would it be?" |
+| "What is the one thing the reader must understand before moving to the next section?" | User is ready to transition between chapters | "What must the reader understand about your threat model before they can evaluate whether your protocol description actually defends against the adversary you defined?" |
 
 #### 4. Challenging Questions
 **Purpose**: Stress-test the user's argument and uncover weaknesses before reviewers do.
 
 | Template | When to Use | Example |
 |----------|------------|---------|
-| "A skeptical reviewer would say X — how do you respond?" | User needs to prepare for critique | "A skeptical reviewer would say your sample of 50 students is too small. How do you respond?" |
-| "If someone repeated your study and got the opposite result, what would that mean?" | User needs to consider falsifiability | "If someone repeated your study with a different AI tool and found no improvement, what would that mean for your thesis?" |
-| "What is the strongest argument against your position?" | User needs to engage with counter-arguments | "What is the strongest argument someone could make against using AI in assessment?" |
+| "A skeptical reviewer would say X — how do you respond?" | User needs to prepare for critique | "A CS reviewer would say: 'Semi-honest security is too weak for financial applications — a malicious bank could deliberately deviate to extract competitor data.' How do you respond?" |
+| "If someone repeated your study and got the opposite result, what would that mean?" | User needs to consider falsifiability | "If another research group implemented your protocol on a different set of 12 banks and found no FN reduction, what would that mean for your thesis?" |
+| "What is the strongest argument against your position?" | User needs to engage with counter-arguments | "A finance reviewer would say: 'Banks won't join a consortium that requires them to run cryptographic protocols they don't understand. Adoption barriers, not technical feasibility, are the real constraint.' What is your counter-argument?" |
 
 ### Question Type Distribution by Chapter
 

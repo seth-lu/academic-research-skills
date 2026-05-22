@@ -65,14 +65,30 @@ Formulate a clear, specific, and arguable thesis:
 
 **Template**: "This paper argues that [claim] because [reason 1], [reason 2], and [reason 3], based on [evidence type]."
 
+**So-What Dimension (v3.10)**: The central thesis must answer three questions, not two:
+1. **What is the problem?** — the financial friction or market failure being addressed
+2. **What is our solution?** — the privacy technology + financial mechanism pairing
+3. **Why does it matter to this journal's audience?** — the managerial, economic, or regulatory implication
+
+A thesis that answers only (1) and (2) is a CS conference abstract. A UTD24 thesis must carry the third dimension. Example:
+
+| Weak (CS-style) | Strong (UTD24-style) |
+|-----------------|---------------------|
+| "We propose an MPC protocol for cross-bank AML screening that achieves linear communication complexity." | "We design a secure multi-party computation protocol that enables cross-bank anti-money laundering screening without exposing customer transaction graphs, showing that privacy-preserving information sharing can reduce false-negative rates by 18–34% while maintaining each bank's competitive data advantage." |
+
+The difference: the strong version names (a) the financial friction (information silos causing AML blind spots), (b) the mechanism (MPC enabling joint screening), and (c) the managerial implication (false-negative reduction + competitive advantage preserved — precise magnitude, not vague direction).
+
 **Criteria**:
 - Specific (not too broad or narrow)
 - Arguable (reasonable people could disagree)
 - Supportable (evidence exists or can be gathered)
 - Relevant (addresses the research question)
+- **UTD24-relevant** — the thesis must imply a managerial, economic, or regulatory takeaway beyond the technical contribution
 
 ### Step 2: Sub-Argument Decomposition
-Break the central thesis into 3-5 sub-arguments:
+Break the central thesis into sub-arguments (2–5, not rigidly 3):
+
+**Discipline note**: The `writing_quality_check.md` Section D warns against the Rule of Three Compulsion — mechanical three-part lists are an AI tell. Allow 2, 4, or 5 sub-arguments when the thesis organically demands it. Three is common but not mandatory. What matters is that each sub-argument carries distinct evidentiary weight, not that the count satisfies a template.
 
 ```markdown
 Central Thesis: [main claim]
@@ -116,8 +132,9 @@ For each sub-argument, identify the strongest counter-argument:
 4. **Acknowledge as limitation** — honestly discuss scope boundaries
 
 ### Step 5: Logical Flow Diagram
-Map the argument's logical progression:
+Map the argument's logical progression. Select the variant that matches the paper type:
 
+**Standard IMRaD flow**:
 ```
 Introduction: Problem -> Gap -> Purpose -> RQ
      ↓
@@ -131,6 +148,26 @@ Discussion: Interpretation -> Comparison with literature -> Counter-arguments ad
      ↓
 Conclusion: Thesis restated -> Implications -> Future research
 ```
+
+**Privacy Computing × Finance (UTD24) flow**:
+```
+Introduction: Financial Friction -> Why Existing Solutions Fail -> Our Approach (Privacy Tech + Financial Mechanism) -> RQ + Contribution
+     ↓
+Related Work (embedded in Introduction or compact standalone):
+  Privacy-Technology Stream -> Financial-Economics Stream -> Gap = no synthesis
+     ↓
+Threat Model / Security Model: Adversary definition -> Trust assumptions -> Security guarantees claimed
+     ↓
+Protocol / System Design: Cryptographic construction -> Financial workflow integration -> Why naïve application fails
+     ↓
+Empirical Evaluation: Protocol performance -> Financial-metric impact -> Sensitivity to market parameters
+     ↓
+Discussion: Mechanism interpretation -> Comparison with baselines (CS + Finance) -> Boundary conditions -> Counter-arguments
+     ↓
+Conclusion: Thesis restated -> Managerial/Regulatory Implications -> Limitations -> Future cross-domain work
+```
+
+Key differences: (a) literature is often embedded in the Introduction at UTD24 venues (MISQ, ISR), not a standalone chapter; (b) Threat Model is a first-class section, not a methodology subsection; (c) the Discussion must address both CS baselines and financial-economics literature; (d) Implications must speak to a managerial/regulatory audience, not just future protocol designers.
 
 ### Step 6: L2 Compliance Validation (mandatory when L2 exists)
 
@@ -163,6 +200,8 @@ L2 Compliance: [N/N] A-* rules satisfied across all sections
 | Engineering | Problem -> Solution -> Validation |
 | Education | Context -> Intervention -> Outcome -> Implication |
 | Policy | Problem -> Evidence -> Options -> Recommendation |
+| **Privacy Computing × Finance (UTD24)** | **Financial Friction → Privacy-Technology Mechanism → Protocol/Design → Empirical Evaluation → Economic Mechanism → Managerial/Regulatory Implication** |
+| **Information Systems (UTD24 Design Science)** | **Puzzle/Tension → Theory/Mechanism → Artifact/Design → Empirical Validation → Boundary Conditions → Contribution to Theory** |
 
 ## Output Format
 
@@ -315,7 +354,8 @@ The Chapter Plan produced at the end of Plan mode includes for each chapter:
 ## Quality Criteria
 
 - Central thesis is clear, specific, and arguable
-- At least 3 sub-arguments support the thesis
+- Central thesis carries a "so what" dimension (managerial/economic/regulatory implication beyond technical contribution)
+- Sub-arguments support the thesis (2–5; no rigid three-argument requirement)
 - Every claim has at least one cited evidence source
 - Every sub-argument has an identified counter-argument
 - Every counter-argument has a rebuttal strategy

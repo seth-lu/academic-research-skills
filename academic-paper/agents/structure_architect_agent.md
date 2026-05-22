@@ -56,12 +56,13 @@ If downstream work is needed, return control to the caller with a recommendation
 3. **Proportional emphasis** — word count allocation reflects the importance of each section
 4. **Evidence-driven** — every section must have assigned evidence from the literature report
 5. **Flexibility** — adapt standard patterns to the paper's specific needs
+6. **Narrative arc test (v3.10)** — a reader must be able to trace the paper's central thesis by reading only section headings. Apply the test: assemble all Level-1 and Level-2 headings into a flat list; a colleague skimming that list should understand (a) what problem is being solved, (b) how it is solved, and (c) why the solution matters. If the heading list reads as a generic template rather than a specific argument, the structure is not serving the thesis.
 
 ## Structure Selection
 
 Reference: `references/paper_structure_patterns.md`
 
-Based on the Paper Configuration Record, select from 6 patterns:
+Based on the Paper Configuration Record, select from 7 patterns:
 
 ### Pattern 1: IMRaD (Introduction-Method-Results-Discussion)
 Best for: Empirical research with original data
@@ -80,6 +81,26 @@ Best for: Evidence-based policy recommendations
 
 ### Pattern 6: Conference Paper
 Best for: Concise presentation of research in progress
+
+### Pattern 7: Systems + Economics (Privacy Computing × Finance — v3.10)
+Best for: Method-driven cross-domain research where a privacy-technology construction (MPC/FHE/ZKP/DP/FL/TEE) solves a financial-market friction. The paper must satisfy TWO audiences: a technical audience that judges the cryptographic construction and a managerial audience that judges the economic significance.
+
+**Required sections**:
+| Section | Purpose | Typical % |
+|---------|---------|-----------|
+| Introduction | Financial friction → why existing solutions fail → our privacy-tech mechanism → contribution | 12–15% |
+| Related Work (compact, may embed in Introduction) | Privacy-tech stream + Financial-economics stream → synthesis gap | 8–12% |
+| Threat Model / Security Model | Adversary definition, trust assumptions, security guarantees claimed | 5–8% |
+| Protocol / System Design | Cryptographic construction + financial-workflow integration | 18–22% |
+| Empirical Evaluation | Protocol performance + financial-metric impact + sensitivity analysis | 18–22% |
+| Discussion | Mechanism interpretation, CS+Finance baseline comparison, boundary conditions | 15–18% |
+| Conclusion | Managerial/regulatory implications, limitations, future cross-domain work | 5–8% |
+
+**Anti-patterns**:
+- Treating the financial scenario as an "application example" in a CS paper — the financial problem must drive the structure
+- No Threat Model section — fatal at crypto-literate venues (Management Science, INFORMS JoC)
+- Separating "Privacy Analysis" and "Financial Evaluation" into disconnected sections — the structure must show their interaction
+- UTD24-style: standalone "Literature Review" chapter → embed it in the Introduction or keep it compact; IS-track venues expect the literature to be positioned within the argument, not enumerated before it
 
 ## Outline Construction Process
 
@@ -105,6 +126,8 @@ Choose from the 6 patterns based on paper type.
 For each section, provide:
 - **Purpose**: What this section accomplishes
 - **Content summary**: 2-3 sentences describing what goes here
+- **Contribution chain role (v3.10)**: Which part of the paper's contribution logic this section serves — choose from: `gap_identification`, `mechanism_demonstration`, `validation`, `generalization`, `boundary_condition`, `implication`
+- **Reader's takeaway (v3.10)**: One sentence — what the reader must understand after reading this section to follow the rest of the paper
 - **Key sources**: Which literature sources support this section
 - **Key arguments**: Which claims are made here
 
@@ -179,15 +202,20 @@ L1 Compliance: [N/N] S-* rules satisfied
 ```markdown
 ## Paper Outline
 
-### Structure Pattern: [IMRaD / Lit Review / Theoretical / Case Study / Policy Brief / Conference]
+### Structure Pattern: [IMRaD / Lit Review / Theoretical / Case Study / Policy Brief / Conference / Systems+Economics]
 
 ### Overview
 [1-paragraph summary of the paper's flow]
+
+### Narrative Arc Test (v3.10)
+[Assemble all Level-1 and Level-2 headings into a flat list. Assessment: PASS (tells a specific story) / FAIL (reads as a generic template). If FAIL, restructure.]
 
 ### Detailed Outline
 
 #### 1. [Section Title] (~[N] words)
 **Purpose**: [what this section does]
+**Contribution chain role**: [gap_identification / mechanism_demonstration / validation / generalization / boundary_condition / implication]
+**Reader's takeaway**: [one sentence — what the reader must understand after this section]
 **Content**:
 - 1.1 [Sub-section]
   - [Key point A]
@@ -221,6 +249,8 @@ Receive Paper Configuration Record ->
 ├── paper_type = "Case Study" -> Pattern 4
 ├── paper_type = "Policy Brief" -> Pattern 5
 ├── paper_type = "Conference" -> Pattern 6
+├── paper_type = "Systems+Economics" -> Pattern 7
+├── discipline = "Privacy Computing × Finance" AND paper_type not specified -> Recommend Pattern 7 (Systems+Economics)
 └── paper_type not specified ->
     ├── User has original data/experiment?
     │   ├── Yes -> Recommend Pattern 1 (IMRaD)
@@ -235,6 +265,7 @@ Special cases:
 - If RQ spans multiple types -> suggest hybrid structure (e.g., IMRaD + Case Study), explain to user
 - If user already has partial drafts -> prioritize adapting to existing draft structure
 - If coming from Plan mode (socratic_mentor_agent) -> use Chapter Summary to reverse-engineer best structure
+- Privacy Computing × Finance with UTD24 target AND paper_type not explicitly set -> default to Pattern 7; confirm with user
 ```
 
 ### Word Count Allocation Algorithm
@@ -266,19 +297,21 @@ Step 5: Output
 
 #### Word Count Allocation Templates for All 6 Structures
 
-| Section | IMRaD | Lit Review | Theoretical | Case Study | Policy Brief | Conference |
-|------|-------|-----------|-------------|-----------|-------------|-----------|
-| Abstract | 250 fixed | 250 fixed | 250 fixed | 250 fixed | — | 150 fixed |
-| Introduction | 15% | 10% | 12% | 12% | 10% | 15% |
-| Literature / Background | 25% | Distributed to themes | 20% | 15% | 15% | 20% |
-| Framework / Method | 15% | — | 30% | 10% | — | 15% |
-| Analysis / Results | 20% | — | 25% | 30% | 30% | 25% |
-| Discussion | 20% | — | — | 20% | — | 20% |
-| Thematic Sections | — | 60% (equally divided) | — | — | — | — |
-| Synthesis & Gaps | — | 15% | — | — | — | — |
-| Recommendations | — | — | — | — | 30% | — |
-| Conclusion | 5% | 10% | 8% | 8% | 10% | 5% |
-| Future Directions | — | 5% | 5% | 5% | 5% | — |
+| Section | IMRaD | Lit Review | Theoretical | Case Study | Policy Brief | Conference | Systems+Economics |
+|------|-------|-----------|-------------|-----------|-------------|-----------|-----------------|
+| Abstract | 250 fixed | 250 fixed | 250 fixed | 250 fixed | — | 150 fixed | 250 fixed |
+| Introduction | 15% | 10% | 12% | 12% | 10% | 15% | 12–15% |
+| Literature / Background | 25% | Distributed to themes | 20% | 15% | 15% | 20% | 8–12% |
+| Framework / Method | 15% | — | 30% | 10% | — | 15% | — |
+| Threat Model | — | — | — | — | — | — | 5–8% |
+| Protocol / System Design | — | — | — | — | — | — | 18–22% |
+| Analysis / Results | 20% | — | 25% | 30% | 30% | 25% | 18–22% |
+| Discussion | 20% | — | — | 20% | — | 20% | 15–18% |
+| Thematic Sections | — | 60% (equally divided) | — | — | — | — | — |
+| Synthesis & Gaps | — | 15% | — | — | — | — | — |
+| Recommendations | — | — | — | — | 30% | — | — |
+| Conclusion | 5% | 10% | 8% | 8% | 10% | 5% | 5–8% |
+| Future Directions | — | 5% | 5% | 5% | 5% | — | — |
 
 ### Outline Depth Rules
 
@@ -331,8 +364,11 @@ Handoff format requirements:
 
 | Check Item | Pass Criteria | Failure Handling |
 |--------|---------|-----------|
-| Structure pattern | Uses one of the 6 recognized patterns (or reasonable hybrid) | Return to re-select with justification |
+| Structure pattern | Uses one of the 7 recognized patterns (or reasonable hybrid) | Return to re-select with justification |
 | Section purpose | 100% of sections have a clear Purpose statement | Write missing Purpose statements |
+| Contribution chain | 100% of sections have a Contribution chain role assignment | Assign roles |
+| Reader's takeaway | 100% of sections have a Reader's takeaway | Write missing takeaways |
+| Narrative arc test | PASS — a colleague can trace the thesis from headings alone | Restructure headings |
 | Word count sum | Deviation <= +/-5% from target word count | Reallocate word counts |
 | Evidence distribution | Every source from Phase 1 is assigned to at least one section | Identify unassigned sources, assign or remove |
 | Transition logic | Every adjacent section pair has Transition Logic | Write missing transitions |
@@ -384,7 +420,8 @@ Quality gate not passed ->
 | Theoretical | "Framework" section proportion increased to 30%; must include theoretical lineage + concept definitions + proposition derivation |
 | Case study | Add "Case Context" section (institutional background + data sources); Analysis uses multi-dimensional approach |
 | Policy brief | Replace Abstract with Executive Summary; add Recommendations section (25-30% of total) |
-| Interdisciplinary paper | Clearly label literature groups by discipline in Literature Review |
+| Interdisciplinary paper | Clearly label literature groups by discipline in Literature Review. For privacy×finance: use Pattern 7 (Systems+Economics) |
+| Privacy Computing × Finance | Default to Pattern 7. Must include Threat Model section. Literature review compact or embedded in Introduction per UTD24 conventions. Financial scenario drives structure; privacy tech is the mechanism, not the topic. |
 
 ## Collaboration Rules with Other Agents
 

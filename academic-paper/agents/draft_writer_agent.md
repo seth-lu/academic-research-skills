@@ -46,6 +46,10 @@ Before writing, confirm you have:
 - [ ] Citation format reference (from `references/apa7_extended_guide.md` or `references/citation_format_switcher.md`)
 - [ ] Style Profile — check `style_profile` field in Paper Configuration Record. If `null`, skip all style-related steps below. Only if non-null: read `shared/style_calibration_protocol.md` and apply as soft guide
 - [ ] Writing Quality Check reference (`references/writing_quality_check.md`)
+- [ ] **Privacy×Finance domain resources (v3.10)** — when Paper Configuration Record `field` ∈ {Privacy Computing × Finance, FinTech, Regulatory Technology} OR `target_journal` ∈ UTD24 IS/MS-track:
+  - [ ] `shared/references/privacy_finance_glossary.md` — canonical terminology; every privacy/security term in the draft MUST resolve to a glossary row
+  - [ ] `shared/references/privacy_finance_methodology_presets.md` — identify the active Recipe (DSR-MISQ / Crypto-Protocol / Econ-IS Analytical); the Recipe determines mandatory sections, word allocation, and prose conventions
+  - [ ] `academic-paper/references/paper_structure_patterns.md` § Patterns 7-9 — DSR-MISQ, Algorithmic-Efficiency, or Econ-Model structure constraints
 - [ ] Anti-Leakage Protocol — check if Knowledge Isolation should be activated (from `references/anti_leakage_protocol.md`). Activate if user provided RQ Brief + Synthesis Report + Annotated Bibliography AND mode is `full` or `revision`. When activated, prepend the Knowledge Isolation Directive to your working context. When not activated (plan/socratic mode, or minimal materials), skip.
 - [ ] **Exemplar manifest** (v3.8.0) — check if `exemplar_manifest.md` exists. If yes → Step 1.5 L3 extraction → Step 2 Path A (L3-constrained). If no → Step 2 Path C (degraded). L1 and L2 are consumed upstream (Phase 2b and 3b) — do NOT load them in Phase 4.
 
@@ -194,13 +198,15 @@ After every section has been individually written and user-confirmed through the
 - In-text citations
 - Reference list placeholder (citation_compliance_agent will finalize)
 - **Full Writing Quality Check sweep** — run the complete checklist from `references/writing_quality_check.md` against the assembled draft:
-  - Flag and replace any AI high-frequency terms (25-term list)
-  - Check em dash count (≤3 total across the paper)
+  - Flag and replace any AI high-frequency terms (45+ term list)
+  - Check em dash count (≤2 total across the paper, recommend 0)
   - Check semicolon density (≤2 per 1000 words)
   - Remove all throat-clearing openers
   - Verify sentence length variation (burstiness) — flag 5+ consecutive same-length sentences
   - Vary paragraph length by function — short paragraphs mark emphasis, longer ones carry argument
-  - Check binary contrast usage (≤2 per paper)
+  - Check binary contrast usage (≤2 per paper) and management-science prose tells
+  - For 简体中文 drafts: apply Section F (Chinese-specific AI-pattern detection, de-nested modifier chains, passive-voice reduction, Word-ready formatting)
+  - **Privacy×Finance glossary cross-check**: verify every privacy-computing and finance term resolves to `shared/references/privacy_finance_glossary.md` canonical forms
   - Fix all violations before handoff to citation_compliance_agent
 
 ## Writing Style Guidelines
@@ -224,6 +230,8 @@ Reference: `references/academic_writing_style.md`
 | Engineering | Problem-solution oriented, specification-precise |
 | Education | Practice-oriented, stakeholder-aware, impact-focused |
 | Medicine | Evidence hierarchy-conscious, clinical precision |
+| Management Science / Finance / IS (UTD24) | Argument-driven with formal-model or empirical precision; privacy-technology serves the financial mechanism, not the reverse; contribution is measured against the literature gap, not against baseline performance alone; managerial/economic implication is a first-class section, not an afterthought |
+| Privacy Computing × Finance (cross-disciplinary) | Privacy-technology terms MUST resolve to `shared/references/privacy_finance_glossary.md` canonical forms before output; threat-model statement is mandatory in every section that makes a privacy claim; financial scenario is co-equal with the cryptographic construction |
 
 ### Paragraph Structure
 Each paragraph should follow:
@@ -245,6 +253,166 @@ Each paragraph should follow:
 
 **Direct quote (use sparingly)**:
 > As Smith (2024) noted, "the reduction in variance was statistically significant across all institutional types" (p. 45).
+
+### LaTeX Output Hard Constraints
+
+When the target output is LaTeX (UTD24 journals: Management Science, MISQ, INFORMS JoC all accept LaTeX submissions), the following rules are **mandatory** before emitting any `.tex` content. These are production-level constraints adapted from top-CS-conference writing norms, recalibrated for management-science / finance readership.
+
+#### L1 — Special-Character Escaping (IRON RULE)
+
+Every special character that carries TeX meaning MUST be escaped. A single unescaped `%`, `_`, `&`, or `#` breaks compilation.
+
+| Character | Escape Sequence | Common Offenders |
+|-----------|----------------|-----------------|
+| `%` | `\%` | "95%" → "95\%", "5% significance" → "5\% significance" |
+| `_` | `\_` | "model_v1" → "model\_v1", variable names in text |
+| `&` | `\&` | "R&D" → "R\&D", "A&G" → "A\&G" |
+| `$` | `\$` | Currency amounts in finance prose: "$10M" → "\$10M" |
+| `#` | `\#` | Reference numbers outside LaTeX's own numbering |
+| `{` / `}` | `\{` / `\}` | Literal braces in prose (rare) |
+| `~` | `\textasciitilde{}` | "~100ms" → "\textasciitilde{}100ms" |
+
+**Currency note**: Finance papers have frequent dollar amounts. Use `\$` for inline (e.g., "\$10 million") or wrap in `\text{}` when inside math mode.
+
+#### L2 — No Bold, Italic, or Quotation-Mark Emphasis in Body Text
+
+- **Do NOT add `\textbf{}`, `\emph{}`, `\textit{}` to body text** unless the emphasis was present in a source the author explicitly marked.
+- **Do NOT use quotation marks for emphasis** — academic prose conveys emphasis through sentence structure, not typography.
+- **Exception**: `\textbf{}` is acceptable in table headers and figure captions. `\emph{}` is acceptable for introducing a term on first use.
+- **Reason**: Overuse of formatting emphasis is an AI-generation tell. Management-science reviewers expect clean, unadorned LaTeX.
+
+#### L3 — No `\item` Lists; Mandatory Coherent Paragraphs
+
+- **NEVER** use `\begin{itemize}` or `\begin{enumerate}` in body text.
+- Every enumerated or bulleted point MUST be integrated into a coherent paragraph.
+- **Exception**: Algorithm pseudocode (`\begin{algorithmic}`) and formal notation listings are exempt. Tables are exempt.
+- **Exception (UTD24-specific)**: Numbered hypotheses (H1, H2, H3) may be presented as a numbered list IF the target journal's accepted papers do so. Check the methodology preset (`shared/references/privacy_finance_methodology_presets.md`) for the recipe's convention.
+
+#### L4 — Tense Discipline
+
+Management-science and finance papers follow a stricter tense convention than general academic prose:
+
+| Context | Tense | Example |
+|---------|-------|---------|
+| Describing the protocol / method / model (what the paper PROPOSES) | Simple present | "The protocol executes in three rounds." |
+| Describing experimental results (what the evaluation FOUND) | Simple present | "Figure 2 shows that our protocol reduces latency by 42\%." |
+| Discussing prior literature (what past work DID) | Simple present (dominant) or simple past | "Akerlof (1970) demonstrates..." or "Akerlof (1970) demonstrated..." |
+| Describing a specific historical event or past study action | Simple past | "We recruited 120 participants from three banks in Q3 2024." |
+| Stating assumptions or boundary conditions | Simple present | "The model assumes semi-honest adversaries." |
+
+**Iron rule**: Do NOT mix past and present tense for the same referent within the same section. If you describe a prior study's method in past tense, keep it past tense for that study.
+
+#### L5 — No Contractions
+
+- `it's` → `it is`
+- `don't` → `do not`
+- `can't` → `cannot`
+- `won't` → `will not`
+- `isn't` → `is not`
+- Zero exceptions. Formal academic register in UTD24 journals does not use contractions.
+
+#### L6 — Avoid Possessive Form for Methods and Models
+
+- ❌ `MPC's communication cost` → ✅ `the communication cost of MPC` or `MPC communication cost`
+- ❌ `the protocol's security guarantee` → ✅ `the security guarantee of the protocol`
+- **Why**: Noun-possessive chains (`METHOD's N`) read as casual and informal. UTD24 prose uses `of`-constructions or noun-modifier forms.
+- **Exception**: Possessives for human entities are acceptable (`the investor's decision`, `the regulator's constraint`).
+
+### UTD24 Finance / Management-Science Register Rules
+
+These rules apply when the Paper Configuration Record indicates a UTD24 target journal (Management Science, MIS Quarterly, ISR, INFORMS Journal on Computing).
+
+#### R1 — Privacy Technology Serves the Financial Mechanism
+
+The default narrative frame is: **financial problem → current limitation → privacy-technology solution → financial/managerial implication**. Do NOT default to: **new cryptographic protocol → here's a financial use case**.
+
+- ❌ "We propose a novel three-round MPC protocol for secure aggregation. As an application, we demonstrate cross-bank AML."
+- ✅ "Cross-bank anti-money laundering requires sharing transaction graphs without exposing customer identities. Current approaches rely on bilateral data-sharing agreements that exclude smaller banks. We design a three-round MPC protocol that enables privacy-preserving cross-bank graph analytics without a trusted third party."
+
+#### R2 — Managerial/Economic Implication Is a First-Class Section
+
+Every section from Introduction through Discussion should carry at least one sentence that connects the technical result to a **specific, named** financial stakeholder, mechanism, or regulation:
+
+| Instead of this (CS-typical) | Write this (UTD24-expected) |
+|------------------------------|---------------------------|
+| "Our protocol achieves O(n log n) communication complexity." | "The O(n log n) communication complexity means a 12-bank AML consortium can complete daily graph screening in under 90 seconds per bank, meeting the FATF 24-hour reporting window." |
+| "The ε=0.5 privacy budget provides strong DP guarantees." | "At ε=0.5, an attacker with full knowledge of N−1 records can infer the Nth record's loan status with at most 62% accuracy — below the 70% regulatory materiality threshold under GDPR Article 35." |
+| "FL converges in 50 rounds." | "FL convergence in 50 rounds corresponds to a weekly training cadence for a credit-scoring consortium, compatible with monthly model-update cycles at regional banks." |
+
+#### R3 — Quantify Direction AND Magnitude
+
+UTD24 reviewers expect magnitude claims. "Improves," "reduces," and "outperforms" without numerical anchors are flagged as unsupported assertions.
+
+- **Direction only (insufficient)**: "Our protocol reduces latency."
+- **Direction + magnitude (required)**: "Our protocol reduces end-to-end latency by 38–52\% relative to the state-of-the-art malicious-secure baseline, and by a factor of 3.4× relative to the non-private baseline."
+
+#### R4 — Threat-Model Statement Discipline
+
+Every privacy or security claim MUST pair with a threat-model statement. In privacy×finance writing, the threat model is not a boilerplate sentence — it is the bridge between the cryptographic construction and the financial scenario.
+
+For each privacy/security claim, state:
+1. **Adversary capability** (semi-honest / malicious / covert; standalone / composable)
+2. **Corruption threshold** (t-of-n; honest majority / dishonest majority)
+3. **What the adversary learns** (nothing / only the output / aggregate statistics / size of intersection)
+4. **What the adversary CAN learn even with the protocol in place** (leakage function, if any)
+
+**Glossary cross-check (IRON RULE)**: Every privacy-computing term in the threat-model statement MUST resolve to its canonical form in `shared/references/privacy_finance_glossary.md` §1. "Anonymity" IS NOT "differential privacy." "Secure aggregation" IS NOT "MPC" IS NOT "FHE." Conflating them is a factual error, not a style error.
+
+#### R5 — Citation Density and Source Quality
+
+UTD24 papers cite differently from CS conference papers:
+- **Every factual claim** in the Introduction, Literature Review, and Discussion carries a citation.
+- **Citations are drawn from**: (a) the user-provided `literature_corpus[]` when available; (b) Q1/Q2 finance/management journals; (c) top cryptography/security venues (CRYPTO, EUROCRYPT, CCS, S&P) for protocol primitives.
+- **Multiple citations** for widely-known facts: "Cross-border payment settlement involves multiple intermediaries with asymmetric information about counterparty risk (Bank for International Settlements, 2024; Norman, 2011)."
+- **Seminal citations** for theoretical anchors: Akerlof (1970) for adverse selection, Easley & O'Hara (1987) for informed trading, Fama (1970) for market efficiency.
+- **No arXiv-only references** for core financial claims — the published version must exist or be marked `[CITATION NEEDED]`.
+
+#### R6 — Register-Switching Protocol (v3.10)
+
+Privacy×finance papers face a dual-audience constraint unique among UTD24 submissions: a CS reviewer evaluates cryptographic rigor, a finance reviewer evaluates economic significance. Neither can be relegated to an appendix. The draft must **switch registers within a single paper** — formal definitions for the cryptographer, economic interpretation for the finance reader — without jarring tonal whiplash.
+
+**Per-section default register**:
+
+| Section | Dominant Register | Key Convention |
+|---------|------------------|----------------|
+| Introduction | **Finance-first** | Lead with the market friction; name the financial stakeholder; state the economic magnitude; introduce privacy technology as the resolution, not the subject |
+| Preliminaries / Threat Model | **CS-precise** | Formal definitions; closed-enum adversary types; corruption bounds; security parameter λ; no managerial commentary here — precision is the credibility signal |
+| Protocol / System Design | **CS-precise** | Pseudocode or formal description; round-by-round specification; complexity annotated per step. BUT: end the section with one sentence bridging to the financial scenario |
+| Security / Privacy Proof | **CS-precise** | Theorem → proof sketch → corollary. No economic interpretation inside the proof block. The proof's rigor IS the contribution |
+| Experimental Evaluation | **Hybrid (both registers)** | Hypothesis-driven; report (a) CS metrics (latency, communication, rounds) AND (b) financial-metric impact (false-negative rate, cost savings, regulatory compliance). Every CS metric must have a one-sentence financial translation |
+| Discussion | **Hybrid → Finance** | Start CS: what the results mean for the protocol family. End finance: what the results mean for the regulator / bank CIO / compliance officer |
+| Managerial Implications | **Finance-first** | Zero new technical content. Translate ε into business risk. Translate O(n log n) into operational feasibility. End on policy/regulatory recommendation |
+
+**Register-switching within a paragraph** (when needed):
+
+A paragraph that spans both registers MUST open with the dominant register and close with the bridging register. The switch happens at the "so what" pivot sentence:
+
+> "The protocol achieves semi-honest security against an adversary controlling up to t < n/2 parties, with simulation-based proofs in the preprocessing model [CS-precise claim]. **This means** that a consortium of 12 banks can jointly execute AML graph screening without any single bank learning another bank's transaction patterns or customer identities — the cryptographic guarantee maps directly to the regulatory constraint [finance translation]."
+
+**Anti-pattern**: A paragraph that starts CS-precise and stays CS-precise through the Discussion section. The CS reviewer is satisfied but the finance reviewer has checked out. Every section from Discussion onward must carry at least one bridge sentence.
+
+### Recipe-Aware Drafting (v3.10)
+
+When the Paper Configuration Record carries a `methodology_preset` (one of `DSR-MISQ`, `Crypto-Protocol`, `Econ-IS-Analytical`), the writing conventions differ fundamentally. The preset is set by `intake_agent` Step 3.5 and stored in the Configuration Record. Reference: `shared/references/privacy_finance_methodology_presets.md`.
+
+| Recipe | Dominant Prose Mode | Required Blocks | Forbidden Patterns |
+|--------|-------------------|-----------------|-------------------|
+| **DSR-MISQ** | Design-principle narrative | Design Requirements (DP1, DP2...) traceable to kernel theory; Evaluation across ≥2 distinct methods; Discussion mapping results back to kernel theory | Pseudocode listings; crypto-lineage survey in Related Work; "future work" as the closing sentence |
+| **Crypto-Protocol** | Formal definition → theorem → evaluation | Threat model as a named subsection; Protocol in pseudocode or round-by-round; Security proof (even if in appendix, the body states the theorem); Hypothesis-driven evaluation with baseline comparison | Skipping the threat model; vague privacy claims without formal definitions; benchmark tables without interpretation |
+| **Econ-IS-Analytical** | Model → equilibrium → comparative statics → welfare | Model setup (agents, preferences, information, timeline); Equilibrium concept stated; Benchmark equilibrium + privacy-tech equilibrium compared; Comparative statics with signed derivatives; Managerial implication grounded in the model's mechanism | Mixing cryptographic formalism with economic notation (keep them in separate sections); skipping the benchmark equilibrium; claiming welfare improvement without distributional analysis |
+
+**Recipe enforcement at drafting time**:
+- The Recipe dictates which sections are mandatory and their approximate word allocation (see `paper_structure_patterns.md` Patterns 7-9).
+- The Recipe dictates whether pseudocode blocks, theorem environments, or equilibrium-characterization tables are expected.
+- **Deviation from Recipe**: if a section cannot be written because materials are missing (e.g., no security proof exists for the protocol variant), do NOT fabricate. Flag as `[RECIPE GAP: <section> — <reason>]` in the draft and surface at the next checkpoint.
+
+### Paragraph Structure (Discipline-Aware)
+
+Paragraph structure flexes by section type:
+- **Argumentative sections** (Introduction, Discussion, Managerial Implications): topic → evidence → analysis → transition (TEEL)
+- **Procedural sections** (Protocol Description, Algorithm): step-by-step, may have short paragraphs; precision over TEEL
+- **Formal sections** (Security Proof, Model Derivation): theorem → proof sketch / lemma chain → implication; TEEL does NOT apply
+- **Empirical sections** (Evaluation, Results): finding statement → numerical evidence → comparison to baseline → interpretation
 
 ## Word Count Tracking
 
@@ -378,7 +546,7 @@ L — Link
     -> Use transition words/phrases
 ```
 
-**Paragraph length standard**: Each paragraph 120-200 words (EN) or 200-350 characters (zh-TW)
+**Paragraph length standard**: Each paragraph 120-200 words (EN) or 200-350 characters (简体中文)
 **Minimum per section**: At least 3 TEEL paragraphs
 **Exceptions**: The first paragraph of Introduction and the last paragraph of Conclusion need not strictly follow TEEL
 
@@ -392,8 +560,9 @@ L — Link
 | Education | Practice-oriented, stakeholder-aware | "Practitioners may...", "The implications for..." | Ignoring field context |
 | Medicine | Evidence hierarchy-conscious, clinically precise | "Level I evidence shows...", "Clinical significance..." | Confusing statistical significance with clinical significance |
 | Business/Management | Problem-solution oriented | "The ROI analysis indicates...", "Strategic implications..." | Purely academic discourse without practical recommendations |
+| Privacy Computing × Finance (UTD24, v3.10) | Dual-register: CS-precise for protocol/proof sections, finance-economic for framing/implications; narrative frame is financial problem → privacy-tech resolution → managerial implication | "Under the [threat model] assumption...", "This guarantee translates to [regulatory/business constraint]...", "The O(n log n) complexity means [operational feasibility]..." | Leading with the cryptographic novelty rather than the financial friction; security claims without threat-model anchoring; CS-technical prose in the Managerial Implications section; ending on "future work" rather than regulatory/managerial upshot |
 
-**Additional rules for Chinese academic register**:
+**Additional rules for Chinese academic register (简体中文, v3.10)**:
 - Use "this study" rather than "we"
 - Avoid colloquial expressions ("a lot" -> "a substantial amount", "not so good" -> "limited effectiveness")
 - Use precise numbers + trend words for data descriptions ("shows an upward trend", "reaches statistical significance")
@@ -511,6 +680,8 @@ Quality gate not passed ->
 | Some sections have empty assigned sources | Check if it is an original analysis section; if not -> use placeholder "[literature needed]" |
 | Citation format reference not specified | Default to APA 7th; mark in Draft Metadata |
 | Knowledge Isolation active but section topic not covered by materials | Flag as `[MATERIAL GAP]` in the draft; do NOT fill from LLM memory. Surface at next checkpoint. |
+| Privacy×finance glossary not loaded (v3.10) | Load `shared/references/privacy_finance_glossary.md` before drafting; every privacy/security term in the draft must be cross-checked. If glossary unavailable → draft with `[TERMINOLOGY UNVERIFIED]` markers on first use of each technical term |
+| Methodology preset missing (v3.10) | Default to Recipe inference from paper structure: if Design Requirements section exists → DSR-MISQ; if Threat Model + Protocol Description + Security Proof → Crypto-Protocol; if Model Setup + Equilibrium → Econ-IS-Analytical. Mark inferred Recipe in Draft Metadata |
 
 ### Poor Quality Output from Upstream Agents
 
@@ -528,6 +699,7 @@ Quality gate not passed ->
 | Case study | Results section uses descriptive narrative; include contextual description |
 | Policy brief | Register tilts toward decision-maker readability; reduce academic jargon; increase practical recommendations |
 | Chinese paper | Paragraph structure can be slightly flexible (Chinese academic convention allows longer paragraphs); citation integration uses Chinese format |
+| Privacy Computing × Finance (v3.10) | Follow Recipe-aware drafting conventions; maintain dual-register discipline per R6; every privacy claim must have a co-located threat-model statement (R4); every CS performance metric must carry a one-sentence financial translation (R2); end on managerial/regulatory implication, not technical future work |
 
 ## Collaboration Rules with Other Agents
 

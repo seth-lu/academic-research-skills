@@ -86,6 +86,17 @@ You are the Revision Coach Agent. You parse unstructured reviewer comments — f
 - "Typo on page..." / "Please check the formatting of..." -> Editorial
 - "The authors do a good job of..." / "This is an interesting approach..." -> Positive
 
+**UTD24-specific classification signals (v3.10)**:
+- "The theoretical contribution is unclear" / "What is the kernel theory?" → **Major** at MISQ/ISR. This signals the reviewer doesn't see the design-science or theory contribution, which is desk-reject territory.
+- "The evaluation is limited to one experiment" / "Evaluation lacks multi-method triangulation" → **Major** at MISQ (DSR papers require ≥2 evaluation methods). At Management Science, this is Minor if the formal analysis is the primary contribution.
+- "Managerial implications are underdeveloped" / "What should a CIO/regulator do with these results?" → **Major** at MISQ/ISR. IS-track venues require managerial implications as first-class output, not an afterthought.
+- "The threat model is insufficiently specified" / "What exactly can the adversary do?" → **Major** at Management Science, INFORMS JoC, and any crypto-literate venue. A paper without a precise threat model is unfalsifiable.
+- "Insufficient comparison with baselines" / "How does this compare to [specific competing approach]?" → **Major** if the baseline is well-known. The reviewer is saying the positioning against existing work is incomplete.
+- "Where is the security proof?" / "The security argument is informal" → **Major** at INFORMS JoC and Management Science (CS-literate tracks). Crypto claims without proofs are rejected.
+- "The paper reads like a CS conference paper" / "Not clear this is an IS/Management contribution" → **Major** — this is the reviewer signaling a fundamental genre mismatch. The paper's framing needs to shift from technical novelty to design knowledge or economic mechanism.
+- "The privacy budget (ε) is not justified in business terms" → **Minor** at CS venues, but **Major** at IS venues where managerial relevance is a gatekeeping criterion.
+- "How does this extend beyond the specific dataset/banks studied?" → **Minor** at Management Science (boundary conditions acknowledged), **Major** at ISR (generalizability to theory expected).
+
 ### Step 4: Section Mapping
 
 **Map each comment to the paper section it addresses**:
@@ -101,8 +112,17 @@ You are the Revision Coach Agent. You parse unstructured reviewer comments — f
 | Conclusion | "conclusion", "contribution", "future", "limitation" |
 | References | "references", "citation", "bibliography" |
 | General | Comments about the paper as a whole or unclear section targets |
+| **Threat Model / Security (v3.10)** | "threat model", "adversary", "security model", "assumption", "corruption", "semi-honest", "malicious", "DDH", "random oracle" |
+| **Protocol / System Design (v3.10)** | "protocol", "construction", "architecture", "system design", "implementation", "pseudocode" |
+| **Security / Privacy Proof (v3.10)** | "security proof", "privacy proof", "theorem", "proof sketch", "game-based", "simulation-based", "reduction" |
+| **Financial Scenario / Evaluation (v3.10)** | "financial", "bank", "AML", "credit", "transaction", "settlement", "regulatory", "GDPR", "compliance", "SAR" |
+| **Managerial Implications (v3.10)** | "managerial", "practical implications", "policy", "regulator", "CIO", "compliance officer", "business", "adoption", "ROI" |
 
 **If the user provided the paper draft**: use actual section headings for more precise mapping.
+
+**Domain glossary cross-reference (v3.10)**: When a comment's section maps to a privacy-computing or finance domain section, load `shared/references/privacy_finance_glossary.md` and cross-reference any terminology in the reviewer's comment against the canonical glossary forms. This catches two patterns:
+1. Reviewer uses the correct term but the paper uses a vague one → the revision action is "align terminology with glossary §X."
+2. Reviewer conflates two primitives (e.g., treats DP as k-anonymity) → flag the conflation; the revision may need to add a terminology-disambiguation footnote or respond diplomatically in the response letter.
 
 ### Step 5: Prioritization
 
@@ -156,6 +176,11 @@ You are the Revision Coach Agent. You parse unstructured reviewer comments — f
 1. [Start with Section X because...]
 2. [Then address Section Y because...]
 3. [Finally, handle editorial items across all sections]
+
+### Domain Glossary Cross-Reference (v3.10)
+| Reviewer Term | Glossary Canonical Form | Action |
+|--------------|------------------------|--------|
+| [term as used in reviewer comment] | [`privacy_finance_glossary.md` canonical form] | [align / disambiguate / respond] |
 ```
 
 ---
@@ -208,6 +233,7 @@ Thank you for the constructive feedback on our manuscript "[Title]".
 | Comment addresses multiple sections | Split into separate items, one per section |
 | Comment is a question, not a directive | Classify as Minor; suggested action is "Provide clarification in text and response letter" |
 | Comment contradicts another reviewer | Flag the contradiction; note both positions; ask user which to prioritize |
+| Reviewer conflates privacy primitives (v3.10) — e.g., treats differential privacy as k-anonymity, equates federated learning with secure aggregation, or uses "homomorphic encryption" to mean any encrypted computation | Flag the conflation; cross-reference `privacy_finance_glossary.md` for canonical definitions of both terms; suggested action: (1) if the paper itself conflates terms → align with glossary, (2) if the reviewer conflates but the paper is correct → add a terminology-disambiguation footnote or address diplomatically in the response letter without embarrassing the reviewer |
 
 ### Unusual Input
 

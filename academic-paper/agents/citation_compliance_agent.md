@@ -108,6 +108,35 @@ For each reference:
 - Flag paragraphs with 0 citations (unless methodology description or original analysis)
 - Flag over-citation (>5 citations in one sentence)
 
+**Citation syntax variety (v3.10)**:
+- Detect monotonous citation syntax: when 3+ consecutive paraphrase-citations follow the identical pattern `Author (Year) found that...` or `Author (Year) showed that...`, flag as "monotonous citation syntax"
+- Acceptable variety:
+  - Narrative: "Smith (2024) demonstrated that..."
+  - Parenthetical: "Prior work established cross-bank AML requires secure computation (Smith, 2024; Jones, 2023)"
+  - Synthesis: "The privacy-tech and finance literatures converge on one point: information sharing improves detection (Smith, 2024; Masciandaro, 2013)"
+  - Contrastive: "While Smith (2024) assumes a trusted third party, our threat model considers a semi-honest adversary controlling up to t < n/2 banks"
+  - Embedded evidence: "A linear-communication MPC protocol (Smith, 2024) provides the cryptographic backbone for our consortium design"
+- Varying citation form is not cosmetic — it signals intellectual engagement with the cited work rather than mechanical reporting
+- Auto-correction scope: flag only, do NOT rewrite. The author must choose which citation form is semantically appropriate for each claim
+
+**UTD24 Senior Scholars' Basket of 8 coverage check (v3.10)**:
+- The Senior Scholars' Basket of 8 journals are: MIS Quarterly, Information Systems Research, Journal of the AIS, Journal of MIS, European Journal of IS, Information Systems Journal, Journal of Information Technology, Journal of Strategic Information Systems
+- For MISQ/ISR submissions: calculate the percentage of journal-article references that come from the Basket of 8
+- Target: ≥ 25% of journal references from the Basket (signals disciplinary engagement with the IS core)
+- This is advisory only — do NOT block on low Basket coverage. Finance-track papers will legitimately cite more finance journals than IS journals
+- For Management Science (Finance track): apply the equivalent check against top-3 finance journals (Journal of Finance, Journal of Financial Economics, Review of Financial Studies)
+
+**Glossary cross-reference check for terminology drift (v3.10)**:
+- Cross-reference privacy-computing terms in citations against `shared/references/privacy_finance_glossary.md` canonical forms
+- Detection rule: when the draft describes a cited paper as using "privacy-preserving computation" but the paper's actual contribution (per annotated bibliography) is "secure multi-party computation," flag as terminology drift
+- This matters because UTD24 reviewers from different disciplines will read the same term differently: "privacy-preserving" means differential privacy to a CS reviewer but data anonymization to a finance reviewer
+- Flag only; do NOT auto-correct. The author must verify which term matches the cited paper's actual contribution
+- Common drift patterns:
+  - "Privacy-preserving computation" used generically for a paper that specifically contributes an MPC protocol → flag
+  - "Anonymized data" used for a paper that applies differential privacy → flag (k-anonymity ≠ DP)
+  - "Encrypted computation" used for a paper that uses functional encryption → flag only if the distinction is material to the claim
+  - "Federated learning" used for a paper that actually does distributed gradient descent without formal FL guarantees → flag
+
 ### 5. Plagiarism & Retraction Screening
 
 #### Self-Plagiarism Detection
@@ -175,6 +204,9 @@ When errors are found:
 | Missing DOIs | [N] |
 | Self-citation ratio | [N]% |
 | Sources from last 5 years | [N]% |
+| Monotonous citation syntax flags | [N] (v3.10) |
+| Basket of 8 coverage (IS journals) | [N]% (v3.10) |
+| Glossary terminology drift flags | [N] (v3.10) |
 
 ### Corrections Made
 | # | Location | Error | Correction |
@@ -234,6 +266,9 @@ Step 5: Additional Checks
   5.2 Source currency distribution
   5.3 Citation density per paragraph
   5.4 Correct use of "et al."
+  5.5 Citation syntax variety — detect monotonous "Author (Year) found that..." patterns (v3.10)
+  5.6 UTD24 Basket of 8 coverage ratio — for IS-track papers (v3.10)
+  5.7 Glossary cross-reference — detect terminology drift against privacy_finance_glossary.md (v3.10)
 
 Step 6: Output
   -> Corrected Draft (auto-correct deterministic errors directly)

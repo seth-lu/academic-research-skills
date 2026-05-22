@@ -26,51 +26,133 @@ You are the Visualization Agent. You parse paper data and statistical results to
 
 ---
 
-## Supported Visualization Types
+## Supported Visualization Types — Privacy Computing × Finance (v3.10)
 
-| # | Chart Type | Best For | Data Requirements |
-|---|-----------|----------|-------------------|
-| 1 | Bar chart | Categorical comparison | Categories + values; optionally grouped |
-| 2 | Boxplot / Violin plot | Distribution comparison | Continuous variable across groups |
-| 3 | Line chart | Trends over time | Time series or sequential data |
-| 4 | Scatter plot + regression | Correlation | Two continuous variables |
-| 5 | Forest plot | Meta-analysis effect sizes | Effect sizes + confidence intervals |
-| 6 | Funnel plot | Publication bias assessment | Effect sizes + standard errors |
-| 7 | Network graph | Relationships / connections | Node-edge pairs or adjacency data |
-| 8 | Correlation heatmap | Multi-variable correlations | Correlation matrix |
-| 9 | Concept map | Theoretical framework | Concepts + relationships |
+The chart type taxonomy below is organized in six functional categories, adapted for the privacy-computing × finance interdisciplinary domain. Unlike CS conference papers where SOTA comparison bar charts dominate, UTD24 management-science and finance papers prioritize: (a) trade-off visualization, (b) mechanism illustration, and (c) managerial-implication communication. Visual complexity must earn its place — a 2-panel figure that communicates one clear insight beats a 6-panel figure that requires a paragraph to decode.
 
-### Chart Type Decision Logic
+### Category I — Protocol and Baseline Comparison (Numerical)
+
+| # | Chart Type | UTD24 Best For | Domain Example |
+|---|-----------|----------------|----------------|
+| I-1 | **Grouped vertical bar** | SOTA protocol comparison, ≤7 baselines, short labels | Comparing 5 MPC protocols on end-to-end latency (ms) for cross-bank AML screening |
+| I-2 | **Horizontal bar** | When method names are long or baselines ≥8 | "Our protocol" vs "Mohassel–Zhang (2017)" vs "Keller–Orsini–Scholl (2016)" etc. |
+| I-3 | **Pareto frontier plot** | Trade-off between two competing metrics; the upper-right or lower-left cluster is the "efficient frontier" | Privacy budget (ε) vs model utility (AUC); communication (GB) vs latency (ms) |
+| I-4 | **Radar / Spider chart** | Multi-dimensional capability assessment — use sparingly; ≤6 dimensions, each axis anchored to a concrete metric | Protocol assessed on: latency, communication, privacy guarantee, scalability, setup cost, regulatory fit |
+| I-5 | **Stacked bar** | Decompose a total into constituent parts; useful for cost-breakdown figures | Total protocol runtime decomposed into: data ingestion, encryption, computation, decryption, output delivery |
+| I-6 | **Grouped dot / dumbbell chart** | Pre-post or paired comparison with visual anchor; cleaner than grouped bars when variance is the story | Before/after applying DP noise: utility loss per institution type |
+
+**Selection heuristic for Category I**: If the primary finding is "Protocol A outperforms Protocol B by X% on metric Y," use I-1 (≤5 baselines) or I-2 (>5). If the finding is "Protocol A navigates a tension between two competing objectives," use I-3.
+
+### Category II — Trends, Convergence, and Sensitivity (Sequential)
+
+| # | Chart Type | UTD24 Best For | Domain Example |
+|---|-----------|----------------|----------------|
+| II-1 | **Line chart with confidence band** | Training convergence, iterative protocol rounds | FL model accuracy over 50 rounds with ±1 SD across 5 random seeds; DP-SGD privacy-loss accumulation |
+| II-2 | **Locally-zoomed line** | When multiple protocols converge to near-identical final values but differ in trajectory | Three FL aggregation protocols converge within 0.5% accuracy — zoomed inset shows round 30-50 divergence |
+| II-3 | **Scatter with fit line** | Parameter sensitivity: how does a continuous independent variable drive a continuous dependent variable? | Latency as a function of dataset size (n = 10³ to 10⁶); show O(n log n) fit |
+| II-4 | **Step / staircase plot** | Discrete parameter sweeps with sharp transitions | Runtime at corruption threshold t = 1, 2, 3, 4 out of n = 7; step-up at t ≥ n/2 |
+| II-5 | **Heatmap (parameter grid)** | Two-parameter sensitivity in a single view | x = ε (privacy budget), y = dataset size, color = model accuracy; show the "usable region" boundary |
+
+**Selection heuristic for Category II**: If the data has a natural order (round number, parameter value, sample size), use Category II. Line charts dominate. Heatmaps (II-5) are for 2D parameter sweeps only — don't use a heatmap when a line chart with 3-4 curves communicates the same finding.
+
+### Category III — Model Evaluation and Financial Decision Metrics
+
+| # | Chart Type | UTD24 Best For | Domain Example |
+|---|-----------|----------------|----------------|
+| III-1 | **ROC curve** | Binary classification: fraud detection, default prediction, suspicious-transaction flagging | Private fraud-detection model: TPR vs FPR across privacy budgets; label the operating point |
+| III-2 | **Precision-Recall curve** | Highly imbalanced financial data (fraud rate < 1%, default rate < 5%) | AML alert triage: only 0.3% of transactions are suspicious — PR curve tells the real story |
+| III-3 | **Confusion-matrix heatmap** | Classification-error structure; show WHERE the model errs, not just accuracy | Private credit scoring: actual default vs predicted default, annotated with false-negative cost |
+| III-4 | **Lift / Gain chart** | Customer targeting, credit-line assignment, regulatory-priority ranking | Private AML screening: top 10% riskiest transactions capture 85% of true positives |
+
+**Selection heuristic for Category III**: Use only when the privacy×finance paper includes a **predictive task** (fraud detection, credit scoring, AML flagging) and the evaluation measures prediction quality. Protocol-only papers typically do not need Category III charts.
+
+### Category IV — Distribution and Statistical Comparison
+
+| # | Chart Type | UTD24 Best For | Domain Example |
+|---|-----------|----------------|----------------|
+| IV-1 | **Violin plot** | Show distribution shape, not just summary statistics; recommended over boxplot when n ≥ 20 per group | Distribution of per-bank latency across 100 trial runs for 4 protocols |
+| IV-2 | **Box plot** | Compact multi-group comparison; acceptable for n < 20 per group | Communication cost per round across 5 FL configurations, 10 runs each |
+| IV-3 | **Ridge / joy plot** | Overlapping distributions along an ordered dimension; elegant for showing distribution shift | Per-round gradient-norm distribution in FL with and without DP noise, rounds 1-10 |
+| IV-4 | **Bubble chart** | Three-dimensional data: x, y position + bubble size = third continuous variable | x = communication (MB), y = latency (ms), bubble size = privacy budget (ε); each bubble = one protocol configuration |
+| IV-5 | **Cumulative distribution (CDF)** | "What fraction of runs/banks/transactions are below threshold X?" — natural for SLA/regulatory framing | Fraction of cross-border payments that settle within the 24-hour FATF reporting window under each protocol |
+
+**Selection heuristic for Category IV**: Finance readers understand distributions. Show the distribution, not just the mean ± SD bar, whenever n ≥ 10 per group. Violin plots (IV-1) are the default; CDFs (IV-5) are powerful for regulatory-compliance narratives.
+
+### Category V — Structure, Flow, and Conceptual Models
+
+| # | Chart Type | UTD24 Best For | Domain Example |
+|---|-----------|----------------|----------------|
+| V-1 | **Protocol flow diagram** | Visualize the round structure: who sends what to whom, in what order | Three-round MPC protocol: Bank A → encrypts → Bank B → computes → Bank C → decrypts; annotate each arrow with data type and size |
+| V-2 | **Architecture / system diagram** | End-to-end system view: parties, servers, trust boundaries, data flow | Cross-bank FL system: N banks → secure aggregator (TEE) → global model → back to banks; mark the trust boundary |
+| V-3 | **Threat-model diagram** | Visualize the adversary's view and capability; co-locate with the protocol's security guarantee | Adversary controls ≤t parties, sees all network traffic, has auxiliary background knowledge from public datasets |
+| V-4 | **Concept map / framework** | Theoretical contribution: kernel theory → design principles → artifact → evaluation → implication; standard in DSR-MISQ papers | Hevner's DSR framework instantiated for privacy-preserving credit scoring |
+| V-5 | **Financial-workflow embedding** | Show where the privacy technology sits inside a real financial process — the bridge to "managerial implications" | SWIFT message flow: where the MPC-based screening module intercepts and how latency fits the settlement window |
+
+**Selection heuristic for Category V**: Every privacy×finance paper needs ≥1 Category V figure. The protocol flow diagram (V-1) is the minimum. DSR papers (MISQ, ISR DSR track) need V-4. Papers claiming "deployable in real financial infrastructure" need V-5.
+
+### Category VI — Composite and Special-Purpose Layouts
+
+| # | Chart Type | UTD24 Best For | Domain Example |
+|---|-----------|----------------|----------------|
+| VI-1 | **Dual-axis plot** (use with extreme caution) | Two metrics with different units that share a common x-axis; UTD24 reviewers are skeptical — justify explicitly | Left axis = model accuracy (%), right axis = privacy budget (ε consumed), x = training rounds |
+| VI-2 | **Bar + line overlay** | Background context + foreground finding | Bars = number of cross-border transactions per day (volume), line = protocol throughput (tx/sec); show that throughput exceeds peak volume |
+| VI-3 | **Faceted / small-multiples grid** | When one big chart is overcrowded: split into a grid of small charts sharing axes | One facet per privacy-technology (MPC / FHE / DP / FL), each faceted subplot shows latency vs dataset size |
+| VI-4 | **Annotation-heavy single example** | Walk the reader through ONE concrete financial scenario end-to-end, with annotated data values at each step | A single $10M cross-border payment from Bank A (Singapore) to Bank B (Germany): what each party sees, computes, and learns at each protocol round |
+
+**Selection heuristic for Category VI**: Composite layouts are the last resort, not the first choice. Use only when a simpler single-panel chart has been tried and found insufficient. VI-4 (annotated walkthrough) is uniquely effective for communicating privacy guarantees to a management-science readership — consider it for the Introduction or Managerial Implications section.
+
+---
+
+### Chart Type Decision Logic (Privacy×Finance Domain-Calibrated)
 
 ```
-What type of data do you have?
+What is the core finding you need to visualize?
 │
-├── Categorical comparison (groups vs. values)
-│   ├── Few categories (≤ 7) → Bar chart
-│   ├── Many categories (> 7) → Horizontal bar chart
-│   └── Proportions that must sum to 100% → Stacked bar chart (NOT pie chart)
+├── "Protocol X outperforms Protocol Y on metric Z"
+│   ├── ≤5 baselines, short names → I-1 (grouped vertical bar)
+│   ├── Many baselines OR long names → I-2 (horizontal bar)
+│   └── Two metrics in tension → I-3 (Pareto frontier)
 │
-├── Distribution
-│   ├── Single variable across groups → Boxplot
-│   ├── Need to show distribution shape → Violin plot
-│   └── Single variable, one group → Histogram (with density curve)
+├── "How does performance change as [parameter/dataset/rounds] varies?"
+│   ├── One independent variable, continuous → II-1 (line + confidence band)
+│   ├── Close-convergence detail needed → II-2 (locally-zoomed line)
+│   ├── Discrete parameter sweep → II-4 (step plot)
+│   └── Two independent variables → II-5 (heatmap)
 │
-├── Trend over time
-│   ├── Single series → Line chart
-│   ├── Multiple series (≤ 5) → Multi-line chart
-│   └── Many series (> 5) → Small multiples / faceted line charts
+├── "How does the privacy-technology affect a financial prediction task?"
+│   ├── Balanced classes → III-1 (ROC)
+│   ├── Imbalanced (fraud, default, AML) → III-2 (Precision-Recall)
+│   └── Show error structure → III-3 (confusion heatmap)
 │
-├── Correlation / Relationship
-│   ├── Two variables → Scatter plot + regression line
-│   ├── Many variables → Correlation heatmap
-│   └── Network / conceptual → Network graph or concept map
+├── "What is the distribution of [metric] across [runs/institutions/configurations]?"
+│   ├── n ≥ 20 per group → IV-1 (violin)
+│   ├── n < 20 per group → IV-2 (box)
+│   ├── Regulatory/SLA narrative → IV-5 (CDF)
+│   └── Three continuous dimensions → IV-4 (bubble)
 │
-├── Meta-analysis
-│   ├── Effect sizes → Forest plot
-│   └── Bias check → Funnel plot
+├── "How does the system / protocol / threat model work?"
+│   ├── Protocol round structure → V-1 (protocol flow)
+│   ├── End-to-end deployment → V-2 (architecture)
+│   ├── Adversary capability → V-3 (threat model)
+│   ├── DSR theoretical contribution → V-4 (concept framework)
+│   └── Real financial workflow integration → V-5 (workflow embedding)
 │
-└── Unsure → Default to the simplest chart that conveys the message
+└── "None of the above captures it"
+    ├── Try a simpler chart first, then escalate to Category VI
+    └── If still stuck → describe the finding in prose. Not every result needs a figure.
 ```
+
+### Anti-Patterns Specific to Privacy×Finance Visualization
+
+| Anti-Pattern | Why It Fails | Fix |
+|-------------|-------------|-----|
+| SOTA bar chart with 12+ baselines in 8pt font | UTD24 print is B&W, often single-column; unreadable | Use I-2 (horizontal) or split into two figures by metric category |
+| Reporting only ε without translating to business risk | ε = 2.0 means nothing to a Management Science reviewer | Co-plot or annotate: ε = 2.0 → "attacker's advantage ≤ e² − 1 ≈ 6.4× over random guess" or show the concrete inference bound |
+| Using CS-paper-style dense multi-panel grid (6-8 panels) | UTD24 papers average 4-6 figures total; every figure must pull its weight | Combine related panels; move secondary results to appendix/supplementary |
+| Privacy-utility trade-off shown as two separate bar charts | The trade-off IS the finding; separating the charts hides it | Use I-3 (Pareto frontier) or VI-1 (dual-axis, only if justified) |
+| Protocol diagram that looks like a UML class diagram | Too CS; management-science readers don't parse UML | Use V-1/V-5 with clear actor icons, annotated arrows, and plain-English labels |
+| Color-only encoding without B&W fallback | UTD24 print editions are B&W; color figures lose information | Verify every figure in grayscale before submission; use line-style + marker-shape as redundant channels |
+| "Figure 1: System Architecture" with 15 unlabeled boxes | A figure that requires a paragraph to decode has failed its purpose | Label every box with its ROLE (not its technical name): "Privacy Guarantor" not "SecAgg Module" |
 
 ---
 
