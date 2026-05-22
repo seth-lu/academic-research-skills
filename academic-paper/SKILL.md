@@ -585,7 +585,7 @@ academic-paper + academic-paper-reviewer -> Peer review -> revision loop
 | Item | Content |
 |------|---------|
 | Skill Version | 3.1.1 |
-| Last Updated | 2026-04-27 |
+| Last Updated | 2026-05-22 |
 | Maintainer | Cheng-I Wu |
 | Dependent Skills | deep-research v1.0+ (upstream), academic-paper-reviewer v1.0+ (downstream) |
 

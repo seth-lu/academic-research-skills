@@ -411,7 +411,7 @@ Follows the paper's language. Academic terms remain in English. User can overrid
 | Item | Content |
 |------|---------|
 | Skill Version | 1.9.1 |
-| Last Updated | 2026-05-18 |
+| Last Updated | 2026-05-22 |
 | Maintainer | Cheng-I Wu |
 | Dependent Skills | academic-paper v1.0+ (upstream/downstream integration) |
 | Role | Multi-perspective academic paper review simulator |
