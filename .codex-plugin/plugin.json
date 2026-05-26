@@ -1,0 +1,43 @@
+{
+  "name": "academic-research-skills",
+  "version": "3.9.4",
+  "description": "Academic research, writing, review, and publication workflow skills adapted for Codex from the seth-lu fork.",
+  "author": {
+    "name": "Cheng-I Wu / seth-lu",
+    "url": "https://github.com/seth-lu"
+  },
+  "homepage": "https://github.com/seth-lu/academic-research-skills",
+  "repository": "https://github.com/seth-lu/academic-research-skills",
+  "license": "CC-BY-NC-4.0",
+  "keywords": [
+    "academic",
+    "research",
+    "writing",
+    "review",
+    "deep-research",
+    "literature-review",
+    "systematic-review",
+    "peer-review",
+    "scholarly-publishing"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Academic Research Skills",
+    "shortDescription": "Research, write, review, revise, and finalize academic papers.",
+    "longDescription": "A four-skill academic workflow for Codex covering deep research, paper drafting, peer-style review, revision orchestration, citation checks, and finalization. Adapted from the seth-lu fork of academic-research-skills.",
+    "developerName": "seth-lu",
+    "category": "Research",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/seth-lu/academic-research-skills",
+    "defaultPrompt": [
+      "Research this topic and build an evidence-backed outline.",
+      "Review this academic paper and propose revisions.",
+      "Run the full research-to-paper workflow."
+    ],
+    "brandColor": "#2563EB"
+  }
+}
