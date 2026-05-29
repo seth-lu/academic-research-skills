@@ -3,7 +3,7 @@ name: academic-pipeline
 description: "Orchestrator for the full academic research pipeline: research -> write -> integrity check -> review -> revise -> re-review -> re-revise -> final integrity check -> finalize. Coordinates deep-research, academic-paper, and academic-paper-reviewer into a seamless 10-stage workflow with mandatory integrity verification, two-stage peer review, and reproducible quality gates. Triggers on: academic pipeline, research to paper, full paper workflow, paper pipeline, end-to-end paper, research-to-publication, complete paper workflow."
 metadata:
   version: "3.9.4.2"
-  last_updated: "2026-05-19"
+  last_updated: "2026-05-29"
   depends_on: "deep-research, academic-paper, academic-paper-reviewer"
   status: active
   data_access_level: verified_only
@@ -101,7 +101,7 @@ resume_from_passport=<hash> [stage=<n>] [mode=<m>]
 | Stage | Name | Skill / Agent Called | Available Modes | Deliverables |
 |-------|------|---------------------|----------------|-------------|
 | 1 | RESEARCH | `deep-research` | socratic, full, quick | RQ Brief, Methodology, Bibliography, Synthesis |
-| 2 | WRITE | `academic-paper` | plan, full | Paper Draft |
+| 2 | WRITE | `academic-paper` | plan, full | Confirmed section draft files; assembled paper draft only after all sections are accepted |
 | **2.5** | **INTEGRITY** | **`integrity_verification_agent`** | **pre-review** | **Integrity verification report + corrected paper** |
 | 3 | REVIEW | `academic-paper-reviewer` | full (incl. Devil's Advocate) | 5 review reports + Editorial Decision + Revision Roadmap |
 | 4 | REVISE | `academic-paper` | revision | Revised Draft, Response to Reviewers |
@@ -128,6 +128,10 @@ If Step 3.5 yields a manifest:
 - Phase 4 drafts per-section with L3 paragraph moves (L1/L2 already baked into outline + blueprint)
 
 If Step 3.5 was declined (no manifest), the config record shows `venue_style_status = "missing"` and the draft metadata flags this as a known risk.
+
+### Stage 2 drafting cadence
+
+Stage 2 is an interactive section-confirmation loop, not a batch manuscript-generation stage. After the paper-level outline is approved, invoke `academic-paper` Phase 4 with exactly one `current_section`; if no current section is recorded, start with the first unconfirmed outline section. After each section draft, checkpoint with the user and do not dispatch the next section until the user accepts or requests revision. Do not pass Stage 2 to integrity verification until every outline section has a confirmed section file and the assembled manuscript has been built from those files.
 
 **Parallelization opportunity (v3.3)**: Within Stage 2, the `academic-paper` skill's Phase 1 (literature_strategist_agent) and the `visualization_agent` can operate in parallel after Phase 2 (structure_architect_agent) completes the outline. Specifically:
 - Once the outline includes a visualization plan, `visualization_agent` can begin figure generation
@@ -294,7 +298,7 @@ After user confirmation:
 1. Pass the previous stage's deliverables as input to the next stage
 2. Trigger handoff protocol (defined in each skill's SKILL.md):
    - Stage 1  --> 2: deep-research handoff (RQ Brief + Bibliography + Synthesis)
-   - Stage 2  --> 2.5: Pass complete paper to integrity_verification_agent
+   - Stage 2  --> 2.5: Pass only the assembled manuscript built from user-confirmed section files to integrity_verification_agent
    - Stage 2.5 --> 3: Pass verified paper to reviewer
    - Stage 3  --> 4: Pass Revision Roadmap to academic-paper revision mode
    - Stage 4  --> 3': Pass revised draft and Response to Reviewers to reviewer
@@ -478,6 +482,7 @@ Explicit prohibitions to prevent common failure modes:
 | 6 | **Re-verifying only known issues at Stage 4.5** | Final integrity check only re-checks Stage 2.5 findings | Stage 4.5 must verify from scratch independently; revision may introduce new issues |
 | 7 | **Inflating Collaboration Quality scores** | Giving 90/100 to avoid awkward self-criticism | Honesty first: no inflation, no pleasantries; cite specific evidence for every score |
 | 8 | **Bypassing the Failure Mode Checklist block** (v3.2) | "The 7-mode checklist is new, let's skip it this run" | Stage 2.5/4.5 Failure Mode Checklist is MANDATORY and BLOCKING; no `--no-block` flag exists; overrides require user reasoning recorded for Stage 6 |
+| 9 | **Batching early manuscript sections** | "I'll draft Sections 1–3 to get started" | Stage 2 Phase 4 drafts exactly one section per checkpoint; convenience batches are not allowed |
 
 ---
 
@@ -627,7 +632,7 @@ Stage 5: academic-paper (format-convert mode)
 | Item | Content |
 |------|---------|
 | Skill Version | 3.7.0 |
-| Last Updated | 2026-05-22 |
+| Last Updated | 2026-05-29 |
 | Maintainer | Cheng-I Wu |
 | Dependent Skills | deep-research v2.0+, academic-paper v2.0+, academic-paper-reviewer v1.1+ |
 | Role | Full academic research workflow orchestrator |

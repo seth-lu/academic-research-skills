@@ -48,7 +48,7 @@ Every material artifact produced by the pipeline carries a version label. These 
 | Material | Version Format | Example | Schema Reference |
 |----------|---------------|---------|-----------------|
 | Research output | `research_v{N}` | `research_v1` (initial), `research_v2` (after keyword expansion) | Schema 1-3 |
-| Paper draft | `paper_draft_v{N}` | `paper_draft_v1` (initial), `paper_draft_v2` (post-review revision) | Schema 4 |
+| Paper draft | `paper_draft_v{N}` | `paper_draft_v1` (assembled from confirmed section files), `paper_draft_v2` (post-review revision) | Schema 4 |
 | Integrity report | `integrity_{mid|final}_v{N}` | `integrity_mid_v1`, `integrity_final_v1` | Schema 5 |
 | Review report | `review_v{N}` | `review_v1` (initial review), `review_v2` (re-review after revision) | Schema 6 |
 | Revision roadmap | `roadmap_v{N}` | `roadmap_v1` (first review), `roadmap_v2` (re-review) | Schema 7 |
@@ -97,7 +97,7 @@ Every material artifact produced by the pipeline carries a version label. These 
       "skill": "academic-paper",
       "status": "completed",
       "mode": "plan -> full",
-      "outputs": ["Paper Draft (5,200 words, IMRaD)"],
+      "outputs": ["Confirmed section files (5/5)", "Assembled Paper Draft (5,200 words, IMRaD)"],
       "started_at": "conversation turn #16",
       "completed_at": "conversation turn #28",
       "checkpoint_confirmed": true,
@@ -381,7 +381,7 @@ Check whether prerequisite materials for entering the specified stage are availa
 |-------------|-------------------|----------------------|
 | Stage 1 | None (can start from scratch) | User-provided topic/direction |
 | Stage 2 | None (but Stage 1 output recommended) | RQ Brief, Bibliography, Synthesis |
-| Stage 2.5 | Paper Draft | -- |
+| Stage 2.5 | Assembled Paper Draft with all outline sections confirmed | -- |
 | Stage 3 | **Verified Paper Draft + Integrity Report (Pre)** | -- |
 | Stage 4 | Review Reports + Revision Roadmap | Paper Draft |
 | Stage 3' | Revised Draft | Response to Reviewers |

@@ -67,9 +67,13 @@ Detailed per-phase agent behavior and output descriptions for the 8-phase orches
 ## Phase 4: DRAFTING
 
 **Agent**: `draft_writer_agent`
-**Output**: Complete Draft
+**Output**: Section Draft Files + Assembled Complete Draft
 
 - Section-by-section writing following outline
+- Each section is drafted in its own file under `draft/sections/<NN>_<section_slug>.<lang>.md`
+- No Phase 4 call may draft multiple sections or create combined starter files such as `initial_sections_1_to_3`
+- `draft/manuscript_<lang>.md` / `draft/manuscript_v1.md` is assembled from confirmed section files only, not used as the live drafting workspace
+- User confirmation is required after each section before the next section begins
 - Register adjustment for discipline
 - In-text citations integrated
 - Word count tracking per section

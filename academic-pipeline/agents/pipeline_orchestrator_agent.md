@@ -121,6 +121,12 @@ Integrity checks (Stage 2.5 & 4.5) are mandatory and cannot be skipped.
 You can adjust any stage's mode at any time. Ready to begin?
 ```
 
+### 2.5 Stage 2 Section-Drafting Coordination
+
+When dispatching Stage 2 WRITE to `academic-paper full`, coordinate Phase 4 as a section-confirmation loop. After the paper-level outline is approved, pass exactly one `current_section` to the writer. If no section is recorded, use the first unconfirmed outline section. After each section draft, require the per-section checkpoint and do not request the next section until the user accepts or asks for revision. Stage 2 is complete only when every outline section has a confirmed section file and the assembled manuscript was built from those confirmed files.
+
+Do NOT ask the writer for starter batches such as "Sections 1–3", "initial sections", or "the first few sections". Do NOT advance to Stage 2.5 from partial section coverage.
+
 ### 3. Checkpoint Management (Adaptive Checkpoint System)
 
 **After each stage completion, the checkpoint process must be executed. The checkpoint type is determined adaptively.**
@@ -512,7 +518,7 @@ Reference helper: `scripts/slr_lineage.py` `emit(stages, incoming_slr_lineage)`.
 | Transition | Transferred Materials | Schema Reference | Transfer Method |
 |-----------|----------------------|-----------------|----------------|
 | Stage 1 -> 2 | RQ Brief, Annotated Bibliography, Synthesis Report | Schema 1 (RQ Brief), Schema 2 (Bibliography), Schema 3 (Synthesis) | deep-research handoff protocol |
-| Stage 2 -> 2.5 | Complete Paper Draft | Schema 4 (Paper Draft) | Pass to integrity_verification_agent |
+| Stage 2 -> 2.5 | Assembled paper draft built from confirmed section files | Schema 4 (Paper Draft) | Pass to integrity_verification_agent only after section coverage is complete |
 | Stage 2.5 -> 3 | Verified Paper Draft + Integrity Report | Schema 4 + Schema 5 (Integrity Report) | Pass to reviewer (with verification report attached) |
 | Stage 3 -> **coaching** -> 4 | Editorial Decision, Revision Roadmap, 5 Review Reports | Schema 6 (Review Report), Schema 7 (Revision Roadmap) | **First Socratic dialogue** -> academic-paper revision mode input |
 | Stage 4 -> 3' | Revised Draft, Response to Reviewers | Schema 4 (revised) + Schema 8 (Response to Reviewers) | Pass to reviewer (marked as verification round) |

@@ -3,7 +3,7 @@ name: academic-paper
 description: "12-agent academic paper writing pipeline. 10 modes (full/plan/outline/revision/revision-coach/abstract/lit-review/format-convert/citation-check/disclosure). 6 paper types, 5 citation formats, bilingual abstracts, LaTeX/DOCX-via-Pandoc/PDF output. Style Calibration + Writing Quality Check + Anti-Patterns with IRON RULE markers. Triggers: write paper, academic paper, guide my paper, parse reviews, AI disclosure, 寫論文, 學術論文, 引導我寫論文, 審查意見."
 metadata:
   version: "3.1.2"
-  last_updated: "2026-05-18"
+  last_updated: "2026-05-29"
   status: active
   data_access_level: redacted
   task_type: open-ended
@@ -130,7 +130,7 @@ Phase 3a: EXTRACT-L2   -> [argument_builder]           -> style_L2_<section>.md 
 Phase 3b: ARGUMENTATION -> [argument_builder]          -> Argument Blueprint
 
 Phase 3.5: EXTRACT-L3  -> [draft_writer]               -> style_L3_<section>.md
-Phase 4:  DRAFTING     -> [draft_writer]               -> Complete Draft (§1→§2→...→§N, per-section calls with L3)
+Phase 4:  DRAFTING     -> [draft_writer]               -> Confirmed section files (§1→§2→...→§N, one call + user confirmation per section) -> assembled complete draft
 Phase 5a: CITATIONS    -> [citation_compliance] ──┐    -> Citation Audit Report
 Phase 5b: ABSTRACT     -> [abstract_bilingual]   ─┘    -> Bilingual Abstract + Keywords  (parallel)
 Phase 6:  PEER REVIEW  -> [peer_reviewer]              -> Review Report (max 2 revision loops)
@@ -226,7 +226,7 @@ L3 is language-agnostic (rhetorical moves transfer across languages). Sentence-l
 
 #### Phase 4: Per-Section Drafting (mandatory loop)
 
-**IRON RULE**: Do NOT write the entire draft in a single call. Phase 4 MUST be executed as a loop — one section per call, user confirms, then next section.
+**IRON RULE**: Do NOT write the entire draft in a single call. Phase 4 MUST be executed as a loop — one section per call, user confirms, then next section. Do not create starter batches such as Sections 1–3; after the paper-level outline, the first drafting call writes §1 only unless the user explicitly names a different single section.
 
 **Path determination** (set at Phase 3.5):
 - **Path A** (style-constrained): Load `style_L3_<section>.md` for each section. L1 and L2 are NOT loaded — they were already consumed upstream (L1→Outline, L2→Argument Blueprint).
@@ -269,9 +269,16 @@ Options:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
+**Output contract**:
+- Working drafts MUST be one physical file per section under `draft/sections/<NN>_<section_slug>.<lang>.md`.
+- Filenames or headings that span multiple sections, such as `initial_sections_1_to_3`, `sections_1_to_3`, or `§1–§3`, violate the Phase 4 contract.
+- `draft/manuscript_<lang>.md` / `draft/manuscript_v1.md` is an assembled artifact only. Do NOT draft multiple sections directly inside the manuscript file.
+- After each user-confirmed section, update the status artifact with the section source file, confirmation state, and whether it has been assembled.
+- After all sections are confirmed, assemble the section files in outline order into the manuscript file.
+
 Do NOT proceed to §<N+1> until user confirms §<N>.
 
-**Output directory**: Write each section to `draft/<section_slug>.md`. After all sections are confirmed, assemble into `draft/manuscript_v1.md`.
+**Output directory**: Write each section to `draft/sections/<NN>_<section_slug>.<lang>.md`. After all sections are confirmed, assemble into `draft/manuscript_<lang>.md` or `draft/manuscript_v1.md`.
 
 ### Checkpoint Rules
 
@@ -279,7 +286,7 @@ Do NOT proceed to §<N+1> until user confirms §<N>.
 2. ⚠️ **v3.8.0 Phase 2a gate**: When `exemplar_manifest.md` exists, `style_L1_structure.md` MUST be produced BEFORE Phase 2b. Do NOT skip to outline construction. If the file is missing after the Phase 2a call, re-run Phase 2a — do not silently proceed.
 3. ⚠️ **v3.8.0 Phase 3a gate**: When `style_L1_structure.md` exists, `style_L2_<section>.md` MUST be produced BEFORE Phase 3b. Same re-run rule as Phase 2a.
 4. **Phase 2b -> 3a**: User must approve outline (can request restructuring)
-5. ⚠️ **v3.8.0 Phase 4 gate**: Each section MUST be written as a separate call. Do NOT batch multiple sections into one call. User must confirm each section before the next begins.
+5. ⚠️ **v3.8.0 Phase 4 gate**: Each section MUST be written as a separate call and saved as a separate physical file under `draft/sections/`. Do NOT batch multiple sections into one call, including convenience batches like `Sections 1–3`. Do NOT use `draft/manuscript_<lang>.md` as the drafting workspace; it is assembled only after section confirmation. User must confirm each section before the next begins.
 6. **Phase 3.5** (v3.8.0): L3 extraction runs whenever prerequisites (manifest + L2 files) are met. Output is `style_L3_<section>.md` per outline section. No framework files — L3 serves as the direct paragraph-level reference. Language-agnostic: applies to drafts in any language.
 7. ⚠️ **IRON RULE**: Max 2 revision loops; unresolved items -> "Acknowledged Limitations"
 8. **Peer Review** Critical-severity issues block progression to Phase 7
@@ -319,18 +326,18 @@ The load-bearing mechanism is the **physical separation of calls**: writer Phase
 
 ### Four-call structure
 
-For each `academic-paper full` invocation, Phase 4 + Phase 6 expand from two single calls into four separate model calls. Each call has its own system prompt and user content per the system-vs-user content discipline below.
+For each `academic-paper full` invocation, Phase 4 + Phase 6 expand from two single calls into a contract-gated sequence: Phase 4a runs once before drafting, Phase 4b repeats one section at a time under the mandatory Phase 4 per-section loop, and Phase 6a/6b run only after all section files are user-confirmed and assembled. Each call has its own system prompt and user content per the system-vs-user content discipline below.
 
 1. **Phase 4a — writer paper-blind pre-commitment.**
    - System prompt: `### Phase 4a — Writer paper-blind pre-commitment` sub-section in `academic-paper/agents/draft_writer_agent.md` § "v3.6.6 Generator-Evaluator Contract Protocol".
    - User content: `writer_full` contract JSON + paper metadata only (`title`, `field`, `word_count`).
    - Output: `## Acceptance Criteria Paraphrase` section + terminal `[PRE-COMMITMENT-ACKNOWLEDGED]` tag.
    - Lint: 3 structural checks (see § "Phase 4a / 6a output lint" below).
-2. **Phase 4b — writer paper-visible drafting + self-scoring.**
+2. **Phase 4b — writer paper-visible drafting + self-scoring, repeated per section.**
    - System prompt: `### Phase 4b — Writer paper-visible drafting + self-scoring` sub-section in the same agent file.
-   - User content: `writer_full` contract JSON (re-injected) + Phase 4a output wrapped in `<phase4a_output>...</phase4a_output>` data delimiter + upstream drafting artefacts (Paper Configuration Record, Paper Outline, Argument Blueprint, Annotated Bibliography, optional Style Profile, optional Knowledge Isolation Directive).
-   - Output: `## Draft Body` → `## Dimension Scores` → `## Failure Condition Checks` → `## Writer Decision`.
-   - Lint: 4 structural checks (see § "Phase 4b / 6b output lint" below).
+   - User content: `writer_full` contract JSON (re-injected) + Phase 4a output wrapped in `<phase4a_output>...</phase4a_output>` data delimiter + upstream drafting artefacts (Paper Configuration Record, Paper Outline, Argument Blueprint, Annotated Bibliography, optional Style Profile, optional Knowledge Isolation Directive) + `current_section` + previous confirmed sections as continuity anchors.
+   - Output: `## Draft Body` for the current section only → `## Dimension Scores` → `## Failure Condition Checks` → `## Writer Decision` → per-section user checkpoint.
+   - Lint: 4 structural checks (see § "Phase 4b / 6b output lint" below). The lint checks section-local output shape; final whole-paper checks run after section assembly.
 3. **Phase 6a — evaluator paper-blind pre-commitment.**
    - System prompt: `### Phase 6a — Evaluator paper-blind pre-commitment` sub-section in `academic-paper/agents/peer_reviewer_agent.md` § "v3.6.6 Generator-Evaluator Contract Protocol".
    - User content: `evaluator_full` contract JSON + paper metadata + the writer's most recent `<phase4a_output>` (the writer artefact the evaluator must verify per `disagreement_handling.pre_commitment_check_protocol.check_writer_artifact`).
@@ -338,7 +345,7 @@ For each `academic-paper full` invocation, Phase 4 + Phase 6 expand from two sin
    - Lint: 5 structural checks.
 4. **Phase 6b — evaluator paper-visible scoring + decision.**
    - System prompt: `### Phase 6b — Evaluator paper-visible scoring + decision` sub-section in the same agent file.
-   - User content: `evaluator_full` contract JSON (re-injected) + Phase 6a output wrapped in `<phase6a_output>...</phase6a_output>` + the writer's `<phase4a_output>` (unconditional per `pre_commitment_check_protocol.check_writer_artifact`) + the writer Phase 4b draft (the artefact under review).
+   - User content: `evaluator_full` contract JSON (re-injected) + Phase 6a output wrapped in `<phase6a_output>...</phase6a_output>` + the writer's `<phase4a_output>` (unconditional per `pre_commitment_check_protocol.check_writer_artifact`) + the assembled draft produced from confirmed Phase 4b section files (the artefact under review).
    - Output: `## Dimension Scores` → `## Failure Condition Checks` → `## Review Body` → `## Evaluator Decision`.
    - Lint: 5 structural checks.
 
@@ -366,7 +373,7 @@ Retry semantics: lint failure on the first attempt → retry once with the speci
 
 ### Phase 4b / 6b output lint
 
-- **Writer Phase 4b (4 checks)**: required sections in order — `## Draft Body`, `## Dimension Scores`, `## Failure Condition Checks`, `## Writer Decision`; Dimension Scores one-to-one across the seven writer dimensions D1–D7 (per `shared/contracts/writer/full.json`); Failure Condition Checks one-to-one across F1 / F4 / F2 / F3 / F0; Writer Decision derivable from F-condition severity precedence. **No multi-dissent retry** (writer has no scoring_plan to dissent against). **No consistency check** (writer Phase 4a emits no scoring_plan trigger tokens).
+- **Writer Phase 4b (4 checks)**: required sections in order — `## Draft Body`, `## Dimension Scores`, `## Failure Condition Checks`, `## Writer Decision`; `## Draft Body` contains exactly the current section and no other outline sections; Dimension Scores one-to-one across the seven writer dimensions D1–D7 (per `shared/contracts/writer/full.json`); Failure Condition Checks one-to-one across F1 / F4 / F2 / F3 / F0; Writer Decision derivable from F-condition severity precedence. **No multi-dissent retry** (writer has no scoring_plan to dissent against). **No consistency check** (writer Phase 4a emits no scoring_plan trigger tokens).
 - **Evaluator Phase 6b (5 checks)**: required sections in order — `## Dimension Scores`, `## Failure Condition Checks`, `## Review Body`, `## Evaluator Decision`; Dimension Scores one-to-one across the five evaluator dimensions D1–D5 (per `shared/contracts/evaluator/full.json`); Failure Condition Checks one-to-one across F1 / F2 / F3 / F6 / F4 / F5 / F0; consistency check (Phase 6b score substring-matches Phase 6a `disagreement_handling.scoring_plan.per_dimension_criteria` trigger tokens); Evaluator Decision derivable from F-condition severity precedence. **No multi-dissent retry** (evaluator's intra-phase disagreement is encoded as F-condition action via `disagreement_handling.disagreement_resolution`, not as a retry trigger).
 
 Multi-dissent retry remains reviewer-only (`academic-paper-reviewer` skill); generator modes have no panel and no scoring_plan dissent anchor.
@@ -584,8 +591,8 @@ academic-paper + academic-paper-reviewer -> Peer review -> revision loop
 
 | Item | Content |
 |------|---------|
-| Skill Version | 3.1.1 |
-| Last Updated | 2026-05-22 |
+| Skill Version | 3.1.2 |
+| Last Updated | 2026-05-29 |
 | Maintainer | Cheng-I Wu |
 | Dependent Skills | deep-research v1.0+ (upstream), academic-paper-reviewer v1.0+ (downstream) |
 

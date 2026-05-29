@@ -61,7 +61,7 @@ def check_relative_markdown_links(rel_path: str) -> None:
 def check_mode_registry() -> None:
     rel_path = "MODE_REGISTRY.md"
     text = read(rel_path)
-    expect_contains(rel_path, "Last updated: v3.9.4.2 (2026-05-19)")
+    expect_contains(rel_path, "Last updated: v3.9.4.2 (2026-05-29)")
     for heading in (
         "## deep-research (7 modes)",
         "## academic-paper (10 modes)",
