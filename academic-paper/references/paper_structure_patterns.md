@@ -362,7 +362,7 @@ Used by `structure_architect_agent` and `intake_agent` to select the appropriate
 4. Theoretical Foundations and Related Work (compact; 1,500–2,000 words)
    4.1 Kernel Theory (the theoretical lens that explains why the artifact works)
    4.2 Prior Design Efforts (what artifacts exist, why they are insufficient)
-   4.3 Privacy-Technology Stream (MPC / FHE / DP / FL / ZKP / TEE — positioned as design material, not as contribution)
+   4.3 Privacy-Technology Stream (MPC / FHE / DP / FL / ZKP / TEE — planning note: use these technologies as design material supporting the IS contribution; do not copy this note into prose)
    4.4 Financial-IS Stream (the financial mechanism or market friction being addressed)
    4.5 Synthesis Gap: Why No Existing Artifact Satisfies the Design Requirements
 5. Design Requirements and Principles
@@ -374,7 +374,7 @@ Used by `structure_architect_agent` and `intake_agent` to select the appropriate
    6.2 Core Components and Their Kernel-Theory Grounding
    6.3 Design Evolution (how the artifact changed during development; key design decisions)
    6.4 Instantiation (concrete implementation details; technology stack)
-   [For privacy×finance: protocol description goes here — but always as a design artifact, not as a standalone crypto contribution]
+   [Planning note for privacy×finance: describe the protocol as the design artifact that enables the financial/IS mechanism; do not copy this note into prose]
 7. Evaluation
    7.1 Evaluation Strategy (method, criteria, kernel-theory traceability)
    7.2 Evaluation Episode 1: [dimension] — method, results, design-principle link
@@ -415,7 +415,7 @@ Used by `structure_architect_agent` and `intake_agent` to select the appropriate
 | Evaluation episodes are multi-method (not single-experiment) | MISQ expects ≥ 2 distinct evaluation methods |
 | Artifact described at the design-principle level, not the code level | The paper should teach design knowledge, not document software |
 | Managerial/practical implications are first-class (not an afterthought) | ISR desk-rejects papers that end on technical notes |
-| Contribution is to IS design theory, not to CS cryptography | The framing determines which journal is appropriate |
+| Contribution framing connects IS design theory, financial mechanism, and technical artifact | The framing determines which journal is appropriate; avoid negative prose about what is "not" the contribution |
 
 ### Anti-Patterns (MISQ/ISR)
 - "We propose a privacy-preserving system for [financial task]" without naming the kernel theory — reads as a CS systems paper

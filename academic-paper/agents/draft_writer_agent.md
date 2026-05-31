@@ -55,6 +55,21 @@ Before writing, confirm you have:
 - [ ] Anti-Leakage Protocol — check if Knowledge Isolation should be activated (from `references/anti_leakage_protocol.md`). Activate if user provided RQ Brief + Synthesis Report + Annotated Bibliography AND mode is `full` or `revision`. When activated, prepend the Knowledge Isolation Directive to your working context. When not activated (plan/socratic mode, or minimal materials), skip.
 - [ ] **Exemplar manifest** (v3.8.0) — check if `exemplar_manifest.md` exists. If yes → Step 1.5 L3 extraction → Step 2 Path A (L3-constrained). If no → Step 2 Path C (degraded). L1 and L2 are consumed upstream (Phase 2b and 3b) — do NOT load them in Phase 4.
 
+### Step 1.1: Source-to-Prose Firewall
+
+Before writing any manuscript prose, separate upstream inputs into two classes:
+
+| Input class | Examples | Manuscript use |
+|-------------|----------|----------------|
+| **Reader-facing evidence** | claims, data, mechanisms, definitions, citations, empirical results | May be paraphrased into academic prose with citations |
+| **Writer-facing control language** | configuration notes, style rules, contribution-positioning instructions, negative framing rules, file names, workflow status, section checkpoints, L1/L2/L3 labels | Must guide choices silently; must not appear in manuscript prose |
+
+**IRON RULE — no meta-language leakage**: Never copy or paraphrase writer-facing control language into the paper body. This includes phrases such as "not a title-level contribution," "not an abstract technical selling point," "positioned as design material," "desk-reject risk," "recipe," "pipeline," "configuration," "style profile," "L1/L2/L3," "CER chain," "draft metadata," "section checkpoint," or file-path language.
+
+Convert control-language instructions into affirmative scholarly framing. Forbidden pattern: sentences that say the paper does not treat `<method>` as `<contribution level>` or does not treat `<technology>` as `<selling point>`. Preferred pattern: state the research object, then state how the method operationalizes measurement and how the technology enables the empirical or institutional mechanism.
+
+For Introduction sections, state the research object, mechanism, contribution, and boundary conditions directly. Do not explain what the paper is "not" unless responding to a live scholarly controversy that requires an explicit exclusion.
+
 ### Step 1.5: Phase 3.5 — Layer 3 Paragraph Move Extraction (v3.8.0)
 
 Execute this step BEFORE Step 2. Do NOT proceed to drafting until L3 extraction is complete.
@@ -146,6 +161,7 @@ For the specified section, in a **single call**:
 3. **Compliance self-check** after writing:
    - L3: Verify paragraph move sequence matched (¶ count, each ¶'s function)
    - **Content isolation**: Verify NO exemplar citations, quotes, or examples leaked into draft (all content from CER chains + bibliography)
+   - **Source-to-prose firewall**: Verify NO configuration notes, style rules, contribution-positioning instructions, workflow labels, file names, or negative meta-framing leaked into manuscript prose
    - Citations: Each claim has a source from the draft's own bibliography
    - Word count: Section ±15%, running total ±10%
 
@@ -177,13 +193,14 @@ For the specified section, in a **single call**:
 For the specified section:
 
 1. **Review** the section's purpose, assigned sources, and argument points
-2. **Draft** the section following the outline and CER chains
-3. **Integrate citations** naturally (narrative and parenthetical)
-4. **Write transitions** connecting to the next section
-5. **Check word count** against allocation
-6. **Self-review** for clarity, logic, and completeness
-7. **Save** only this section to `draft/sections/<NN>_<section_slug>.<lang>.md`
-8. **Present** the same user checkpoint used in Path A and stop
+2. **Classify** upstream notes using the Source-to-Prose Firewall before drafting
+3. **Draft** the section following the outline and CER chains
+4. **Integrate citations** naturally (narrative and parenthetical)
+5. **Write transitions** connecting to the next section
+6. **Check word count** against allocation
+7. **Self-review** for clarity, logic, completeness, and absence of meta-language leakage
+8. **Save** only this section to `draft/sections/<NN>_<section_slug>.<lang>.md`
+9. **Present** the same user checkpoint used in Path A and stop
 
 Do NOT continue to the next section until the user accepts or revises this section.
 
@@ -340,6 +357,12 @@ The default narrative frame is: **financial problem → current limitation → p
 - ❌ "We propose a novel three-round MPC protocol for secure aggregation. As an application, we demonstrate cross-bank AML."
 - ✅ "Cross-bank anti-money laundering requires sharing transaction graphs without exposing customer identities. Current approaches rely on bilateral data-sharing agreements that exclude smaller banks. We design a three-round MPC protocol that enables privacy-preserving cross-bank graph analytics without a trusted third party."
 
+#### R1a — No Negative Contribution-Positioning Prose
+
+Contribution-positioning notes are planning controls, not manuscript sentences. Do not write sentences that tell readers what the paper "does not treat as the contribution," what is "not title-level," or what is "not a selling point." Replace them with positive academic framing that states the object of analysis and the role of each method.
+
+Preferred construction: "本文以[研究对象]为核心问题，将[方法]用作[测度/识别/建模功能]，并考察[技术机制]如何在[制度或数据约束]下改善[金融决策结果]。"
+
 #### R2 — Managerial/Economic Implication Is a First-Class Section
 
 Every section from Introduction through Discussion should carry at least one sentence that connects the technical result to a **specific, named** financial stakeholder, mechanism, or regulation:
@@ -466,9 +489,9 @@ When receiving feedback from peer_reviewer_agent (Phase 6 -> back to Phase 4):
 ## Output Format
 
 ```markdown
-## Draft: [Paper Title]
+## Section Draft: §N [Section Title]
 
-[Complete paper text with all sections, in-text citations, and section word counts]
+[Section prose only: academic manuscript text with in-text citations. Do not include workflow notes, configuration notes, metadata, self-checks, or contribution-positioning instructions inside this prose block.]
 
 ---
 

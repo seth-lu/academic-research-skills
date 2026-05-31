@@ -54,6 +54,8 @@ User confirms → proceed. User wants to prepare first → let them gather PDFs 
 
 UTD24 drafting MUST follow the standard `academic-paper` Phase 4 section-confirmation loop. After the paper-level outline is written and approved, draft exactly one section per turn in zh-CN, save it under `draft/sections/<NN>_<section_slug>.zh-CN.md`, present it to the user, and wait for accept/revise feedback before starting the next section. Do NOT create starter files that combine multiple sections (for example, `03_initial_sections_1_to_3_zh.md`) and do NOT assemble `draft/manuscript_zh-CN.md` until all section files are accepted.
 
+UTD24 manuscript prose MUST be academic, reader-facing prose only. Configuration notes, contribution-positioning controls, style extraction labels, and negative framing rules must not appear in the paper body. Avoid negative scope disclaimers about whether a method is title-level or whether a technology is a selling point; instead state affirmatively how the method operationalizes the financial measurement problem and how the technology enables the institutional mechanism.
+
 ## Default reviewer panel
 
 `field_analyst_agent` applies Example 3 panel by default. Override only if the user's contribution type does not match (e.g., a pure empirical-finance paper without a privacy-tech artifact — in which case re-route to standard reviewer panel and ask the user to confirm the UTD24 IS-track is still the right venue).

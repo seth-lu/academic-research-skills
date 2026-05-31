@@ -271,7 +271,7 @@ Three-phase progressive extraction embedded in `academic-paper`'s writing flow. 
 **Priority hierarchy hook** at `shared/style_calibration_protocol.md` § Priority 2 Implementation: venue guide (Priority 2) > personal style profile (Priority 3). Conflicts logged in Draft Metadata.
 
 ## Version Info
-- **Suite version**: 3.9.4.2-seth-lu-20260529 (per plugin.json)
-- **Last Updated**: 2026-05-29
+- **Suite version**: 3.9.4.2-seth-lu-20260531 (per plugin.json)
+- **Last Updated**: 2026-05-31
 - **Author**: Cheng-I Wu
 - **License**: CC-BY-NC 4.0

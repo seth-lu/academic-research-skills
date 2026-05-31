@@ -3,7 +3,7 @@ name: academic-paper
 description: "12-agent academic paper writing pipeline. 10 modes (full/plan/outline/revision/revision-coach/abstract/lit-review/format-convert/citation-check/disclosure). 6 paper types, 5 citation formats, bilingual abstracts, LaTeX/DOCX-via-Pandoc/PDF output. Style Calibration + Writing Quality Check + Anti-Patterns with IRON RULE markers. Triggers: write paper, academic paper, guide my paper, parse reviews, AI disclosure, 寫論文, 學術論文, 引導我寫論文, 審查意見."
 metadata:
   version: "3.1.2"
-  last_updated: "2026-05-29"
+  last_updated: "2026-05-31"
   status: active
   data_access_level: redacted
   task_type: open-ended
@@ -247,12 +247,15 @@ Inputs:
 - Paragraph move sequence (Path A: style_L3_<section>.md; Path C: none)
 - Previous section prose: <§1..§N-1, as continuity anchor>
 
-Output: §<N> prose only. Do NOT include other sections.
+Before writing, classify upstream content: evidence and mechanisms may enter prose; configuration notes, style rules, contribution-positioning instructions, file names, workflow labels, and negative framing controls must guide silently and must NOT appear in manuscript prose.
+
+Output: §<N> prose only. Do NOT include other sections, metadata, self-check text, or writer-facing control language.
 
 After writing, self-check:
 - Word count: <actual>/<target> (±15%)
 - Paragraph moves: [N/N] matched (Path A only)
 - CER chains: all claims have sources
+- Source-to-prose firewall: no configuration/style/contribution-positioning meta-language leaked into the manuscript section
 
 End with: [§<N> COMPLETE] <word count> <L3 compliance if Path A>
 ```
@@ -592,7 +595,7 @@ academic-paper + academic-paper-reviewer -> Peer review -> revision loop
 | Item | Content |
 |------|---------|
 | Skill Version | 3.1.2 |
-| Last Updated | 2026-05-29 |
+| Last Updated | 2026-05-31 |
 | Maintainer | Cheng-I Wu |
 | Dependent Skills | deep-research v1.0+ (upstream), academic-paper-reviewer v1.0+ (downstream) |
 
