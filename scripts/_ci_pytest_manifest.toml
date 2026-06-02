@@ -49,6 +49,18 @@ id = "v3.9.0-triangulation"
 path = "scripts/test_check_v3_9_0_triangulation.py"
 
 [[pytest]]
+id = "v3.10-firm-rules-sync"
+path = "scripts/test_check_firm_rules_sync.py"
+
+[[pytest]]
+id = "v3.10-policy-layer"
+path = "scripts/test_check_v3_10_policy.py"
+
+[[pytest]]
+id = "268-nested-commitment-ledger"
+path = "scripts/test_check_268_nested_commitment_ledger.py"
+
+[[pytest]]
 id = "v3.9.2-phase-boundary"
 path = "scripts/test_check_v3_9_2_phase_boundary.py"
 
@@ -81,3 +93,43 @@ args = ["-k", "integration or (synthetic and supersession)"]
 [[pytest]]
 id = "v3.6.7-wrapper-e2e"
 path = "scripts/test_run_codex_audit_e2e.py"
+
+[[pytest]]
+id = "kong-259-domain-evidence-profile"
+path = "scripts/test_check_domain_evidence_profile.py"
+
+[[pytest]]
+id = "v3.10-184-evals-gold-set"
+path = "scripts/test_check_evals_gold_set.py"
+
+[[pytest]]
+id = "kong-257-rq-framing-patterns"
+path = "scripts/test_check_rq_framing_patterns.py"
+
+[[pytest]]
+id = "v3.10-184-run-evals"
+path = "scripts/test_run_evals.py"
+
+[[pytest]]
+id = "v3.10-184-check-ranking-lift"
+path = "scripts/test_check_ranking_lift.py"
+
+[[pytest]]
+id = "v3.10-184-evals-citation-extraction"
+path = "scripts/test_evals_citation_extraction.py"
+
+[[pytest]]
+id = "v3.10-184-evals-lift-report-schema"
+path = "scripts/test_evals_lift_report_schema.py"
+
+[[pytest]]
+id = "v3.10-184-eval-harness-workflow"
+path = "scripts/test_eval_harness_workflow.py"
+
+[[pytest]]
+id = "v3.10-134-write-scope-guard"
+path = "scripts/test_ars_write_scope_guard.py"
+
+[[pytest]]
+id = "v3.10-134-write-scope-lint-mutation"
+path = "scripts/test_check_v3_10_134_write_scope.py"

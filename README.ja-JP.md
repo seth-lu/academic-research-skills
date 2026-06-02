@@ -1,10 +1,10 @@
 # Claude Code 向け Academic Research Skills
 
-[![Version](https://img.shields.io/badge/version-v3.9.4.2-blue)](https://github.com/Imbad0202/academic-research-skills/releases/tag/v3.9.4.2)
+[![Version](https://img.shields.io/badge/version-v3.10.0-blue)](https://github.com/Imbad0202/academic-research-skills/releases/tag/v3.10.0)
 [![License: CC BY-NC 4.0](https://img.shields.io/badge/license-CC%20BY--NC%204.0-lightgrey)](https://creativecommons.org/licenses/by-nc/4.0/)
 [![Sponsor](https://img.shields.io/badge/sponsor-Buy%20Me%20a%20Coffee-orange?logo=buy-me-a-coffee)](https://buymeacoffee.com/crucify020v)
 
-[English](README.md) | [繁體中文版](README.zh-TW.md)
+[English](README.md) | [简体中文版](README.zh-CN.md) | [繁體中文版](README.zh-TW.md)
 
 学術研究のための Claude Code スキル統合スイート。研究から論文公開までの全工程をカバーします。
 
@@ -15,7 +15,7 @@
 /plugin install academic-research-skills
 ```
 
-その後、`/ars-plan` を試してソクラテス式対話で論文構成を整理するか、前提条件と従来のシンボリックリンク方式については [Quick install](#quick-install) を参照してください。
+その後、`/ars-plan` を試してソクラテス式対話で論文構成を整理するか、前提条件と従来のシンボリックリンク方式については [クイックインストール](#クイックインストール) を参照してください。
 
 > **AI はあなたの副操縦士であり、操縦士ではありません。** このツールはあなたの代わりに論文を書きません。参考文献の探索、引用のフォーマット、データ検証、論理的整合性チェックといった泥臭い作業を引き受けることで、本当に頭を使う必要のある部分 — 問いの定義、手法の選択、データの意味の解釈、「私はこう主張する」に続く文を書くこと — にあなたが集中できるようにします。
 >
@@ -41,11 +41,11 @@ v3.3 は [**PaperOrchestra**](https://arxiv.org/abs/2604.05018)（Song, Song, Pf
 
 アーキテクチャドキュメントは、以前ここにあった煩雑なパイプライン説明を引き継ぎます。*どのステージで何が実行されるか* に関する情報はすべて一箇所に集約されています。
 
-## Quick install
+## クイックインストール
 
 **前提条件**
 
-- [Claude Code](https://claude.ai/install.sh)（最新版。プラグインパッケージングは最近のバージョンが必要）
+- [Claude Code](https://docs.claude.com/en/docs/claude-code/setup)（最新版。プラグインパッケージングは最近のバージョンが必要）
 - `ANTHROPIC_API_KEY` をエクスポート、または初回 `claude` 実行時に設定
 - *オプション:* DOCX 用の Pandoc、APA 7.0 PDF 用の tectonic + Source Han Serif TC（Markdown 出力はどちらがなくても動作）
 
@@ -228,19 +228,19 @@ You: "status"
 
 エージェントごとの責務とステージごとの成果物は [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) に集約されました。リリースメタデータを一箇所にまとめるため、バージョン番号はここにアンカーされています。
 
-### Deep Research（v2.8）
+### Deep Research（v2.9.4）
 
 13 エージェントの研究チーム。モード: full、quick、review、lit-review、fact-check、socratic、systematic-review。完全なエージェント名簿と成果物: ARCHITECTURE.md §3 を参照。
 
-### Academic Paper（v3.0）
+### Academic Paper（v3.2.0）
 
 12 エージェントの論文執筆パイプライン。モード: full、plan、outline-only、revision、revision-coach、abstract-only、lit-review、format-convert、citation-check、disclosure。出力: MD + DOCX（利用可能な場合 Pandoc 経由）+ LaTeX（APA 7.0 `apa7` クラス / IEEE / Chicago）→ tectonic 経由 PDF。完全なエージェント名簿とフェーズごとの責務: ARCHITECTURE.md §3 を参照。
 
-### Academic Paper Reviewer（v1.8）
+### Academic Paper Reviewer（v1.10.0）
 
 **0-100 品質ルーブリック** を持つ 7 エージェントの多視点レビュー。モード: full、re-review、quick、methodology-focus、guided、calibration。**決定マッピング:** ≥80 Accept、65-79 Minor Revision、50-64 Major Revision、<50 Reject。初回レビューチーム vs. 限定的な再レビューチームの境界: ARCHITECTURE.md §3 Stage 3 / Stage 3' を参照。
 
-### Academic Pipeline（v3.7）
+### Academic Pipeline（v3.10.0）
 
 整合性検証、二段階レビュー、ソクラテス式コーチング、コラボレーション評価を持つ 10 ステージのオーケストレーター。パイプライン保証: 各ステージにユーザー確認チェックポイントが必要。整合性検証（Stage 2.5 + 4.5）はスキップできない。R&R Traceability Matrix（Schema 11）は著者の改訂主張を独立に検証する。v3.4 は Stage 2.5 / 4.5 に Compliance Agent（PRISMA-trAIce + RAISE）を追加した。v3.5 はすべての FULL/SLIM チェックポイントとパイプライン完了時に **Collaboration Depth Observer**（`collaboration_depth_agent`、advisory のみ — 決してブロックしない）を追加する。MANDATORY 整合性ゲート（2.5 / 4.5）は、コンプライアンスチェックが希薄化されないよう observer を明示的にスキップする。Wang & Zhang（2026）, IJETHE 23:11 に基づく。エージェント、成果物、ゲートを含むステージごとのマトリクス: ARCHITECTURE.md §3 を参照。
 
@@ -313,13 +313,19 @@ https://github.com/Imbad0202/academic-research-skills
 
 **[mchesbro1](https://github.com/mchesbro1)** — 貢献者。`academic-paper-reviewer/references/top_journals_by_field.md` 用の IS Basket of 8 ジャーナルを最初に提案・起草（[Issue #5](https://github.com/Imbad0202/academic-research-skills/issues/5)）。
 
-**[cloudenochcsis](https://github.com/cloudenochcsis)** — 貢献者。IS セクションを *Basket of 8* から完全な *Senior Scholars' Basket of 11* に拡張 — *Decision Support Systems*、*Information & Management*、*Information and Organization* を追加（[Issue #7](https://github.com/Imbad0202/academic-research-skills/issues/7)、[PR #8](https://github.com/Imbad0202/academic-research-skills/pull/8)）。出典: [AIS Senior Scholars' List of Premier Journals](https://aisnet.org/page/SeniorScholarListofPremierJournals)。
+**[cloudenochcsis](https://github.com/cloudenochcsis)** — 貢献者。IS セクションを *Basket of 8* から完全な *Senior Scholars' Basket of 11* に拡張 — *Decision Support Systems*、*Information & Management*、*Information and Organization* を追加（[Issue #7](https://github.com/Imbad0202/academic-research-skills/issues/7)、[PR #8](https://github.com/Imbad0202/academic-research-skills/pull/8)）。出典: [AIS Senior Scholars' List of Premier Journals](https://aisnet.org/research/seniorscholarsbasket/)。
 
 **[eltociear](https://github.com/eltociear)**（Ikko Eltociear Ashimine）— 貢献者。日本語版 README（[`README.ja-JP.md`](README.ja-JP.md)）を翻訳（[PR #161](https://github.com/Imbad0202/academic-research-skills/pull/161)）。
 
 ---
 
 ## Changelog
+
+### v3.10.0 (2026-06-01) — トライアンギュレーション・ポリシー層、Kong サーベイ採用、評価ハーネス、スコープ書き込みガード
+
+> *[machine-translated, pending native review by @eltociear]*
+>
+> オプトインの汚染トライアンギュレーション **terminal ポリシー層**（#127、デフォルトの引用挙動は v3.9.0 と byte-equivalent）、**Kong et al. 2026 サーベイ採用**（Rebuttal Commitment Ledger #256/#266/#268/#269、分野別の domain evidence profile #259）、**v3.10 計測基盤**（汎用化された評価 gold set + ranking-lift CI gate #184）、**scoped-write guard MVP**（#134、23 個の単一フェーズ subagent を各自の phase ディレクトリに囲い込み、Bash を禁止して Grep/Glob と構造化編集ツールに誘導する deterministic な `PreToolUse` hook）、`/ars-mark-read` plugin コマンド（#190）と broken-on-arrival 修正（#195）、簡体字中国語 README（#185）、CI 強化（#156/#155）をまとめた minor release。`academic-paper` → v3.2.0、`academic-paper-reviewer` → v1.10.0、`academic-pipeline` → v3.10.0。
 
 ### v3.9.4.2 (2026-05-19) — PR #149 CI 規律ゲートのポストシップホットフィックス（codex post-ship）
 
@@ -540,7 +546,7 @@ Lu ら（2026、*Nature* 651:914-919）からの洞察を統合 — ブライン
 
 ### v3.1.1 (2026-04-09) — IS Senior Scholars' Basket of 11
 
-外部貢献: [@mchesbro1](https://github.com/mchesbro1) が IS Basket of 8 ジャーナルを最初に提案・起草（[Issue #5](https://github.com/Imbad0202/academic-research-skills/issues/5)）。[@cloudenochcsis](https://github.com/cloudenochcsis) が完全な Senior Scholars' Basket of 11 に拡張（[Issue #7](https://github.com/Imbad0202/academic-research-skills/issues/7)、[PR #8](https://github.com/Imbad0202/academic-research-skills/pull/8)）。`academic-paper-reviewer/references/top_journals_by_field.md` Section 7 を更新し、*Decision Support Systems*、*Information & Management*、*Information and Organization* を追加。出典: [AIS Senior Scholars' List of Premier Journals](https://aisnet.org/page/SeniorScholarListofPremierJournals)。
+外部貢献: [@mchesbro1](https://github.com/mchesbro1) が IS Basket of 8 ジャーナルを最初に提案・起草（[Issue #5](https://github.com/Imbad0202/academic-research-skills/issues/5)）。[@cloudenochcsis](https://github.com/cloudenochcsis) が完全な Senior Scholars' Basket of 11 に拡張（[Issue #7](https://github.com/Imbad0202/academic-research-skills/issues/7)、[PR #8](https://github.com/Imbad0202/academic-research-skills/pull/8)）。`academic-paper-reviewer/references/top_journals_by_field.md` Section 7 を更新し、*Decision Support Systems*、*Information & Management*、*Information and Organization* を追加。出典: [AIS Senior Scholars' List of Premier Journals](https://aisnet.org/research/seniorscholarsbasket/)。
 
 ### v3.1 (2026-04-06) — Anti-Context-Rot + 認知フレームワーク + リーンサイズ
 
