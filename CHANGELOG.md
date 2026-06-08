@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+- **academic-paper writing guard:** Phase 4 drafting now classifies upstream notes as `CONTENT-EVIDENCE` vs. `CONTROL-CONSTRAINT` before prose generation, and the writing-quality checklist adds an Internal-Control Leakage gate to prevent planning emphases, literature-positioning labels, and "intersection of literatures" bridge sentences from being copied or paraphrased into manuscript prose.
+
 ## [3.10.0] - 2026-06-01 — Triangulation policy layer, Kong et al. survey adoptions, eval harness, scoped-write guard
 
 The v3.10.0 minor release bundles the opt-in contamination-triangulation **terminal policy

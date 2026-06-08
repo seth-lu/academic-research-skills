@@ -1,9 +1,9 @@
 ---
 name: academic-paper
-description: "12-agent academic paper writing pipeline. 10 modes (full/plan/outline/revision/revision-coach/abstract/lit-review/format-convert/citation-check/disclosure). 6 paper types, 5 citation formats, bilingual abstracts, LaTeX/DOCX-via-Pandoc/PDF output. Style Calibration + Writing Quality Check + Anti-Patterns with IRON RULE markers. Triggers: write paper, academic paper, guide my paper, parse reviews, AI disclosure, 寫論文, 學術論文, 引導我寫論文, 審查意見."
+description: "12-agent academic paper writing pipeline. 10 modes (full/plan/outline/revision/revision-coach/abstract/lit-review/format-convert/citation-check/disclosure). 6 paper types, 5 citation formats, bilingual abstracts, LaTeX/DOCX-via-Pandoc/PDF output. Style Calibration + Writing Quality Check + Source-to-Prose Firewall + Anti-Patterns with IRON RULE markers. Triggers: write paper, academic paper, guide my paper, parse reviews, AI disclosure, 寫論文, 學術論文, 引導我寫論文, 審查意見."
 metadata:
   version: "3.2.0"
-  last_updated: "2026-06-02"
+  last_updated: "2026-06-08"
   status: active
   data_access_level: redacted
   task_type: open-ended
@@ -247,15 +247,20 @@ Inputs:
 - Paragraph move sequence (Path A: style_L3_<section>.md; Path C: none)
 - Previous section prose: <§1..§N-1, as continuity anchor>
 
-Before writing, classify upstream content: evidence and mechanisms may enter prose; configuration notes, style rules, contribution-positioning instructions, file names, workflow labels, and negative framing controls must guide silently and must NOT appear in manuscript prose.
+Before writing, classify upstream content:
+- `CONTENT-EVIDENCE`: claims, data, mechanisms, definitions, citations, empirical results. These may enter prose with citations.
+- `CONTROL-CONSTRAINT`: configuration notes, style rules, contribution-positioning instructions, literature-positioning labels, planning emphases, file names, workflow labels, and negative framing controls. These must guide selection, ordering, emphasis, omission, and transitions silently; they must NOT appear in manuscript prose and must NOT be paraphrased into sentence templates.
 
-Output: §<N> prose only. Do NOT include other sections, metadata, self-check text, or writer-facing control language.
+Internal Notes -> Scholarly Prose Transduction Gate: do not write bridge sentences that merely report the planned position of the paper, such as "this paper sits at the intersection of...", "this study combines X and Y literatures", or "the paper is located at the intersection of X, Y, and Z." Replace them with problem-gap-mechanism prose: what existing streams explain, what they leave unresolved jointly, and how this paper's mechanism addresses that unresolved tension.
+
+Output: §<N> prose only. Do NOT include other sections, metadata, self-check text, writer-facing control language, or literature-positioning labels.
 
 After writing, self-check:
 - Word count: <actual>/<target> (±15%)
 - Paragraph moves: [N/N] matched (Path A only)
 - CER chains: all claims have sources
 - Source-to-prose firewall: no configuration/style/contribution-positioning meta-language leaked into the manuscript section
+- Internal-control leakage: no planning emphases, literature-positioning labels, or "intersection of literatures" bridge sentences were copied or paraphrased into prose
 
 End with: [§<N> COMPLETE] <word count> <L3 compliance if Path A>
 ```
@@ -595,7 +600,7 @@ academic-paper + academic-paper-reviewer -> Peer review -> revision loop
 | Item | Content |
 |------|---------|
 | Skill Version | 3.2.0 |
-| Last Updated | 2026-06-02 |
+| Last Updated | 2026-06-08 |
 | Maintainer | Cheng-I Wu |
 | Dependent Skills | deep-research v1.0+ (upstream), academic-paper-reviewer v1.0+ (downstream) |
 

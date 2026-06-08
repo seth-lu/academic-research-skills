@@ -153,6 +153,20 @@ Also watch for sentences that describe what the paper is doing instead of doing 
 
 Exception: Concise roadmap sentences in the Introduction ("Section 2 reviews related literature on X and Y; Section 3 describes our protocol and threat model") are standard practice and should be kept. Limit to one such sentence.
 
+### Internal-Control Leakage
+
+Planning notes, literature-positioning labels, style constraints, contribution boundaries, and reviewer-risk reminders are not manuscript prose. They may shape what the draft selects, orders, emphasizes, omits, or transitions between, but they must not be copied or paraphrased into the paper body.
+
+| Leakage pattern | Why it fails | What to do |
+|-----------------|--------------|------------|
+| "This paper sits at the intersection of X, Y, and Z literatures" | Reports the planning map instead of making an argument | State what each stream explains, what remains unresolved jointly, and why the unresolved tension matters |
+| "This study combines four literature streams" | Turns a literature-matrix label into a sentence | Identify the specific problem that cannot be handled by any one stream alone |
+| "The contribution is positioned as..." | Exposes contribution-planning language | State the contribution directly as a scholarly claim |
+| "This section follows the CER chain..." | Leaks workflow terminology | Present the claim, evidence, and reasoning without naming the workflow |
+| "The draft avoids treating X as Y" | Copies a negative framing control | Use affirmative framing: what X does in the paper and why that role is appropriate |
+
+Self-check question: if the sentence mainly tells the reader how the paper was planned, categorized, constrained, or prompted, delete it or rewrite it as a substantive problem-gap-mechanism claim.
+
 ---
 
 ## D. Structure Pattern Warnings

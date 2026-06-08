@@ -54,10 +54,10 @@ fi
 # ---------------------------------------------------------------------------
 case "${SOURCE}" in
   compact|resume)
-    ANNOUNCE="ARS v3.10.0-20260602 plugin still loaded after ${SOURCE}. Slash commands: /ars-full /ars-plan /ars-outline /ars-revision /ars-revision-coach /ars-abstract /ars-lit-review /ars-reviewer /ars-format-convert /ars-citation-check /ars-disclosure /ars-mark-read /ars-unmark-read. Plugin agents: synthesis_agent, research_architect_agent, report_compiler_agent."
+    ANNOUNCE="ARS v3.10.0-20260608 plugin still loaded after ${SOURCE}. Slash commands: /ars-full /ars-plan /ars-outline /ars-revision /ars-revision-coach /ars-abstract /ars-lit-review /ars-reviewer /ars-format-convert /ars-citation-check /ars-disclosure /ars-mark-read /ars-unmark-read. Plugin agents: synthesis_agent, research_architect_agent, report_compiler_agent."
     ;;
   startup|clear|*)
-    ANNOUNCE="ARS v3.10.0-20260602 (academic-research-skills) plugin loaded.
+    ANNOUNCE="ARS v3.10.0-20260608 (academic-research-skills) plugin loaded.
 
 Slash commands (13) — model routing pinned in frontmatter:
   /ars-full              opus    Full pipeline (research → write → review → revise → finalize)
