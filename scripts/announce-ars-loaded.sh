@@ -54,10 +54,10 @@ fi
 # ---------------------------------------------------------------------------
 case "${SOURCE}" in
   compact|resume)
-    ANNOUNCE="ARS v3.13.0-20260618 plugin still loaded after ${SOURCE}. Slash commands: /ars-full /ars-plan /ars-outline /ars-revision /ars-revision-coach /ars-abstract /ars-lit-review /ars-reviewer /ars-format-convert /ars-citation-check /ars-disclosure /ars-mark-read /ars-unmark-read /ars-cache-invalidate. Plugin agents: synthesis_agent, research_architect_agent, report_compiler_agent."
+    ANNOUNCE="ARS v3.13.0-20260625 plugin still loaded after ${SOURCE}. Slash commands: /ars-full /ars-plan /ars-outline /ars-revision /ars-revision-coach /ars-abstract /ars-lit-review /ars-reviewer /ars-format-convert /ars-citation-check /ars-disclosure /ars-mark-read /ars-unmark-read /ars-cache-invalidate. Plugin agents: synthesis_agent, research_architect_agent, report_compiler_agent."
     ;;
   startup|clear|*)
-    ANNOUNCE="ARS v3.13.0-20260618 (academic-research-skills) plugin loaded.
+    ANNOUNCE="ARS v3.13.0-20260625 (academic-research-skills) plugin loaded.
 
 Slash commands (14) — light modes pin sonnet in frontmatter; the three heavy modes inherit the session model (the v3.7.0 opus floor was retired in the 2026-06 harness pass):
   /ars-full              inherit Full pipeline (research → write → review → revise → finalize)

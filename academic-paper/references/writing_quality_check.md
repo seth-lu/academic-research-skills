@@ -167,6 +167,19 @@ Planning notes, literature-positioning labels, style constraints, contribution b
 
 Self-check question: if the sentence mainly tells the reader how the paper was planned, categorized, constrained, or prompted, delete it or rewrite it as a substantive problem-gap-mechanism claim.
 
+### Manuscript Voice Boundary
+
+The paper body must speak from the research object, evidence, method, and literature — not from the writer's planning position. A sentence is valid manuscript prose only if it can be authorized by one of the following sources:
+
+- a cited source or established literature stream;
+- a definition, model object, proposition, method, algorithm, or design choice in the paper;
+- an empirical result, numerical output, robustness check, or observed pattern;
+- a stated boundary condition, assumption, threat model, or limitation.
+
+The following sources are not valid authorization for manuscript sentences: target-venue strategy, reader-expectation guesses, reviewer-risk anticipation, contribution-positioning notes, style rules, rhetorical priorities, L1/L2/L3 `Why` fields, `Risk control` fields, or instructions about what the section should emphasize. These controls may shape order, emphasis, scope, and transitions, but they must not become paper-body assertions.
+
+Rewrite test: replace any writer-facing rationale with an object-level claim. For example, do not say that a metric matters because a venue or reader group expects it; say what regulatory decision, model property, empirical result, or boundary condition the metric evaluates.
+
 ---
 
 ## D. Structure Pattern Warnings

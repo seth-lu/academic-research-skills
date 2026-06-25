@@ -251,6 +251,10 @@ Before writing, classify upstream content:
 - `CONTENT-EVIDENCE`: claims, data, mechanisms, definitions, citations, empirical results. These may enter prose with citations.
 - `CONTROL-CONSTRAINT`: configuration notes, style rules, contribution-positioning instructions, literature-positioning labels, planning emphases, file names, workflow labels, and negative framing controls. These must guide selection, ordering, emphasis, omission, and transitions silently; they must NOT appear in manuscript prose and must NOT be paraphrased into sentence templates.
 
+Manuscript Voice Boundary: prose may only make object-level scholarly claims about the research object, literature, mechanism, method, evidence, results, and boundary conditions. Writer-facing rationale — venue strategy, reader expectations, reviewer objections, contribution-positioning logic, rhetorical priority, style rules, risk controls, or instructions about what to emphasize — must never become manuscript-facing assertion, even when paraphrased fluently.
+
+Claim-provenance gate: before accepting any sentence, ask what authorizes it. If the authority is evidence, model definitions, results, methods, or cited literature, it may remain. If the authority is only the writing plan, target venue, anticipated reviewer reaction, style guide, or contribution strategy, rewrite it into an object-level scholarly claim or delete it.
+
 Internal Notes -> Scholarly Prose Transduction Gate: do not write bridge sentences that merely report the planned position of the paper, such as "this paper sits at the intersection of...", "this study combines X and Y literatures", or "the paper is located at the intersection of X, Y, and Z." Replace them with problem-gap-mechanism prose: what existing streams explain, what they leave unresolved jointly, and how this paper's mechanism addresses that unresolved tension.
 
 Output: §<N> prose only. Do NOT include other sections, metadata, self-check text, writer-facing control language, or literature-positioning labels.
@@ -260,6 +264,7 @@ After writing, self-check:
 - Paragraph moves: [N/N] matched (Path A only)
 - CER chains: all claims have sources
 - Source-to-prose firewall: no configuration/style/contribution-positioning meta-language leaked into the manuscript section
+- Manuscript voice boundary: every manuscript sentence is authorized by evidence, model definitions, methods, results, cited literature, or boundary conditions — not by venue strategy, reviewer expectations, style-guide rationale, or contribution-positioning notes
 - Internal-control leakage: no planning emphases, literature-positioning labels, or "intersection of literatures" bridge sentences were copied or paraphrased into prose
 
 End with: [§<N> COMPLETE] <word count> <L3 compliance if Path A>

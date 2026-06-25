@@ -41,7 +41,9 @@ Style rules describe HOW to write, not WHAT to write. The exemplar's specific ci
 
 **Drafting rule**: Phase 4 uses L3 for paragraph-level rhetorical skeleton only. ALL content — citations, quotes, examples, case studies — must come from the draft's own CER chains and Annotated Bibliography. If L3 mentions an exemplar-specific entity (e.g., "BWWC"), that is an extraction defect and must be ignored.
 
-**Violation consequence**: Draft content that replicates exemplar citations or examples constitutes accidental plagiarism and must be rewritten before the section is accepted.
+**Manuscript voice rule**: L1/L2/L3 `Rule`, `Why`, `Risk control`, `Confidence`, `Anti-Pattern`, and venue-reader rationales are writer-only controls. They may shape section order, emphasis, omission, transitions, and scope, but they must never be converted into manuscript-facing assertions. A valid manuscript sentence must be authorized by the draft's evidence, model definitions, methods, results, or cited literature — not by the style guide, target venue, anticipated reviewer reaction, or contribution strategy.
+
+**Violation consequence**: Draft content that replicates exemplar citations or examples, or turns writer-facing style rationale into paper-body claims, must be rewritten before the section is accepted.
 
 ---
 

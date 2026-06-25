@@ -638,6 +638,29 @@ def check_docx_contract() -> None:
         expect_absent(rel_path, "Auto-produce MD + DOCX")
 
 
+def check_manuscript_voice_boundary() -> None:
+    anchors = (
+        (
+            "academic-paper/SKILL.md",
+            "Manuscript Voice Boundary: prose may only make object-level scholarly claims",
+        ),
+        (
+            "academic-paper/SKILL.md",
+            "Claim-provenance gate: before accepting any sentence, ask what authorizes it.",
+        ),
+        (
+            "academic-paper/references/writing_quality_check.md",
+            "The paper body must speak from the research object, evidence, method, and literature",
+        ),
+        (
+            "shared/references/progressive_style_extraction.md",
+            "L1/L2/L3 `Rule`, `Why`, `Risk control`, `Confidence`, `Anti-Pattern`, and venue-reader rationales are writer-only controls.",
+        ),
+    )
+    for rel_path, needle in anchors:
+        expect_contains(rel_path, needle)
+
+
 def check_reference_docs() -> None:
     expect_contains(
         "academic-pipeline/references/passport_as_reset_boundary.md",
@@ -705,6 +728,7 @@ def main() -> int:
     check_readme_ko_sections()
     check_setup_docs()
     check_docx_contract()
+    check_manuscript_voice_boundary()
     check_reference_docs()
     check_rebuttal_audit_guard()
 
