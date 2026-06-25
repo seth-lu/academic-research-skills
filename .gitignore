@@ -17,5 +17,8 @@ __pycache__/
 # Private ROADMAP is intentionally gitignored and maintained outside this public repo
 ROADMAP.md
 
+# Local Claude Code permissions/config.
+.claude/settings.local.json
+
 # Local tooling scratch directory (not part of the project)
 .gstack/
