@@ -75,13 +75,22 @@ def _citation_manifest(task_name="citation_extraction"):
 
 
 def _ro(crossref=None, openalex=None, semantic_scholar=None, arxiv=None):
-    def cell(status):
-        return {"status": status, "response_summary": None}
+    """Build resolver_outcomes. Each arg is a status string, or a
+    (status, queried_by) tuple. A bare 'unmatched' string defaults
+    queried_by='id' so it stays an ID-keyed (false-producing) unmatched under
+    the v3.11 narrowed-false reducer — the prior un-narrowed default semantics."""
+    def cell(v):
+        if isinstance(v, tuple):
+            status, queried_by = v
+        else:
+            status = v or "skipped"
+            queried_by = "id" if status == "unmatched" else None
+        return {"status": status, "queried_by": queried_by, "response_summary": None}
     return {
-        "crossref": cell(crossref or "skipped"),
-        "openalex": cell(openalex or "skipped"),
-        "semantic_scholar": cell(semantic_scholar or "skipped"),
-        "arxiv": cell(arxiv or "skipped"),
+        "crossref": cell(crossref),
+        "openalex": cell(openalex),
+        "semantic_scholar": cell(semantic_scholar),
+        "arxiv": cell(arxiv),
     }
 
 
@@ -281,6 +290,18 @@ def test_run_task_unknown_task_does_not_raise(tmp_path):
     gold_root.mkdir()
     result = run_evals.run_task("does_not_exist", gold_root)
     assert result["status"] == "skipped"
+
+
+def test_surface_form_parity_is_pending_not_silently_passing():
+    """#216 regression fixture has NO native measurer (by design — the §F.3.6 surface-form
+    bias has no deterministic predictor). run_evals must surface it as `pending`, not as a
+    measured pass. This pins codex's P2 concern: a regression fixture must not false-green
+    through the eval gate. Its integrity is checked by scripts/check_surface_form_parity.py,
+    not by an FNR/FPR measurer here."""
+    assert "surface_form_parity" not in run_evals._NATIVE_MEASURERS
+    result = run_evals.run_task("surface_form_parity")
+    assert result["status"] == "pending", result
+    assert "no native measurer" in result["notice"]
 
 
 # ---------------------------------------------------------------------------
