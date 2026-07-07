@@ -1,0 +1,44 @@
+{
+  "name": "academic-research-skills",
+  "version": "3.13.0+codex.20260707",
+  "description": "Production-grade academic research pipeline for Codex: research -> write -> review -> revise -> finalize.",
+  "author": {
+    "name": "Cheng-I Wu",
+    "url": "https://github.com/Imbad0202"
+  },
+  "homepage": "https://github.com/seth-lu/academic-research-skills",
+  "repository": "https://github.com/seth-lu/academic-research-skills",
+  "license": "CC-BY-NC-4.0",
+  "keywords": [
+    "academic",
+    "research",
+    "writing",
+    "review",
+    "deep-research",
+    "literature-review",
+    "systematic-review",
+    "peer-review",
+    "scholarly-publishing",
+    "codex"
+  ],
+  "skills": "./skills",
+  "interface": {
+    "displayName": "Academic Research Skills",
+    "shortDescription": "Research, writing, review, and publication workflows for Codex.",
+    "longDescription": "A Codex-ready packaging of Academic Research Skills with four coordinated skills: deep research, paper writing, peer review, and full pipeline orchestration. Includes citation verification, integrity gates, and Material Passport handoffs.",
+    "developerName": "Cheng-I Wu",
+    "category": "Productivity",
+    "capabilities": [
+      "Research",
+      "Write",
+      "Review",
+      "Automation"
+    ],
+    "defaultPrompt": [
+      "Run /ars-full for an end-to-end paper workflow.",
+      "Review my manuscript with /ars-reviewer.",
+      "Build a literature review with /ars-lit-review."
+    ],
+    "brandColor": "#2563EB"
+  }
+}
