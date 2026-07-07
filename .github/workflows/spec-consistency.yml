@@ -252,7 +252,7 @@ jobs:
         # Step 7 of v3.6.8: enforces the 2 commands (mark-read, unmark-read)
         # exist, carry the literature_corpus[] validation reference, point at
         # the human_read_log.yaml peer file (NOT entry frontmatter per §3.1
-        # firm rule 3), and declare model: sonnet routing.
+        # firm rule 3), and avoid provider-specific model routing in Codex packaging.
         run: python3 scripts/check_v3_6_8_mark_read_commands.py
 
       - name: Run v3.6.8 /ars-mark-read CLI tests (#190)
@@ -403,7 +403,7 @@ jobs:
       - name: Validate ARS plugin hooks.json wires the write-scope guard
         # Pins hooks/hooks.json to (a) be valid JSON, (b) carry a PreToolUse entry whose
         # matcher covers the structured write tools + Bash, (c) invoke the cross-platform
-        # launcher hooks/run_guard.sh via ${CLAUDE_PLUGIN_ROOT}, AND (d) confirm the launcher
+        # launcher hooks/run_guard.sh via ${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}, AND (d) confirm the launcher
         # actually execs the guard script (so the launcher->guard chain can't be silently
         # severed by a future edit). The hook went via run_guard.sh in #454: a bare `python3`
         # command broke on Windows where python3 is a 0-byte Microsoft Store alias stub.
@@ -419,7 +419,8 @@ jobs:
               assert tool in matcher, f"PreToolUse matcher missing {tool!r}: {matcher!r}"
           cmds = " ".join(hk.get("command", "") for hk in entry.get("hooks", []))
           assert "hooks/run_guard.sh" in cmds, "PreToolUse does not invoke the run_guard.sh launcher"
-          assert "${CLAUDE_PLUGIN_ROOT}" in cmds, "hook command must use ${CLAUDE_PLUGIN_ROOT}"
+          assert "${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}" in cmds, \
+              "hook command must use Codex PLUGIN_ROOT with CLAUDE_PLUGIN_ROOT fallback"
           # The launcher must still chain to the guard script — pin it so the chain stays intact.
           # P2-f: do NOT use a bare substring (a COMMENT mentioning the guard would false-pass and
           # the launcher->guard chain could be severed while CI stays green). Skip whole-line

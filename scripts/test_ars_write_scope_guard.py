@@ -753,8 +753,9 @@ class PluginRootInfraScopeTest(unittest.TestCase):
 
 
 class MainPluginRootComputationTest(unittest.TestCase):
-    """main() must compute plugin_root from CLAUDE_PLUGIN_ROOT, else the resolved repo root
-    (resolve() to follow the ~/.claude/skills symlink install). codex P2-b."""
+    """main() must compute plugin_root from PLUGIN_ROOT / CLAUDE_PLUGIN_ROOT, else the
+    resolved repo root (resolve() to follow the ~/.claude/skills symlink install).
+    codex P2-b."""
 
     def test_plugin_root_from_env(self):
         import subprocess
@@ -784,6 +785,34 @@ class MainPluginRootComputationTest(unittest.TestCase):
                                  capture_output=True, text=True)
             decision = json.loads(out.stdout)
             self.assertEqual(decision["hookSpecificOutput"].get("permissionDecision"), "deny")
+
+    def test_plugin_own_file_denied_via_codex_plugin_root_env(self):
+        import subprocess
+        guard_path = os.path.join(REPO_ROOT, "scripts", "ars_write_scope_guard.py")
+        with tempfile.TemporaryDirectory() as proj, tempfile.TemporaryDirectory() as plug:
+            os.makedirs(os.path.join(plug, "scripts"))
+            env = dict(os.environ, CODEX_PROJECT_DIR=proj, PLUGIN_ROOT=plug)
+            inp = json.dumps({"tool_name": "Write", "cwd": proj,
+                              "tool_input": {"file_path": os.path.join(plug, "scripts/ars_write_scope_guard.py"),
+                                             "content": "x"}})
+            out = subprocess.run([sys.executable, guard_path], input=inp, env=env,
+                                 capture_output=True, text=True)
+            decision = json.loads(out.stdout)
+            self.assertEqual(decision["hookSpecificOutput"].get("permissionDecision"), "deny")
+
+    def test_codex_project_dir_takes_precedence_over_claude_project_dir(self):
+        import subprocess
+        guard_path = os.path.join(REPO_ROOT, "scripts", "ars_write_scope_guard.py")
+        with tempfile.TemporaryDirectory() as proj, tempfile.TemporaryDirectory() as other:
+            target = os.path.join(proj, "phase2_investigation", "out.md")
+            env = dict(os.environ, CODEX_PROJECT_DIR=proj, CLAUDE_PROJECT_DIR=other)
+            inp = json.dumps({"tool_name": "Write", "cwd": proj,
+                              "agent_type": "bibliography_agent",
+                              "tool_input": {"file_path": target, "content": "x"}})
+            out = subprocess.run([sys.executable, guard_path], input=inp, env=env,
+                                 capture_output=True, text=True)
+            decision = json.loads(out.stdout)
+            self.assertNotIn("permissionDecision", decision["hookSpecificOutput"])
 
 
 if __name__ == "__main__":

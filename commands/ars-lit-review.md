@@ -1,6 +1,5 @@
 ---
 description: ARS academic-paper `lit-review` mode — annotated bibliography in paper format
-model: sonnet
 ---
 
 Trigger the `academic-paper` skill in `lit-review` mode. Produces an annotated bibliography rendered as a literature review section. Fidelity spectrum, medium oversight.

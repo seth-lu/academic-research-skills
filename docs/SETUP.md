@@ -204,7 +204,7 @@ The four skills (`deep-research`, `academic-paper`, `academic-paper-reviewer`, `
 **Plugin platform scope:**
 - ✅ Claude Code CLI / VS Code extension / JetBrains extension — full support
 - ❌ claude.ai web / Claude for Work / Anthropic API direct calls — plugins not supported; use Method 1 / 2 / 3 below
-- ➡️ Codex CLI — install the sibling distribution [`Imbad0202/academic-research-skills-codex`](https://github.com/Imbad0202/academic-research-skills-codex) (same workflow content, Codex-native packaging)
+- ➡️ Codex CLI — use this repository's `codex` branch and follow [`docs/CODEX.md`](CODEX.md) (same workflow content, Codex-native packaging)
 
 ### Method 1: As project skills (recommended)
 

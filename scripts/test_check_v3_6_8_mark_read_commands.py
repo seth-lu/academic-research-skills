@@ -1,8 +1,9 @@
 """Unit tests for check_v3_6_8_mark_read_commands.py.
 
 Per v3.6.8 spec §3.6 Step 7 acceptance criteria. The lint asserts that the
-2 commands (mark-read, unmark-read) exist, carry the validation rule, and
-reference the peer-file write target — NOT the entry frontmatter.
+2 commands (mark-read, unmark-read) exist, carry the validation rule,
+reference the peer-file write target — NOT the entry frontmatter — and avoid
+provider-specific model routing in Codex packaging.
 """
 from __future__ import annotations
 
@@ -99,21 +100,21 @@ class TestMarkReadCommandsLint(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("human_read_log", result.stdout + result.stderr)
 
-    def test_missing_sonnet_model_routing_fails(self) -> None:
-        """Spec §3.6 Step 7 + feedback_no_haiku.md: command frontmatter
-        MUST declare model: sonnet (NOT haiku, NOT missing)."""
+    def test_provider_specific_model_routing_fails(self) -> None:
+        """Codex packaging inherits the active session model; command
+        frontmatter must not pin Claude model names."""
         with TemporaryDirectory() as tmp:
             root = Path(tmp)
             _copy_repo_skeleton(root)
             cmd = root / "commands" / "ars-mark-read.md"
             text = cmd.read_text(encoding="utf-8")
-            mutated = text.replace("model: sonnet", "model: haiku")
+            mutated = text.replace("---\n\n", "---\nmodel: sonnet\n\n", 1)
             cmd.write_text(mutated, encoding="utf-8")
 
             result = run_script(LINT, cwd=root)
 
             self.assertNotEqual(result.returncode, 0)
-            self.assertIn("sonnet", result.stdout + result.stderr)
+            self.assertIn("model:", result.stdout + result.stderr)
 
 
 if __name__ == "__main__":

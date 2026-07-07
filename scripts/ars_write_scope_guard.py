@@ -67,6 +67,7 @@ INFRA_PROTECTED_GLOBS = [
     "hooks/hooks.json",
     "hooks/*.sh",
     ".claude-plugin/plugin.json",  # declares the hook routing — disabling it neuters the guard
+    ".codex-plugin/plugin.json",  # Codex plugin manifest — same infra protection surface
     # The hook script, its manifest, and the cross-check lint, protected by filename both
     # in any SUBDIR (`**/name`) AND at the workspace root (bare `name`). A deny-list
     # widening only protects MORE paths, so it is safe — unlike a per-agent allow-glob
@@ -466,19 +467,28 @@ def main():
         print(render_hook_output({"decision": "allow", "reason": ""}))
         return 0
 
-    # Workspace root: prefer CLAUDE_PROJECT_DIR, else the payload cwd. This anchors the
+    # Workspace root: prefer Codex/Claude project env vars, else the payload cwd. This anchors the
     # Bucket A phase-scope check (Step 4) to the USER'S project.
-    workspace_root = os.environ.get("CLAUDE_PROJECT_DIR") or payload.get("cwd") or os.getcwd()
+    workspace_root = (
+        os.environ.get("CODEX_PROJECT_DIR")
+        or os.environ.get("CLAUDE_PROJECT_DIR")
+        or payload.get("cwd")
+        or os.getcwd()
+    )
 
     # Plugin root (#448): anchors infra self-protection (Step 2) to the ARS plugin's OWN
-    # files, NOT the user's project. CLAUDE_PLUGIN_ROOT is set on a plugin install; the
-    # git-clone+symlink track has no such env var, so fall back to this script's repo root
-    # (scripts/ -> repo root, where .claude-plugin/plugin.json lives). Use resolve() (NOT
+    # files, NOT the user's project. PLUGIN_ROOT is set on a Codex plugin install and
+    # CLAUDE_PLUGIN_ROOT is set on a Claude Code plugin install; the git-clone+symlink
+    # track has no such env var, so fall back to this script's repo root
+    # (scripts/ -> repo root, where the plugin manifests live). Use resolve() (NOT
     # abspath) so a symlinked script / scripts dir — the norm for the ~/.claude/skills
     # symlink install track — resolves to the REAL plugin tree, not the symlink's location
     # (abspath would not follow the symlink and compute the wrong root).
-    plugin_root = os.environ.get("CLAUDE_PLUGIN_ROOT") or str(
-        Path(__file__).resolve().parents[1])
+    plugin_root = (
+        os.environ.get("PLUGIN_ROOT")
+        or os.environ.get("CLAUDE_PLUGIN_ROOT")
+        or str(Path(__file__).resolve().parents[1])
+    )
 
     try:
         manifest = _load_manifest()

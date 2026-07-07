@@ -3,8 +3,8 @@
 Per v3.6.8 spec §3.6 + Step 7 (round-2 R2-002 amend) acceptance criteria:
 the 2 commands must exist, carry the validation rule (citation_key against
 `literature_corpus[]`), reference the peer-file write target
-(`<passport-stem>_human_read_log.yaml`) NOT entry frontmatter, and declare
-`model: sonnet` routing (per feedback_no_haiku.md discipline).
+(`<passport-stem>_human_read_log.yaml`) NOT entry frontmatter, and avoid
+provider-specific model routing in Codex packaging.
 
 Run from repo root:
     python3 scripts/check_v3_6_8_mark_read_commands.py
@@ -22,7 +22,12 @@ REQUIRED_COMMANDS = ("ars-mark-read.md", "ars-unmark-read.md")
 REQUIRED_TOKENS = (
     "literature_corpus",  # validation rule reference
     "human_read_log",     # peer-file write target
-    "model: sonnet",      # routing per feedback_no_haiku.md
+)
+
+# Codex packaging inherits the active session model. Do not pin Claude model names in
+# command frontmatter.
+FORBIDDEN_TOKENS = (
+    "model:",
 )
 
 # Enforce canonical CLI dispatch pattern (PR #197 local convention):
@@ -54,6 +59,12 @@ def main(argv: list[str] | None = None) -> int:
                 errors.append(
                     f"commands/{cmd_name}: missing required token "
                     f"{token!r} (spec §3.6 Step 7 contract)"
+                )
+        for token in FORBIDDEN_TOKENS:
+            if token in body:
+                errors.append(
+                    f"commands/{cmd_name}: forbidden provider-specific routing token "
+                    f"{token!r} (Codex packaging inherits the session model)"
                 )
 
         # 2. Check for canonical implementation block (Moved outside token loop)

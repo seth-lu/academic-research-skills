@@ -33,8 +33,9 @@ emit_passthrough_and_exit() {
 }
 
 # --- Resolve the guard script from THIS launcher's own location (codex P1) ---------------
-# CC substitutes ${CLAUDE_PLUGIN_ROOT} into the hook COMMAND text before the shell, but does
-# NOT guarantee it as an env var inside this script. So compute the guard path from $0.
+# Claude Code substitutes ${CLAUDE_PLUGIN_ROOT} into the hook COMMAND text before the shell,
+# while Codex plugins provide ${PLUGIN_ROOT}. Neither runtime has to expose the root as an
+# env var inside this script. So compute the guard path from $0.
 # (No production env override: the guard path is ALWAYS derived from the launcher's own
 # location. Tests that need a broken/alternate guard run the launcher from a temp plugin
 # layout, so there is no production back door — P2-e.)

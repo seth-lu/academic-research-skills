@@ -1,6 +1,5 @@
 ---
 description: ARS full pipeline preset for UTD24 IS-track / MS-track (Privacy Computing × Finance). 中文起草 → 英文终稿.
-model: opus
 ---
 
 Trigger the `academic-pipeline` orchestrator with a domain preset for **Privacy Computing × Finance** research targeting **UTD24** journals (MIS Quarterly / Information Systems Research / Management Science / INFORMS Journal on Computing).

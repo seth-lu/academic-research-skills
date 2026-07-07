@@ -1,6 +1,5 @@
 ---
 description: ARS /ars-cache-invalidate — drop cached verification entries for a citation key
-model: sonnet
 ---
 
 Invalidate the persistent verification cache for one citation key, so the next pipeline run re-verifies it live against Crossref / OpenAlex / Semantic Scholar / arXiv instead of returning a stale cached verdict. Use this when a citation's metadata changed (e.g. a preprint gained a published DOI) or when a prior verification looks wrong.

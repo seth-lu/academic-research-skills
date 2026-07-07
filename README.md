@@ -1,4 +1,4 @@
-# Academic Research Skills for Claude Code
+# Academic Research Skills for Claude Code / Codex
 
 [![Version](https://img.shields.io/badge/version-v3.13.0-blue)](https://github.com/Imbad0202/academic-research-skills/releases/tag/v3.13.0)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20696614.svg)](https://doi.org/10.5281/zenodo.20696614)
@@ -7,7 +7,7 @@
 
 [简体中文版](README.zh-CN.md) | [繁體中文版](README.zh-TW.md) | [日本語版](README.ja-JP.md) | [한국어](README.ko-KR.md)
 
-A comprehensive suite of Claude Code skills for academic research, covering the full pipeline from research to publication.
+A comprehensive suite of agent skills for academic research, covering the full pipeline from research to publication. The original distribution targets Claude Code; the `codex` branch adds Codex plugin packaging.
 
 **Install in 30 seconds** (Claude Code CLI / VS Code / JetBrains, v3.7.0+):
 
@@ -17,6 +17,8 @@ A comprehensive suite of Claude Code skills for academic research, covering the 
 ```
 
 Then try `/ars-plan` to walk through your paper structure via Socratic dialogue, or jump to [Quick install](#quick-install) for prerequisites and the traditional symlink flow.
+
+**Codex branch install:** see [`docs/CODEX.md`](docs/CODEX.md). This branch provides `.codex-plugin/plugin.json`, Codex skill shims, and Codex-compatible command metadata while preserving the original Claude Code plugin files.
 
 > **AI is your copilot, not the pilot.** This tool won't write your paper for you. It handles the grunt work — hunting down references, formatting citations, verifying data, checking logical consistency — so you can focus on the parts that actually require your brain: defining the question, choosing the method, interpreting what the data means, and writing the sentence after "I argue that."
 >
@@ -62,7 +64,7 @@ The architecture doc supersedes the sprawling pipeline description that used to 
 
 **👉 [docs/SETUP.md](docs/SETUP.md)** — full guide: install Claude Code, set up API keys, optional Pandoc/tectonic for DOCX/PDF, cross-model verification (`ARS_CROSS_MODEL`), and five installation methods (Plugin, project skills, global skills, claude.ai Project, repo-cloned).
 
-**Using Codex CLI?** Install the sibling distribution instead: [`Imbad0202/academic-research-skills-codex`](https://github.com/Imbad0202/academic-research-skills-codex) — same workflow content, Codex-native packaging as a single `$academic-research-suite` skill with `ars-*` aliases.
+**Using Codex CLI?** Use the `codex` branch and follow [`docs/CODEX.md`](docs/CODEX.md). It keeps the same four-skill workflow content with Codex-native plugin metadata.
 
 ## Performance & cost
 
